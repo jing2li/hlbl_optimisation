@@ -1,0 +1,3411 @@
+#ifndef _CVC_LINALG_H
+#define _CVC_LINALG_H
+
+#include <math.h>
+#include "cvc_complex.h"
+#include "types.h"
+
+  int gamma_permutation[16][24];
+  int gamma_sign[16][24];
+
+void init_gamma()
+{  /* the gamma matrix index */
+  gamma_permutation[0][0] = 12;
+  gamma_permutation[0][1] = 13;
+  gamma_permutation[0][2] = 14;
+  gamma_permutation[0][3] = 15;
+  gamma_permutation[0][4] = 16;
+  gamma_permutation[0][5] = 17;
+  gamma_permutation[0][6] = 18;
+  gamma_permutation[0][7] = 19;
+  gamma_permutation[0][8] = 20;
+  gamma_permutation[0][9] = 21;
+  gamma_permutation[0][10] = 22;
+  gamma_permutation[0][11] = 23;
+  gamma_permutation[0][12] = 0;
+  gamma_permutation[0][13] = 1;
+  gamma_permutation[0][14] = 2;
+  gamma_permutation[0][15] = 3;
+  gamma_permutation[0][16] = 4;
+  gamma_permutation[0][17] = 5;
+  gamma_permutation[0][18] = 6;
+  gamma_permutation[0][19] = 7;
+  gamma_permutation[0][20] = 8;
+  gamma_permutation[0][21] = 9;
+  gamma_permutation[0][22] = 10;
+  gamma_permutation[0][23] = 11;
+  gamma_permutation[1][0] = 19;
+  gamma_permutation[1][1] = 18;
+  gamma_permutation[1][2] = 21;
+  gamma_permutation[1][3] = 20;
+  gamma_permutation[1][4] = 23;
+  gamma_permutation[1][5] = 22;
+  gamma_permutation[1][6] = 13;
+  gamma_permutation[1][7] = 12;
+  gamma_permutation[1][8] = 15;
+  gamma_permutation[1][9] = 14;
+  gamma_permutation[1][10] = 17;
+  gamma_permutation[1][11] = 16;
+  gamma_permutation[1][12] = 7;
+  gamma_permutation[1][13] = 6;
+  gamma_permutation[1][14] = 9;
+  gamma_permutation[1][15] = 8;
+  gamma_permutation[1][16] = 11;
+  gamma_permutation[1][17] = 10;
+  gamma_permutation[1][18] = 1;
+  gamma_permutation[1][19] = 0;
+  gamma_permutation[1][20] = 3;
+  gamma_permutation[1][21] = 2;
+  gamma_permutation[1][22] = 5;
+  gamma_permutation[1][23] = 4;
+  gamma_permutation[2][0] = 18;
+  gamma_permutation[2][1] = 19;
+  gamma_permutation[2][2] = 20;
+  gamma_permutation[2][3] = 21;
+  gamma_permutation[2][4] = 22;
+  gamma_permutation[2][5] = 23;
+  gamma_permutation[2][6] = 12;
+  gamma_permutation[2][7] = 13;
+  gamma_permutation[2][8] = 14;
+  gamma_permutation[2][9] = 15;
+  gamma_permutation[2][10] = 16;
+  gamma_permutation[2][11] = 17;
+  gamma_permutation[2][12] = 6;
+  gamma_permutation[2][13] = 7;
+  gamma_permutation[2][14] = 8;
+  gamma_permutation[2][15] = 9;
+  gamma_permutation[2][16] = 10;
+  gamma_permutation[2][17] = 11;
+  gamma_permutation[2][18] = 0;
+  gamma_permutation[2][19] = 1;
+  gamma_permutation[2][20] = 2;
+  gamma_permutation[2][21] = 3;
+  gamma_permutation[2][22] = 4;
+  gamma_permutation[2][23] = 5;
+  gamma_permutation[3][0] = 13;
+  gamma_permutation[3][1] = 12;
+  gamma_permutation[3][2] = 15;
+  gamma_permutation[3][3] = 14;
+  gamma_permutation[3][4] = 17;
+  gamma_permutation[3][5] = 16;
+  gamma_permutation[3][6] = 19;
+  gamma_permutation[3][7] = 18;
+  gamma_permutation[3][8] = 21;
+  gamma_permutation[3][9] = 20;
+  gamma_permutation[3][10] = 23;
+  gamma_permutation[3][11] = 22;
+  gamma_permutation[3][12] = 1;
+  gamma_permutation[3][13] = 0;
+  gamma_permutation[3][14] = 3;
+  gamma_permutation[3][15] = 2;
+  gamma_permutation[3][16] = 5;
+  gamma_permutation[3][17] = 4;
+  gamma_permutation[3][18] = 7;
+  gamma_permutation[3][19] = 6;
+  gamma_permutation[3][20] = 9;
+  gamma_permutation[3][21] = 8;
+  gamma_permutation[3][22] = 11;
+  gamma_permutation[3][23] = 10;
+  gamma_permutation[4][0] = 0;
+  gamma_permutation[4][1] = 1;
+  gamma_permutation[4][2] = 2;
+  gamma_permutation[4][3] = 3;
+  gamma_permutation[4][4] = 4;
+  gamma_permutation[4][5] = 5;
+  gamma_permutation[4][6] = 6;
+  gamma_permutation[4][7] = 7;
+  gamma_permutation[4][8] = 8;
+  gamma_permutation[4][9] = 9;
+  gamma_permutation[4][10] = 10;
+  gamma_permutation[4][11] = 11;
+  gamma_permutation[4][12] = 12;
+  gamma_permutation[4][13] = 13;
+  gamma_permutation[4][14] = 14;
+  gamma_permutation[4][15] = 15;
+  gamma_permutation[4][16] = 16;
+  gamma_permutation[4][17] = 17;
+  gamma_permutation[4][18] = 18;
+  gamma_permutation[4][19] = 19;
+  gamma_permutation[4][20] = 20;
+  gamma_permutation[4][21] = 21;
+  gamma_permutation[4][22] = 22;
+  gamma_permutation[4][23] = 23;
+  gamma_permutation[5][0] = 0;
+  gamma_permutation[5][1] = 1;
+  gamma_permutation[5][2] = 2;
+  gamma_permutation[5][3] = 3;
+  gamma_permutation[5][4] = 4;
+  gamma_permutation[5][5] = 5;
+  gamma_permutation[5][6] = 6;
+  gamma_permutation[5][7] = 7;
+  gamma_permutation[5][8] = 8;
+  gamma_permutation[5][9] = 9;
+  gamma_permutation[5][10] = 10;
+  gamma_permutation[5][11] = 11;
+  gamma_permutation[5][12] = 12;
+  gamma_permutation[5][13] = 13;
+  gamma_permutation[5][14] = 14;
+  gamma_permutation[5][15] = 15;
+  gamma_permutation[5][16] = 16;
+  gamma_permutation[5][17] = 17;
+  gamma_permutation[5][18] = 18;
+  gamma_permutation[5][19] = 19;
+  gamma_permutation[5][20] = 20;
+  gamma_permutation[5][21] = 21;
+  gamma_permutation[5][22] = 22;
+  gamma_permutation[5][23] = 23;
+  gamma_permutation[6][0] = 12;
+  gamma_permutation[6][1] = 13;
+  gamma_permutation[6][2] = 14;
+  gamma_permutation[6][3] = 15;
+  gamma_permutation[6][4] = 16;
+  gamma_permutation[6][5] = 17;
+  gamma_permutation[6][6] = 18;
+  gamma_permutation[6][7] = 19;
+  gamma_permutation[6][8] = 20;
+  gamma_permutation[6][9] = 21;
+  gamma_permutation[6][10] = 22;
+  gamma_permutation[6][11] = 23;
+  gamma_permutation[6][12] = 0;
+  gamma_permutation[6][13] = 1;
+  gamma_permutation[6][14] = 2;
+  gamma_permutation[6][15] = 3;
+  gamma_permutation[6][16] = 4;
+  gamma_permutation[6][17] = 5;
+  gamma_permutation[6][18] = 6;
+  gamma_permutation[6][19] = 7;
+  gamma_permutation[6][20] = 8;
+  gamma_permutation[6][21] = 9;
+  gamma_permutation[6][22] = 10;
+  gamma_permutation[6][23] = 11;
+  gamma_permutation[7][0] = 19;
+  gamma_permutation[7][1] = 18;
+  gamma_permutation[7][2] = 21;
+  gamma_permutation[7][3] = 20;
+  gamma_permutation[7][4] = 23;
+  gamma_permutation[7][5] = 22;
+  gamma_permutation[7][6] = 13;
+  gamma_permutation[7][7] = 12;
+  gamma_permutation[7][8] = 15;
+  gamma_permutation[7][9] = 14;
+  gamma_permutation[7][10] = 17;
+  gamma_permutation[7][11] = 16;
+  gamma_permutation[7][12] = 7;
+  gamma_permutation[7][13] = 6;
+  gamma_permutation[7][14] = 9;
+  gamma_permutation[7][15] = 8;
+  gamma_permutation[7][16] = 11;
+  gamma_permutation[7][17] = 10;
+  gamma_permutation[7][18] = 1;
+  gamma_permutation[7][19] = 0;
+  gamma_permutation[7][20] = 3;
+  gamma_permutation[7][21] = 2;
+  gamma_permutation[7][22] = 5;
+  gamma_permutation[7][23] = 4;
+  gamma_permutation[8][0] = 18;
+  gamma_permutation[8][1] = 19;
+  gamma_permutation[8][2] = 20;
+  gamma_permutation[8][3] = 21;
+  gamma_permutation[8][4] = 22;
+  gamma_permutation[8][5] = 23;
+  gamma_permutation[8][6] = 12;
+  gamma_permutation[8][7] = 13;
+  gamma_permutation[8][8] = 14;
+  gamma_permutation[8][9] = 15;
+  gamma_permutation[8][10] = 16;
+  gamma_permutation[8][11] = 17;
+  gamma_permutation[8][12] = 6;
+  gamma_permutation[8][13] = 7;
+  gamma_permutation[8][14] = 8;
+  gamma_permutation[8][15] = 9;
+  gamma_permutation[8][16] = 10;
+  gamma_permutation[8][17] = 11;
+  gamma_permutation[8][18] = 0;
+  gamma_permutation[8][19] = 1;
+  gamma_permutation[8][20] = 2;
+  gamma_permutation[8][21] = 3;
+  gamma_permutation[8][22] = 4;
+  gamma_permutation[8][23] = 5;
+  gamma_permutation[9][0] = 13;
+  gamma_permutation[9][1] = 12;
+  gamma_permutation[9][2] = 15;
+  gamma_permutation[9][3] = 14;
+  gamma_permutation[9][4] = 17;
+  gamma_permutation[9][5] = 16;
+  gamma_permutation[9][6] = 19;
+  gamma_permutation[9][7] = 18;
+  gamma_permutation[9][8] = 21;
+  gamma_permutation[9][9] = 20;
+  gamma_permutation[9][10] = 23;
+  gamma_permutation[9][11] = 22;
+  gamma_permutation[9][12] = 1;
+  gamma_permutation[9][13] = 0;
+  gamma_permutation[9][14] = 3;
+  gamma_permutation[9][15] = 2;
+  gamma_permutation[9][16] = 5;
+  gamma_permutation[9][17] = 4;
+  gamma_permutation[9][18] = 7;
+  gamma_permutation[9][19] = 6;
+  gamma_permutation[9][20] = 9;
+  gamma_permutation[9][21] = 8;
+  gamma_permutation[9][22] = 11;
+  gamma_permutation[9][23] = 10;
+  gamma_permutation[10][0] = 7;
+  gamma_permutation[10][1] = 6;
+  gamma_permutation[10][2] = 9;
+  gamma_permutation[10][3] = 8;
+  gamma_permutation[10][4] = 11;
+  gamma_permutation[10][5] = 10;
+  gamma_permutation[10][6] = 1;
+  gamma_permutation[10][7] = 0;
+  gamma_permutation[10][8] = 3;
+  gamma_permutation[10][9] = 2;
+  gamma_permutation[10][10] = 5;
+  gamma_permutation[10][11] = 4;
+  gamma_permutation[10][12] = 19;
+  gamma_permutation[10][13] = 18;
+  gamma_permutation[10][14] = 21;
+  gamma_permutation[10][15] = 20;
+  gamma_permutation[10][16] = 23;
+  gamma_permutation[10][17] = 22;
+  gamma_permutation[10][18] = 13;
+  gamma_permutation[10][19] = 12;
+  gamma_permutation[10][20] = 15;
+  gamma_permutation[10][21] = 14;
+  gamma_permutation[10][22] = 17;
+  gamma_permutation[10][23] = 16;
+  gamma_permutation[11][0] = 6;
+  gamma_permutation[11][1] = 7;
+  gamma_permutation[11][2] = 8;
+  gamma_permutation[11][3] = 9;
+  gamma_permutation[11][4] = 10;
+  gamma_permutation[11][5] = 11;
+  gamma_permutation[11][6] = 0;
+  gamma_permutation[11][7] = 1;
+  gamma_permutation[11][8] = 2;
+  gamma_permutation[11][9] = 3;
+  gamma_permutation[11][10] = 4;
+  gamma_permutation[11][11] = 5;
+  gamma_permutation[11][12] = 18;
+  gamma_permutation[11][13] = 19;
+  gamma_permutation[11][14] = 20;
+  gamma_permutation[11][15] = 21;
+  gamma_permutation[11][16] = 22;
+  gamma_permutation[11][17] = 23;
+  gamma_permutation[11][18] = 12;
+  gamma_permutation[11][19] = 13;
+  gamma_permutation[11][20] = 14;
+  gamma_permutation[11][21] = 15;
+  gamma_permutation[11][22] = 16;
+  gamma_permutation[11][23] = 17;
+  gamma_permutation[12][0] = 1;
+  gamma_permutation[12][1] = 0;
+  gamma_permutation[12][2] = 3;
+  gamma_permutation[12][3] = 2;
+  gamma_permutation[12][4] = 5;
+  gamma_permutation[12][5] = 4;
+  gamma_permutation[12][6] = 7;
+  gamma_permutation[12][7] = 6;
+  gamma_permutation[12][8] = 9;
+  gamma_permutation[12][9] = 8;
+  gamma_permutation[12][10] = 11;
+  gamma_permutation[12][11] = 10;
+  gamma_permutation[12][12] = 13;
+  gamma_permutation[12][13] = 12;
+  gamma_permutation[12][14] = 15;
+  gamma_permutation[12][15] = 14;
+  gamma_permutation[12][16] = 17;
+  gamma_permutation[12][17] = 16;
+  gamma_permutation[12][18] = 19;
+  gamma_permutation[12][19] = 18;
+  gamma_permutation[12][20] = 21;
+  gamma_permutation[12][21] = 20;
+  gamma_permutation[12][22] = 23;
+  gamma_permutation[12][23] = 22;
+  gamma_permutation[13][0] = 1;
+  gamma_permutation[13][1] = 0;
+  gamma_permutation[13][2] = 3;
+  gamma_permutation[13][3] = 2;
+  gamma_permutation[13][4] = 5;
+  gamma_permutation[13][5] = 4;
+  gamma_permutation[13][6] = 7;
+  gamma_permutation[13][7] = 6;
+  gamma_permutation[13][8] = 9;
+  gamma_permutation[13][9] = 8;
+  gamma_permutation[13][10] = 11;
+  gamma_permutation[13][11] = 10;
+  gamma_permutation[13][12] = 13;
+  gamma_permutation[13][13] = 12;
+  gamma_permutation[13][14] = 15;
+  gamma_permutation[13][15] = 14;
+  gamma_permutation[13][16] = 17;
+  gamma_permutation[13][17] = 16;
+  gamma_permutation[13][18] = 19;
+  gamma_permutation[13][19] = 18;
+  gamma_permutation[13][20] = 21;
+  gamma_permutation[13][21] = 20;
+  gamma_permutation[13][22] = 23;
+  gamma_permutation[13][23] = 22;
+  gamma_permutation[14][0] = 6;
+  gamma_permutation[14][1] = 7;
+  gamma_permutation[14][2] = 8;
+  gamma_permutation[14][3] = 9;
+  gamma_permutation[14][4] = 10;
+  gamma_permutation[14][5] = 11;
+  gamma_permutation[14][6] = 0;
+  gamma_permutation[14][7] = 1;
+  gamma_permutation[14][8] = 2;
+  gamma_permutation[14][9] = 3;
+  gamma_permutation[14][10] = 4;
+  gamma_permutation[14][11] = 5;
+  gamma_permutation[14][12] = 18;
+  gamma_permutation[14][13] = 19;
+  gamma_permutation[14][14] = 20;
+  gamma_permutation[14][15] = 21;
+  gamma_permutation[14][16] = 22;
+  gamma_permutation[14][17] = 23;
+  gamma_permutation[14][18] = 12;
+  gamma_permutation[14][19] = 13;
+  gamma_permutation[14][20] = 14;
+  gamma_permutation[14][21] = 15;
+  gamma_permutation[14][22] = 16;
+  gamma_permutation[14][23] = 17;
+  gamma_permutation[15][0] = 7;
+  gamma_permutation[15][1] = 6;
+  gamma_permutation[15][2] = 9;
+  gamma_permutation[15][3] = 8;
+  gamma_permutation[15][4] = 11;
+  gamma_permutation[15][5] = 10;
+  gamma_permutation[15][6] = 1;
+  gamma_permutation[15][7] = 0;
+  gamma_permutation[15][8] = 3;
+  gamma_permutation[15][9] = 2;
+  gamma_permutation[15][10] = 5;
+  gamma_permutation[15][11] = 4;
+  gamma_permutation[15][12] = 19;
+  gamma_permutation[15][13] = 18;
+  gamma_permutation[15][14] = 21;
+  gamma_permutation[15][15] = 20;
+  gamma_permutation[15][16] = 23;
+  gamma_permutation[15][17] = 22;
+  gamma_permutation[15][18] = 13;
+  gamma_permutation[15][19] = 12;
+  gamma_permutation[15][20] = 15;
+  gamma_permutation[15][21] = 14;
+  gamma_permutation[15][22] = 17;
+  gamma_permutation[15][23] = 16;
+
+
+  /* the gamma matrix sign */
+
+  gamma_sign[0][0] = -1;
+  gamma_sign[0][1] = -1;
+  gamma_sign[0][2] = -1;
+  gamma_sign[0][3] = -1;
+  gamma_sign[0][4] = -1;
+  gamma_sign[0][5] = -1;
+  gamma_sign[0][6] = -1;
+  gamma_sign[0][7] = -1;
+  gamma_sign[0][8] = -1;
+  gamma_sign[0][9] = -1;
+  gamma_sign[0][10] = -1;
+  gamma_sign[0][11] = -1;
+  gamma_sign[0][12] = -1;
+  gamma_sign[0][13] = -1;
+  gamma_sign[0][14] = -1;
+  gamma_sign[0][15] = -1;
+  gamma_sign[0][16] = -1;
+  gamma_sign[0][17] = -1;
+  gamma_sign[0][18] = -1;
+  gamma_sign[0][19] = -1;
+  gamma_sign[0][20] = -1;
+  gamma_sign[0][21] = -1;
+  gamma_sign[0][22] = -1;
+  gamma_sign[0][23] = -1;
+  gamma_sign[1][0] = +1;
+  gamma_sign[1][1] = -1;
+  gamma_sign[1][2] = +1;
+  gamma_sign[1][3] = -1;
+  gamma_sign[1][4] = +1;
+  gamma_sign[1][5] = -1;
+  gamma_sign[1][6] = +1;
+  gamma_sign[1][7] = -1;
+  gamma_sign[1][8] = +1;
+  gamma_sign[1][9] = -1;
+  gamma_sign[1][10] = +1;
+  gamma_sign[1][11] = -1;
+  gamma_sign[1][12] = -1;
+  gamma_sign[1][13] = +1;
+  gamma_sign[1][14] = -1;
+  gamma_sign[1][15] = +1;
+  gamma_sign[1][16] = -1;
+  gamma_sign[1][17] = +1;
+  gamma_sign[1][18] = -1;
+  gamma_sign[1][19] = +1;
+  gamma_sign[1][20] = -1;
+  gamma_sign[1][21] = +1;
+  gamma_sign[1][22] = -1;
+  gamma_sign[1][23] = +1;
+  gamma_sign[2][0] = -1;
+  gamma_sign[2][1] = -1;
+  gamma_sign[2][2] = -1;
+  gamma_sign[2][3] = -1;
+  gamma_sign[2][4] = -1;
+  gamma_sign[2][5] = -1;
+  gamma_sign[2][6] = +1;
+  gamma_sign[2][7] = +1;
+  gamma_sign[2][8] = +1;
+  gamma_sign[2][9] = +1;
+  gamma_sign[2][10] = +1;
+  gamma_sign[2][11] = +1;
+  gamma_sign[2][12] = +1;
+  gamma_sign[2][13] = +1;
+  gamma_sign[2][14] = +1;
+  gamma_sign[2][15] = +1;
+  gamma_sign[2][16] = +1;
+  gamma_sign[2][17] = +1;
+  gamma_sign[2][18] = -1;
+  gamma_sign[2][19] = -1;
+  gamma_sign[2][20] = -1;
+  gamma_sign[2][21] = -1;
+  gamma_sign[2][22] = -1;
+  gamma_sign[2][23] = -1;
+  gamma_sign[3][0] = +1;
+  gamma_sign[3][1] = -1;
+  gamma_sign[3][2] = +1;
+  gamma_sign[3][3] = -1;
+  gamma_sign[3][4] = +1;
+  gamma_sign[3][5] = -1;
+  gamma_sign[3][6] = -1;
+  gamma_sign[3][7] = +1;
+  gamma_sign[3][8] = -1;
+  gamma_sign[3][9] = +1;
+  gamma_sign[3][10] = -1;
+  gamma_sign[3][11] = +1;
+  gamma_sign[3][12] = -1;
+  gamma_sign[3][13] = +1;
+  gamma_sign[3][14] = -1;
+  gamma_sign[3][15] = +1;
+  gamma_sign[3][16] = -1;
+  gamma_sign[3][17] = +1;
+  gamma_sign[3][18] = +1;
+  gamma_sign[3][19] = -1;
+  gamma_sign[3][20] = +1;
+  gamma_sign[3][21] = -1;
+  gamma_sign[3][22] = +1;
+  gamma_sign[3][23] = -1;
+  gamma_sign[4][0] = +1;
+  gamma_sign[4][1] = +1;
+  gamma_sign[4][2] = +1;
+  gamma_sign[4][3] = +1;
+  gamma_sign[4][4] = +1;
+  gamma_sign[4][5] = +1;
+  gamma_sign[4][6] = +1;
+  gamma_sign[4][7] = +1;
+  gamma_sign[4][8] = +1;
+  gamma_sign[4][9] = +1;
+  gamma_sign[4][10] = +1;
+  gamma_sign[4][11] = +1;
+  gamma_sign[4][12] = +1;
+  gamma_sign[4][13] = +1;
+  gamma_sign[4][14] = +1;
+  gamma_sign[4][15] = +1;
+  gamma_sign[4][16] = +1;
+  gamma_sign[4][17] = +1;
+  gamma_sign[4][18] = +1;
+  gamma_sign[4][19] = +1;
+  gamma_sign[4][20] = +1;
+  gamma_sign[4][21] = +1;
+  gamma_sign[4][22] = +1;
+  gamma_sign[4][23] = +1;
+  gamma_sign[5][0] = +1;
+  gamma_sign[5][1] = +1;
+  gamma_sign[5][2] = +1;
+  gamma_sign[5][3] = +1;
+  gamma_sign[5][4] = +1;
+  gamma_sign[5][5] = +1;
+  gamma_sign[5][6] = +1;
+  gamma_sign[5][7] = +1;
+  gamma_sign[5][8] = +1;
+  gamma_sign[5][9] = +1;
+  gamma_sign[5][10] = +1;
+  gamma_sign[5][11] = +1;
+  gamma_sign[5][12] = -1;
+  gamma_sign[5][13] = -1;
+  gamma_sign[5][14] = -1;
+  gamma_sign[5][15] = -1;
+  gamma_sign[5][16] = -1;
+  gamma_sign[5][17] = -1;
+  gamma_sign[5][18] = -1;
+  gamma_sign[5][19] = -1;
+  gamma_sign[5][20] = -1;
+  gamma_sign[5][21] = -1;
+  gamma_sign[5][22] = -1;
+  gamma_sign[5][23] = -1;
+  gamma_sign[6][0] = +1;
+  gamma_sign[6][1] = +1;
+  gamma_sign[6][2] = +1;
+  gamma_sign[6][3] = +1;
+  gamma_sign[6][4] = +1;
+  gamma_sign[6][5] = +1;
+  gamma_sign[6][6] = +1;
+  gamma_sign[6][7] = +1;
+  gamma_sign[6][8] = +1;
+  gamma_sign[6][9] = +1;
+  gamma_sign[6][10] = +1;
+  gamma_sign[6][11] = +1;
+  gamma_sign[6][12] = -1;
+  gamma_sign[6][13] = -1;
+  gamma_sign[6][14] = -1;
+  gamma_sign[6][15] = -1;
+  gamma_sign[6][16] = -1;
+  gamma_sign[6][17] = -1;
+  gamma_sign[6][18] = -1;
+  gamma_sign[6][19] = -1;
+  gamma_sign[6][20] = -1;
+  gamma_sign[6][21] = -1;
+  gamma_sign[6][22] = -1;
+  gamma_sign[6][23] = -1;
+  gamma_sign[7][0] = -1;
+  gamma_sign[7][1] = +1;
+  gamma_sign[7][2] = -1;
+  gamma_sign[7][3] = +1;
+  gamma_sign[7][4] = -1;
+  gamma_sign[7][5] = +1;
+  gamma_sign[7][6] = -1;
+  gamma_sign[7][7] = +1;
+  gamma_sign[7][8] = -1;
+  gamma_sign[7][9] = +1;
+  gamma_sign[7][10] = -1;
+  gamma_sign[7][11] = +1;
+  gamma_sign[7][12] = -1;
+  gamma_sign[7][13] = +1;
+  gamma_sign[7][14] = -1;
+  gamma_sign[7][15] = +1;
+  gamma_sign[7][16] = -1;
+  gamma_sign[7][17] = +1;
+  gamma_sign[7][18] = -1;
+  gamma_sign[7][19] = +1;
+  gamma_sign[7][20] = -1;
+  gamma_sign[7][21] = +1;
+  gamma_sign[7][22] = -1;
+  gamma_sign[7][23] = +1;
+  gamma_sign[8][0] = +1;
+  gamma_sign[8][1] = +1;
+  gamma_sign[8][2] = +1;
+  gamma_sign[8][3] = +1;
+  gamma_sign[8][4] = +1;
+  gamma_sign[8][5] = +1;
+  gamma_sign[8][6] = -1;
+  gamma_sign[8][7] = -1;
+  gamma_sign[8][8] = -1;
+  gamma_sign[8][9] = -1;
+  gamma_sign[8][10] = -1;
+  gamma_sign[8][11] = -1;
+  gamma_sign[8][12] = +1;
+  gamma_sign[8][13] = +1;
+  gamma_sign[8][14] = +1;
+  gamma_sign[8][15] = +1;
+  gamma_sign[8][16] = +1;
+  gamma_sign[8][17] = +1;
+  gamma_sign[8][18] = -1;
+  gamma_sign[8][19] = -1;
+  gamma_sign[8][20] = -1;
+  gamma_sign[8][21] = -1;
+  gamma_sign[8][22] = -1;
+  gamma_sign[8][23] = -1;
+  gamma_sign[9][0] = -1;
+  gamma_sign[9][1] = +1;
+  gamma_sign[9][2] = -1;
+  gamma_sign[9][3] = +1;
+  gamma_sign[9][4] = -1;
+  gamma_sign[9][5] = +1;
+  gamma_sign[9][6] = +1;
+  gamma_sign[9][7] = -1;
+  gamma_sign[9][8] = +1;
+  gamma_sign[9][9] = -1;
+  gamma_sign[9][10] = +1;
+  gamma_sign[9][11] = -1;
+  gamma_sign[9][12] = -1;
+  gamma_sign[9][13] = +1;
+  gamma_sign[9][14] = -1;
+  gamma_sign[9][15] = +1;
+  gamma_sign[9][16] = -1;
+  gamma_sign[9][17] = +1;
+  gamma_sign[9][18] = +1;
+  gamma_sign[9][19] = -1;
+  gamma_sign[9][20] = +1;
+  gamma_sign[9][21] = -1;
+  gamma_sign[9][22] = +1;
+  gamma_sign[9][23] = -1;
+  gamma_sign[10][0] = +1;
+  gamma_sign[10][1] = -1;
+  gamma_sign[10][2] = +1;
+  gamma_sign[10][3] = -1;
+  gamma_sign[10][4] = +1;
+  gamma_sign[10][5] = -1;
+  gamma_sign[10][6] = +1;
+  gamma_sign[10][7] = -1;
+  gamma_sign[10][8] = +1;
+  gamma_sign[10][9] = -1;
+  gamma_sign[10][10] = +1;
+  gamma_sign[10][11] = -1;
+  gamma_sign[10][12] = -1;
+  gamma_sign[10][13] = +1;
+  gamma_sign[10][14] = -1;
+  gamma_sign[10][15] = +1;
+  gamma_sign[10][16] = -1;
+  gamma_sign[10][17] = +1;
+  gamma_sign[10][18] = -1;
+  gamma_sign[10][19] = +1;
+  gamma_sign[10][20] = -1;
+  gamma_sign[10][21] = +1;
+  gamma_sign[10][22] = -1;
+  gamma_sign[10][23] = +1;
+  gamma_sign[11][0] = -1;
+  gamma_sign[11][1] = -1;
+  gamma_sign[11][2] = -1;
+  gamma_sign[11][3] = -1;
+  gamma_sign[11][4] = -1;
+  gamma_sign[11][5] = -1;
+  gamma_sign[11][6] = +1;
+  gamma_sign[11][7] = +1;
+  gamma_sign[11][8] = +1;
+  gamma_sign[11][9] = +1;
+  gamma_sign[11][10] = +1;
+  gamma_sign[11][11] = +1;
+  gamma_sign[11][12] = +1;
+  gamma_sign[11][13] = +1;
+  gamma_sign[11][14] = +1;
+  gamma_sign[11][15] = +1;
+  gamma_sign[11][16] = +1;
+  gamma_sign[11][17] = +1;
+  gamma_sign[11][18] = -1;
+  gamma_sign[11][19] = -1;
+  gamma_sign[11][20] = -1;
+  gamma_sign[11][21] = -1;
+  gamma_sign[11][22] = -1;
+  gamma_sign[11][23] = -1;
+  gamma_sign[12][0] = +1;
+  gamma_sign[12][1] = -1;
+  gamma_sign[12][2] = +1;
+  gamma_sign[12][3] = -1;
+  gamma_sign[12][4] = +1;
+  gamma_sign[12][5] = -1;
+  gamma_sign[12][6] = -1;
+  gamma_sign[12][7] = +1;
+  gamma_sign[12][8] = -1;
+  gamma_sign[12][9] = +1;
+  gamma_sign[12][10] = -1;
+  gamma_sign[12][11] = +1;
+  gamma_sign[12][12] = -1;
+  gamma_sign[12][13] = +1;
+  gamma_sign[12][14] = -1;
+  gamma_sign[12][15] = +1;
+  gamma_sign[12][16] = -1;
+  gamma_sign[12][17] = +1;
+  gamma_sign[12][18] = +1;
+  gamma_sign[12][19] = -1;
+  gamma_sign[12][20] = +1;
+  gamma_sign[12][21] = -1;
+  gamma_sign[12][22] = +1;
+  gamma_sign[12][23] = -1;
+  gamma_sign[13][0] = -1;
+  gamma_sign[13][1] = +1;
+  gamma_sign[13][2] = -1;
+  gamma_sign[13][3] = +1;
+  gamma_sign[13][4] = -1;
+  gamma_sign[13][5] = +1;
+  gamma_sign[13][6] = +1;
+  gamma_sign[13][7] = -1;
+  gamma_sign[13][8] = +1;
+  gamma_sign[13][9] = -1;
+  gamma_sign[13][10] = +1;
+  gamma_sign[13][11] = -1;
+  gamma_sign[13][12] = -1;
+  gamma_sign[13][13] = +1;
+  gamma_sign[13][14] = -1;
+  gamma_sign[13][15] = +1;
+  gamma_sign[13][16] = -1;
+  gamma_sign[13][17] = +1;
+  gamma_sign[13][18] = +1;
+  gamma_sign[13][19] = -1;
+  gamma_sign[13][20] = +1;
+  gamma_sign[13][21] = -1;
+  gamma_sign[13][22] = +1;
+  gamma_sign[13][23] = -1;
+  gamma_sign[14][0] = -1;
+  gamma_sign[14][1] = -1;
+  gamma_sign[14][2] = -1;
+  gamma_sign[14][3] = -1;
+  gamma_sign[14][4] = -1;
+  gamma_sign[14][5] = -1;
+  gamma_sign[14][6] = +1;
+  gamma_sign[14][7] = +1;
+  gamma_sign[14][8] = +1;
+  gamma_sign[14][9] = +1;
+  gamma_sign[14][10] = +1;
+  gamma_sign[14][11] = +1;
+  gamma_sign[14][12] = -1;
+  gamma_sign[14][13] = -1;
+  gamma_sign[14][14] = -1;
+  gamma_sign[14][15] = -1;
+  gamma_sign[14][16] = -1;
+  gamma_sign[14][17] = -1;
+  gamma_sign[14][18] = +1;
+  gamma_sign[14][19] = +1;
+  gamma_sign[14][20] = +1;
+  gamma_sign[14][21] = +1;
+  gamma_sign[14][22] = +1;
+  gamma_sign[14][23] = +1;
+  gamma_sign[15][0] = -1;
+  gamma_sign[15][1] = +1;
+  gamma_sign[15][2] = -1;
+  gamma_sign[15][3] = +1;
+  gamma_sign[15][4] = -1;
+  gamma_sign[15][5] = +1;
+  gamma_sign[15][6] = -1;
+  gamma_sign[15][7] = +1;
+  gamma_sign[15][8] = -1;
+  gamma_sign[15][9] = +1;
+  gamma_sign[15][10] = -1;
+  gamma_sign[15][11] = +1;
+  gamma_sign[15][12] = -1;
+  gamma_sign[15][13] = +1;
+  gamma_sign[15][14] = -1;
+  gamma_sign[15][15] = +1;
+  gamma_sign[15][16] = -1;
+  gamma_sign[15][17] = +1;
+  gamma_sign[15][18] = -1;
+  gamma_sign[15][19] = +1;
+  gamma_sign[15][20] = -1;
+  gamma_sign[15][21] = +1;
+  gamma_sign[15][22] = -1;
+  gamma_sign[15][23] = +1;
+}
+
+namespace cvc {
+
+/*
+ ********************
+
+ The gamma matrices.
+
+ Standard choice (as in gwc):
+
+ gamma_0:
+
+ |  0  0 -1  0 |
+ |  0  0  0 -1 |
+ | -1  0  0  0 |
+ |  0 -1  0  0 |
+
+ gamma_1:
+
+ |  0  0  0 -i |
+ |  0  0 -i  0 |
+ |  0 +i  0  0 |
+ | +i  0  0  0 |
+
+ gamma_2:
+
+ |  0  0  0 -1 |
+ |  0  0 +1  0 |
+ |  0 +1  0  0 |
+ | -1  0  0  0 |
+
+ gamma_3:
+
+ |  0  0 -i  0 |
+ |  0  0  0 +i |
+ | +i  0  0  0 |
+ |  0 -i  0  0 |
+
+ Permutation of the eight elements of a spinor (re0, im0, re1, im1, ...).
+*/
+
+/********************/
+
+/* A = 0. */
+
+#define _cm_eq_zero(A) {\
+  (A)[ 0] = 0.0; \
+  (A)[ 1] = 0.0; \
+  (A)[ 2] = 0.0; \
+  (A)[ 3] = 0.0; \
+  (A)[ 4] = 0.0; \
+  (A)[ 5] = 0.0; \
+  (A)[ 6] = 0.0; \
+  (A)[ 7] = 0.0; \
+  (A)[ 8] = 0.0; \
+  (A)[ 9] = 0.0; \
+  (A)[10] = 0.0; \
+  (A)[11] = 0.0; \
+  (A)[12] = 0.0; \
+  (A)[13] = 0.0; \
+  (A)[14] = 0.0; \
+  (A)[15] = 0.0; \
+  (A)[16] = 0.0; \
+  (A)[17] = 0.0;}
+
+/********************/
+
+/* A = 1. */
+
+#define _cm_eq_id(A) {\
+  memset((A), 0, 18*sizeof(double));\
+  (A)[ 0] = 1.0; \
+  (A)[ 8] = 1.0; \
+  (A)[16] = 1.0; \
+/*
+  (A)[ 0] = 1.0; \
+  (A)[ 1] = 0.0; \
+  (A)[ 2] = 0.0; \
+  (A)[ 3] = 0.0; \
+  (A)[ 4] = 0.0; \
+  (A)[ 5] = 0.0; \
+  (A)[ 6] = 0.0; \
+  (A)[ 7] = 0.0; \
+  (A)[ 8] = 1.0; \
+  (A)[ 9] = 0.0; \
+  (A)[10] = 0.0; \
+  (A)[11] = 0.0; \
+  (A)[12] = 0.0; \
+  (A)[13] = 0.0; \
+  (A)[14] = 0.0; \
+  (A)[15] = 0.0; \
+  (A)[16] = 1.0; \
+  (A)[17] = 0.0;
+*/ \
+}
+
+/********************/
+
+/* A = ID * r */
+#define _cm_eq_id_ti_re(A,r) {\
+  memset((A), 0, 18*sizeof(double));\
+  (A)[ 0] = (r); \
+  (A)[ 8] = (r); \
+  (A)[16] = (r);}
+
+/* A = ID * I * r */
+
+#define _cm_eq_id_ti_im(A,r) {\
+  memset((A), 0, 18*sizeof(double));\
+  (A)[ 1] = (r); \
+  (A)[ 9] = (r); \
+  (A)[17] = (r);}
+
+/* A = ID * c */
+#define _cm_eq_id_ti_co(A,c) {\
+  memset((A), 0, 18*sizeof(double));\
+  (A)[ 0] = (c).re; \
+  (A)[ 1] = (c).im; \
+  (A)[ 8] = (c).re; \
+  (A)[ 9] = (c).im; \
+  (A)[16] = (c).re; \
+  (A)[17] = (c).im;}
+
+/********************/
+
+/* A = B. */
+
+#define _cm_eq_cm(A,B) {\
+  (A)[ 0] = (B)[ 0];\
+  (A)[ 1] = (B)[ 1];\
+  (A)[ 2] = (B)[ 2];\
+  (A)[ 3] = (B)[ 3];\
+  (A)[ 4] = (B)[ 4];\
+  (A)[ 5] = (B)[ 5];\
+  (A)[ 6] = (B)[ 6];\
+  (A)[ 7] = (B)[ 7];\
+  (A)[ 8] = (B)[ 8];\
+  (A)[ 9] = (B)[ 9];\
+  (A)[10] = (B)[10];\
+  (A)[11] = (B)[11];\
+  (A)[12] = (B)[12];\
+  (A)[13] = (B)[13];\
+  (A)[14] = (B)[14];\
+  (A)[15] = (B)[15];\
+  (A)[16] = (B)[16];\
+  (A)[17] = (B)[17];}
+
+/********************/
+
+/* A = A + B. */
+
+#define _cm_pl_eq_cm(A,B) {\
+  (A)[ 0] += (B)[ 0];\
+  (A)[ 1] += (B)[ 1];\
+  (A)[ 2] += (B)[ 2];\
+  (A)[ 3] += (B)[ 3];\
+  (A)[ 4] += (B)[ 4];\
+  (A)[ 5] += (B)[ 5];\
+  (A)[ 6] += (B)[ 6];\
+  (A)[ 7] += (B)[ 7];\
+  (A)[ 8] += (B)[ 8];\
+  (A)[ 9] += (B)[ 9];\
+  (A)[10] += (B)[10];\
+  (A)[11] += (B)[11];\
+  (A)[12] += (B)[12];\
+  (A)[13] += (B)[13];\
+  (A)[14] += (B)[14];\
+  (A)[15] += (B)[15];\
+  (A)[16] += (B)[16];\
+  (A)[17] += (B)[17];}
+
+/********************/
+
+/* C = A + B. */
+
+#define _cm_eq_cm_pl_cm(C,A,B) {\
+  (C)[ 0] = (A)[ 0] + (B)[ 0];\
+  (C)[ 1] = (A)[ 1] + (B)[ 1];\
+  (C)[ 2] = (A)[ 2] + (B)[ 2];\
+  (C)[ 3] = (A)[ 3] + (B)[ 3];\
+  (C)[ 4] = (A)[ 4] + (B)[ 4];\
+  (C)[ 5] = (A)[ 5] + (B)[ 5];\
+  (C)[ 6] = (A)[ 6] + (B)[ 6];\
+  (C)[ 7] = (A)[ 7] + (B)[ 7];\
+  (C)[ 8] = (A)[ 8] + (B)[ 8];\
+  (C)[ 9] = (A)[ 9] + (B)[ 9];\
+  (C)[10] = (A)[10] + (B)[10];\
+  (C)[11] = (A)[11] + (B)[11];\
+  (C)[12] = (A)[12] + (B)[12];\
+  (C)[13] = (A)[13] + (B)[13];\
+  (C)[14] = (A)[14] + (B)[14];\
+  (C)[15] = (A)[15] + (B)[15];\
+  (C)[16] = (A)[16] + (B)[16];\
+  (C)[17] = (A)[17] + (B)[17];}
+
+/********************/
+
+/* C = A - B. */
+
+#define _cm_eq_cm_mi_cm(C,A,B) {\
+  (C)[ 0] = (A)[ 0] - (B)[ 0];\
+  (C)[ 1] = (A)[ 1] - (B)[ 1];\
+  (C)[ 2] = (A)[ 2] - (B)[ 2];\
+  (C)[ 3] = (A)[ 3] - (B)[ 3];\
+  (C)[ 4] = (A)[ 4] - (B)[ 4];\
+  (C)[ 5] = (A)[ 5] - (B)[ 5];\
+  (C)[ 6] = (A)[ 6] - (B)[ 6];\
+  (C)[ 7] = (A)[ 7] - (B)[ 7];\
+  (C)[ 8] = (A)[ 8] - (B)[ 8];\
+  (C)[ 9] = (A)[ 9] - (B)[ 9];\
+  (C)[10] = (A)[10] - (B)[10];\
+  (C)[11] = (A)[11] - (B)[11];\
+  (C)[12] = (A)[12] - (B)[12];\
+  (C)[13] = (A)[13] - (B)[13];\
+  (C)[14] = (A)[14] - (B)[14];\
+  (C)[15] = (A)[15] - (B)[15];\
+  (C)[16] = (A)[16] - (B)[16];\
+  (C)[17] = (A)[17] - (B)[17];}
+
+/*********************/
+
+/* A = A - B. */
+
+#define _cm_mi_eq_cm(A,B) {\
+  (A)[ 0] -= (B)[ 0];\
+  (A)[ 1] -= (B)[ 1];\
+  (A)[ 2] -= (B)[ 2];\
+  (A)[ 3] -= (B)[ 3];\
+  (A)[ 4] -= (B)[ 4];\
+  (A)[ 5] -= (B)[ 5];\
+  (A)[ 6] -= (B)[ 6];\
+  (A)[ 7] -= (B)[ 7];\
+  (A)[ 8] -= (B)[ 8];\
+  (A)[ 9] -= (B)[ 9];\
+  (A)[10] -= (B)[10];\
+  (A)[11] -= (B)[11];\
+  (A)[12] -= (B)[12];\
+  (A)[13] -= (B)[13];\
+  (A)[14] -= (B)[14];\
+  (A)[15] -= (B)[15];\
+  (A)[16] -= (B)[16];\
+  (A)[17] -= (B)[17];}
+
+/*********************/
+
+/* A = B^\dagger. */
+
+#define _cm_eq_cm_dag(A,B) {\
+  (A)[ 0] =  (B)[ 0];\
+  (A)[ 1] = -(B)[ 1];\
+  (A)[ 2] =  (B)[ 6];\
+  (A)[ 3] = -(B)[ 7];\
+  (A)[ 4] =  (B)[12];\
+  (A)[ 5] = -(B)[13];\
+  (A)[ 6] =  (B)[ 2];\
+  (A)[ 7] = -(B)[ 3];\
+  (A)[ 8] =  (B)[ 8];\
+  (A)[ 9] = -(B)[ 9];\
+  (A)[10] =  (B)[14];\
+  (A)[11] = -(B)[15];\
+  (A)[12] =  (B)[ 4];\
+  (A)[13] = -(B)[ 5];\
+  (A)[14] =  (B)[10];\
+  (A)[15] = -(B)[11];\
+  (A)[16] =  (B)[16];\
+  (A)[17] = -(B)[17];}
+
+/********************/
+
+/* c = det(A). */
+
+#define _co_eq_det_cm(c,A) {\
+  (c)->re = \
+    ((A)[ 0]*(A)[ 8]*(A)[16] - (A)[ 0]*(A)[ 9]*(A)[17] - (A)[ 1]*(A)[ 8]*(A)[17] - (A)[ 1]*(A)[ 9]*(A)[16]) +\
+    ((A)[ 2]*(A)[10]*(A)[12] - (A)[ 2]*(A)[11]*(A)[13] - (A)[ 3]*(A)[10]*(A)[13] - (A)[ 3]*(A)[11]*(A)[12]) +\
+    ((A)[ 4]*(A)[ 6]*(A)[14] - (A)[ 4]*(A)[ 7]*(A)[15] - (A)[ 5]*(A)[ 6]*(A)[15] - (A)[ 5]*(A)[ 7]*(A)[14]) -\
+    ((A)[12]*(A)[ 8]*(A)[ 4] - (A)[12]*(A)[ 9]*(A)[ 5] - (A)[13]*(A)[ 8]*(A)[ 5] - (A)[13]*(A)[ 9]*(A)[ 4]) -\
+    ((A)[14]*(A)[10]*(A)[ 0] - (A)[14]*(A)[11]*(A)[ 1] - (A)[15]*(A)[10]*(A)[ 1] - (A)[15]*(A)[11]*(A)[ 0]) -\
+    ((A)[16]*(A)[ 6]*(A)[ 2] - (A)[16]*(A)[ 7]*(A)[ 3] - (A)[17]*(A)[ 6]*(A)[ 3] - (A)[17]*(A)[ 7]*(A)[ 2]);\
+  (c)->im =\
+    ((A)[ 1]*(A)[ 8]*(A)[16] + (A)[ 0]*(A)[ 9]*(A)[16] + (A)[ 0]*(A)[ 8]*(A)[17] - (A)[ 1]*(A)[ 9]*(A)[17]) +\
+    ((A)[ 3]*(A)[10]*(A)[12] + (A)[ 2]*(A)[11]*(A)[12] + (A)[ 2]*(A)[10]*(A)[13] - (A)[ 3]*(A)[11]*(A)[13]) +\
+    ((A)[ 5]*(A)[ 6]*(A)[14] + (A)[ 4]*(A)[ 7]*(A)[14] + (A)[ 4]*(A)[ 6]*(A)[15] - (A)[ 5]*(A)[ 7]*(A)[15]) -\
+    ((A)[13]*(A)[ 8]*(A)[ 4] + (A)[12]*(A)[ 9]*(A)[ 4] + (A)[12]*(A)[ 8]*(A)[ 5] - (A)[13]*(A)[ 9]*(A)[ 5]) -\
+    ((A)[15]*(A)[10]*(A)[ 0] + (A)[14]*(A)[11]*(A)[ 0] + (A)[14]*(A)[10]*(A)[ 1] - (A)[15]*(A)[11]*(A)[ 1]) -\
+    ((A)[17]*(A)[ 6]*(A)[ 2] + (A)[16]*(A)[ 7]*(A)[ 2] + (A)[16]*(A)[ 6]*(A)[ 3] - (A)[17]*(A)[ 7]*(A)[ 3]);}
+
+/********************/
+
+/* c = tr(A). */
+
+#define _co_eq_tr_cm(c,A) {\
+  (c)->re = (A)[ 0] + (A)[ 8] + (A)[16];\
+  (c)->im = (A)[ 1] + (A)[ 9] + (A)[17];}
+
+/********************/
+
+/* r += Re( tr(A) ) */
+
+#define _re_pl_eq_tr_cm(r,A) { *r += (A)[ 0] + (A)[ 8] + (A)[16]; }
+
+/********************/
+
+/* Prints A. */
+
+/* #define _cm_fprintf(A,file) {\
+  fprintf(file, "u[1,] <- c(%+16.7e %+16.7ei,   %+16.7e %+16.7ei,   %+16.7e %+16.7ei)\n", \
+	  (A)[ 0], (A)[ 1], (A)[ 2], (A)[ 3], (A)[ 4], (A)[ 5]);\
+  fprintf(file, "u[2,] <- c(%+16.7e %+16.7ei,   %+16.7e %+16.7ei,   %+16.7e %+16.7ei)\n",\
+	  (A)[ 6], (A)[ 7], (A)[ 8], (A)[ 9], (A)[10], (A)[11]);\
+  fprintf(file, "u[3,] <- c(%+16.7e %+16.7ei,   %+16.7e %+16.7ei,   %+16.7e %+16.7ei)\n\n",\
+	  (A)[12], (A)[13], (A)[14], (A)[15], (A)[16], (A)[17]);} */
+
+#define _cm_fprintf(A,_name,file) {\
+  fprintf(file, "%s[1,] <- c(%+25.16e %+25.16ei,   %+25.16e %+25.16ei,   %+25.16e %+25.16ei)\n", \
+	  (_name), (A)[ 0], (A)[ 1], (A)[ 2], (A)[ 3], (A)[ 4], (A)[ 5]);\
+  fprintf(file, "%s[2,] <- c(%+25.16e %+25.16ei,   %+25.16e %+25.16ei,   %+25.16e %+25.16ei)\n",\
+	  (_name), (A)[ 6], (A)[ 7], (A)[ 8], (A)[ 9], (A)[10], (A)[11]);\
+  fprintf(file, "%s[3,] <- c(%+25.16e %+25.16ei,   %+25.16e %+25.16ei,   %+25.16e %+25.16ei)\n\n",\
+	  (_name), (A)[12], (A)[13], (A)[14], (A)[15], (A)[16], (A)[17]);}
+
+/********************/
+
+/* A = B * d. */
+
+#define _cm_eq_cm_ti_re(A,B,d) {\
+  (A)[ 0] = (B)[ 0] * (d);\
+  (A)[ 1] = (B)[ 1] * (d);\
+  (A)[ 2] = (B)[ 2] * (d);\
+  (A)[ 3] = (B)[ 3] * (d);\
+  (A)[ 4] = (B)[ 4] * (d);\
+  (A)[ 5] = (B)[ 5] * (d);\
+  (A)[ 6] = (B)[ 6] * (d);\
+  (A)[ 7] = (B)[ 7] * (d);\
+  (A)[ 8] = (B)[ 8] * (d);\
+  (A)[ 9] = (B)[ 9] * (d);\
+  (A)[10] = (B)[10] * (d);\
+  (A)[11] = (B)[11] * (d);\
+  (A)[12] = (B)[12] * (d);\
+  (A)[13] = (B)[13] * (d);\
+  (A)[14] = (B)[14] * (d);\
+  (A)[15] = (B)[15] * (d);\
+  (A)[16] = (B)[16] * (d);\
+  (A)[17] = (B)[17] * (d);}
+
+/********************/
+
+/* A += B * d. */
+
+#define _cm_pl_eq_cm_ti_re(A,B,d) {\
+  (A)[ 0] += (B)[ 0] * (d);\
+  (A)[ 1] += (B)[ 1] * (d);\
+  (A)[ 2] += (B)[ 2] * (d);\
+  (A)[ 3] += (B)[ 3] * (d);\
+  (A)[ 4] += (B)[ 4] * (d);\
+  (A)[ 5] += (B)[ 5] * (d);\
+  (A)[ 6] += (B)[ 6] * (d);\
+  (A)[ 7] += (B)[ 7] * (d);\
+  (A)[ 8] += (B)[ 8] * (d);\
+  (A)[ 9] += (B)[ 9] * (d);\
+  (A)[10] += (B)[10] * (d);\
+  (A)[11] += (B)[11] * (d);\
+  (A)[12] += (B)[12] * (d);\
+  (A)[13] += (B)[13] * (d);\
+  (A)[14] += (B)[14] * (d);\
+  (A)[15] += (B)[15] * (d);\
+  (A)[16] += (B)[16] * (d);\
+  (A)[17] += (B)[17] * (d);}
+
+/********************/
+
+/* A = A * d. */
+
+#define _cm_ti_eq_re(A,d) {\
+  (A)[ 0] *= (d);\
+  (A)[ 1] *= (d);\
+  (A)[ 2] *= (d);\
+  (A)[ 3] *= (d);\
+  (A)[ 4] *= (d);\
+  (A)[ 5] *= (d);\
+  (A)[ 6] *= (d);\
+  (A)[ 7] *= (d);\
+  (A)[ 8] *= (d);\
+  (A)[ 9] *= (d);\
+  (A)[10] *= (d);\
+  (A)[11] *= (d);\
+  (A)[12] *= (d);\
+  (A)[13] *= (d);\
+  (A)[14] *= (d);\
+  (A)[15] *= (d);\
+  (A)[16] *= (d);\
+  (A)[17] *= (d);}
+
+/********************/
+
+/* A = B * I d. */
+
+#define _cm_eq_cm_ti_im(A,B,d) {\
+  (A)[ 0] = -(B)[ 1] * (d);\
+  (A)[ 1] =  (B)[ 0] * (d);\
+  (A)[ 2] = -(B)[ 3] * (d);\
+  (A)[ 3] =  (B)[ 2] * (d);\
+  (A)[ 4] = -(B)[ 5] * (d);\
+  (A)[ 5] =  (B)[ 4] * (d);\
+  (A)[ 6] = -(B)[ 7] * (d);\
+  (A)[ 7] =  (B)[ 6] * (d);\
+  (A)[ 8] = -(B)[ 9] * (d);\
+  (A)[ 9] =  (B)[ 8] * (d);\
+  (A)[10] = -(B)[11] * (d);\
+  (A)[11] =  (B)[10] * (d);\
+  (A)[12] = -(B)[13] * (d);\
+  (A)[13] =  (B)[12] * (d);\
+  (A)[14] = -(B)[15] * (d);\
+  (A)[15] =  (B)[14] * (d);\
+  (A)[16] = -(B)[17] * (d);\
+  (A)[17] =  (B)[16] * (d);}
+
+/********************/
+
+/* A += B * I d. */
+
+#define _cm_pl_eq_cm_ti_im(A,B,d) {\
+  (A)[ 0] += -(B)[ 1] * (d);\
+  (A)[ 1] +=  (B)[ 0] * (d);\
+  (A)[ 2] += -(B)[ 3] * (d);\
+  (A)[ 3] +=  (B)[ 2] * (d);\
+  (A)[ 4] += -(B)[ 5] * (d);\
+  (A)[ 5] +=  (B)[ 4] * (d);\
+  (A)[ 6] += -(B)[ 7] * (d);\
+  (A)[ 7] +=  (B)[ 6] * (d);\
+  (A)[ 8] += -(B)[ 9] * (d);\
+  (A)[ 9] +=  (B)[ 8] * (d);\
+  (A)[10] += -(B)[11] * (d);\
+  (A)[11] +=  (B)[10] * (d);\
+  (A)[12] += -(B)[13] * (d);\
+  (A)[13] +=  (B)[12] * (d);\
+  (A)[14] += -(B)[15] * (d);\
+  (A)[15] +=  (B)[14] * (d);\
+  (A)[16] += -(B)[17] * (d);\
+  (A)[17] +=  (B)[16] * (d);}
+
+/********************/
+
+/* A = B * c. */
+
+#define _cm_eq_cm_ti_co(A,B,c) {\
+  (A)[ 0] = (B)[ 0] * (c)->re - (B)[ 1] * (c)->im;\
+  (A)[ 1] = (B)[ 1] * (c)->re + (B)[ 0] * (c)->im;\
+  (A)[ 2] = (B)[ 2] * (c)->re - (B)[ 3] * (c)->im;\
+  (A)[ 3] = (B)[ 3] * (c)->re + (B)[ 2] * (c)->im;\
+  (A)[ 4] = (B)[ 4] * (c)->re - (B)[ 5] * (c)->im;\
+  (A)[ 5] = (B)[ 5] * (c)->re + (B)[ 4] * (c)->im;\
+  (A)[ 6] = (B)[ 6] * (c)->re - (B)[ 7] * (c)->im;\
+  (A)[ 7] = (B)[ 7] * (c)->re + (B)[ 6] * (c)->im;\
+  (A)[ 8] = (B)[ 8] * (c)->re - (B)[ 9] * (c)->im;\
+  (A)[ 9] = (B)[ 9] * (c)->re + (B)[ 8] * (c)->im;\
+  (A)[10] = (B)[10] * (c)->re - (B)[11] * (c)->im;\
+  (A)[11] = (B)[11] * (c)->re + (B)[10] * (c)->im;\
+  (A)[12] = (B)[12] * (c)->re - (B)[13] * (c)->im;\
+  (A)[13] = (B)[13] * (c)->re + (B)[12] * (c)->im;\
+  (A)[14] = (B)[14] * (c)->re - (B)[15] * (c)->im;\
+  (A)[15] = (B)[15] * (c)->re + (B)[14] * (c)->im;\
+  (A)[16] = (B)[16] * (c)->re - (B)[17] * (c)->im;\
+  (A)[17] = (B)[17] * (c)->re + (B)[16] * (c)->im;}
+
+
+/********************/
+
+/* A = B * C^\dagger. */
+
+#define _cm_eq_cm_ti_cm_dag(A,B,C) {\
+  /* A00 = B00*C00 + B01*C10 + B02*C20 */ \
+  (A)[ 0] =\
+    (B)[ 0]*(C)[ 0] + (B)[ 1]*(C)[ 1] +\
+    (B)[ 2]*(C)[ 2] + (B)[ 3]*(C)[ 3] +\
+    (B)[ 4]*(C)[ 4] + (B)[ 5]*(C)[ 5];\
+  (A)[ 1] =\
+    -(B)[ 0]*(C)[ 1] + (B)[ 1]*(C)[ 0] +\
+    -(B)[ 2]*(C)[ 3] + (B)[ 3]*(C)[ 2] +\
+    -(B)[ 4]*(C)[ 5] + (B)[ 5]*(C)[ 4];\
+/* A01 = B00*C01 + B01*C11 + B02*C21 */\
+  (A)[ 2] =\
+    (B)[ 0]*(C)[ 6] + (B)[ 1]*(C)[ 7] +\
+    (B)[ 2]*(C)[ 8] + (B)[ 3]*(C)[ 9] +\
+    (B)[ 4]*(C)[10] + (B)[ 5]*(C)[11];\
+  (A)[ 3] =\
+    -(B)[ 0]*(C)[ 7] + (B)[ 1]*(C)[ 6] +\
+    -(B)[ 2]*(C)[ 9] + (B)[ 3]*(C)[ 8] +\
+    -(B)[ 4]*(C)[11] + (B)[ 5]*(C)[10];\
+/* A02 = B00*C02 + B01*C12 + B02*C22 */\
+  (A)[ 4] =\
+    (B)[ 0]*(C)[12] + (B)[ 1]*(C)[13] +\
+    (B)[ 2]*(C)[14] + (B)[ 3]*(C)[15] +\
+    (B)[ 4]*(C)[16] + (B)[ 5]*(C)[17];\
+  (A)[ 5] =\
+    -(B)[ 0]*(C)[13] + (B)[ 1]*(C)[12] +\
+    -(B)[ 2]*(C)[15] + (B)[ 3]*(C)[14] +\
+    -(B)[ 4]*(C)[17] + (B)[ 5]*(C)[16];\
+/* A10 = B10*C00 + B11*C10 + B12*C20 */\
+  (A)[ 6] =\
+    (B)[ 6]*(C)[ 0] + (B)[ 7]*(C)[ 1] +\
+    (B)[ 8]*(C)[ 2] + (B)[ 9]*(C)[ 3] +\
+    (B)[10]*(C)[ 4] + (B)[11]*(C)[ 5];\
+  (A)[ 7] =\
+    -(B)[ 6]*(C)[ 1] + (B)[ 7]*(C)[ 0] +\
+    -(B)[ 8]*(C)[ 3] + (B)[ 9]*(C)[ 2] +\
+    -(B)[10]*(C)[ 5] + (B)[11]*(C)[ 4];\
+/* A11 = B10*C01 + B11*C11 + B12*C21 */\
+  (A)[ 8] =\
+    (B)[ 6]*(C)[ 6] + (B)[ 7]*(C)[ 7] +\
+    (B)[ 8]*(C)[ 8] + (B)[ 9]*(C)[ 9] +\
+    (B)[10]*(C)[10] + (B)[11]*(C)[11];\
+  (A)[ 9] =\
+    -(B)[ 6]*(C)[ 7] + (B)[ 7]*(C)[ 6] +\
+    -(B)[ 8]*(C)[ 9] + (B)[ 9]*(C)[ 8] +\
+    -(B)[10]*(C)[11] + (B)[11]*(C)[10];\
+/* A12 = B10*C02 + B11*C12 + B12*C22 */\
+  (A)[10] =\
+    (B)[ 6]*(C)[12] + (B)[ 7]*(C)[13] +\
+    (B)[ 8]*(C)[14] + (B)[ 9]*(C)[15] +\
+    (B)[10]*(C)[16] + (B)[11]*(C)[17];\
+  (A)[11] =\
+    -(B)[ 6]*(C)[13] + (B)[ 7]*(C)[12] +\
+    -(B)[ 8]*(C)[15] + (B)[ 9]*(C)[14] +\
+    -(B)[10]*(C)[17] + (B)[11]*(C)[16];\
+/* A20 = B20*C00 + B21*C10 + B22*C20 */\
+  (A)[12] =\
+    (B)[12]*(C)[ 0] + (B)[13]*(C)[ 1] +\
+    (B)[14]*(C)[ 2] + (B)[15]*(C)[ 3] +\
+    (B)[16]*(C)[ 4] + (B)[17]*(C)[ 5];\
+  (A)[13] =\
+    -(B)[12]*(C)[ 1] + (B)[13]*(C)[ 0] +\
+    -(B)[14]*(C)[ 3] + (B)[15]*(C)[ 2] +\
+    -(B)[16]*(C)[ 5] + (B)[17]*(C)[ 4];\
+/* A21 = B20*C01 + B21*C11 + B22*C21 */\
+  (A)[14] =\
+    (B)[12]*(C)[ 6] + (B)[13]*(C)[ 7] +\
+    (B)[14]*(C)[ 8] + (B)[15]*(C)[ 9] +\
+    (B)[16]*(C)[10] + (B)[17]*(C)[11];\
+  (A)[15] =\
+    -(B)[12]*(C)[ 7] + (B)[13]*(C)[ 6] +\
+    -(B)[14]*(C)[ 9] + (B)[15]*(C)[ 8] +\
+    -(B)[16]*(C)[11] + (B)[17]*(C)[10];\
+/* A22 = B20*C02 + B21*C12 + B22*C22 */\
+  (A)[16] =\
+    (B)[12]*(C)[12] + (B)[13]*(C)[13] +\
+    (B)[14]*(C)[14] + (B)[15]*(C)[15] +\
+    (B)[16]*(C)[16] + (B)[17]*(C)[17];\
+  (A)[17] =\
+    -(B)[12]*(C)[13] + (B)[13]*(C)[12] +\
+    -(B)[14]*(C)[15] + (B)[15]*(C)[14] +\
+    -(B)[16]*(C)[17] + (B)[17]*(C)[16];}
+
+
+/********************/
+
+#define _cm_eq_cm_ti_cm(A,B,C) {\
+  /* A00 = B00*C00 + B01*C10 + B02*C20 */\
+  (A)[ 0] =\
+    (B)[ 0]*(C)[ 0] - (B)[ 1]*(C)[ 1] +\
+    (B)[ 2]*(C)[ 6] - (B)[ 3]*(C)[ 7] +\
+    (B)[ 4]*(C)[12] - (B)[ 5]*(C)[13];\
+  (A)[ 1] =\
+    (B)[ 0]*(C)[ 1] + (B)[ 1]*(C)[ 0] +\
+    (B)[ 2]*(C)[ 7] + (B)[ 3]*(C)[ 6] +\
+    (B)[ 4]*(C)[13] + (B)[ 5]*(C)[12];\
+  /* A01 = B00*C01 + B01*C11 + B02*C21 */\
+  (A)[ 2] =\
+    (B)[ 0]*(C)[ 2] - (B)[ 1]*(C)[ 3] +\
+    (B)[ 2]*(C)[ 8] - (B)[ 3]*(C)[ 9] +\
+    (B)[ 4]*(C)[14] - (B)[ 5]*(C)[15];\
+  (A)[ 3] =\
+    (B)[ 0]*(C)[ 3] + (B)[ 1]*(C)[ 2] +\
+    (B)[ 2]*(C)[ 9] + (B)[ 3]*(C)[ 8] +\
+    (B)[ 4]*(C)[15] + (B)[ 5]*(C)[14];\
+  /* A02 = B00*C02 + B01*C12 + B02*C22 */\
+  (A)[ 4] =\
+    (B)[ 0]*(C)[ 4] - (B)[ 1]*(C)[ 5] +\
+    (B)[ 2]*(C)[10] - (B)[ 3]*(C)[11] +\
+    (B)[ 4]*(C)[16] - (B)[ 5]*(C)[17];\
+  (A)[ 5] =\
+    (B)[ 0]*(C)[ 5] + (B)[ 1]*(C)[ 4] +\
+    (B)[ 2]*(C)[11] + (B)[ 3]*(C)[10] +\
+    (B)[ 4]*(C)[17] + (B)[ 5]*(C)[16];\
+  /* A10 = B10*C00 + B11*C10 + B12*C20 */\
+  (A)[ 6] =\
+    (B)[ 6]*(C)[ 0] - (B)[ 7]*(C)[ 1] +\
+    (B)[ 8]*(C)[ 6] - (B)[ 9]*(C)[ 7] +\
+    (B)[10]*(C)[12] - (B)[11]*(C)[13];\
+  (A)[ 7] =\
+    (B)[ 6]*(C)[ 1] + (B)[ 7]*(C)[ 0] +\
+    (B)[ 8]*(C)[ 7] + (B)[ 9]*(C)[ 6] +\
+    (B)[10]*(C)[13] + (B)[11]*(C)[12];\
+  /* A11 = B10*C01 + B11*C11 + B12*C21 */\
+  (A)[ 8] =\
+    (B)[ 6]*(C)[ 2] - (B)[ 7]*(C)[ 3] +\
+    (B)[ 8]*(C)[ 8] - (B)[ 9]*(C)[ 9] +\
+    (B)[10]*(C)[14] - (B)[11]*(C)[15];\
+  (A)[ 9] =\
+    (B)[ 6]*(C)[ 3] + (B)[ 7]*(C)[ 2] +\
+    (B)[ 8]*(C)[ 9] + (B)[ 9]*(C)[ 8] +\
+    (B)[10]*(C)[15] + (B)[11]*(C)[14];\
+  /* A12 = B10*C02 + B11*C12 + B12*C22 */\
+  (A)[10] =\
+    (B)[ 6]*(C)[ 4] - (B)[ 7]*(C)[ 5] +\
+    (B)[ 8]*(C)[10] - (B)[ 9]*(C)[11] +\
+    (B)[10]*(C)[16] - (B)[11]*(C)[17];\
+  (A)[11] =\
+    (B)[ 6]*(C)[ 5] + (B)[ 7]*(C)[ 4] +\
+    (B)[ 8]*(C)[11] + (B)[ 9]*(C)[10] +\
+    (B)[10]*(C)[17] + (B)[11]*(C)[16];\
+  /* A20 = B20*C00 + B21*C10 + B22*C20 */\
+  (A)[12] =\
+    (B)[12]*(C)[ 0] - (B)[13]*(C)[ 1] +\
+    (B)[14]*(C)[ 6] - (B)[15]*(C)[ 7] +\
+    (B)[16]*(C)[12] - (B)[17]*(C)[13];\
+  (A)[13] =\
+    (B)[12]*(C)[ 1] + (B)[13]*(C)[ 0] +\
+    (B)[14]*(C)[ 7] + (B)[15]*(C)[ 6] +\
+    (B)[16]*(C)[13] + (B)[17]*(C)[12];\
+  /* A21 = B20*C01 + B21*C11 + B22*C21 */\
+  (A)[14] =\
+    (B)[12]*(C)[ 2] - (B)[13]*(C)[ 3] +\
+    (B)[14]*(C)[ 8] - (B)[15]*(C)[ 9] +\
+    (B)[16]*(C)[14] - (B)[17]*(C)[15];\
+  (A)[15] =\
+    (B)[12]*(C)[ 3] + (B)[13]*(C)[ 2] +\
+    (B)[14]*(C)[ 9] + (B)[15]*(C)[ 8] +\
+    (B)[16]*(C)[15] + (B)[17]*(C)[14];\
+  /* A22 = B20*C02 + B21*C12 + B22*C22 */\
+  (A)[16] =\
+    (B)[12]*(C)[ 4] - (B)[13]*(C)[ 5] +\
+    (B)[14]*(C)[10] - (B)[15]*(C)[11] +\
+    (B)[16]*(C)[16] - (B)[17]*(C)[17];\
+  (A)[17] =\
+    (B)[12]*(C)[ 5] + (B)[13]*(C)[ 4] +\
+    (B)[14]*(C)[11] + (B)[15]*(C)[10] +\
+    (B)[16]*(C)[17] + (B)[17]*(C)[16];}
+
+
+/********************/
+
+/* A = B^\dagger * C. */
+
+#define _cm_eq_cm_dag_ti_cm(A,B,C) {\
+  /* A00 = B00*C00 + B01*C10 + B02*C20 */ \
+  (A)[ 0] =\
+    (B)[ 0]*(C)[ 0] + (B)[ 1]*(C)[ 1] +\
+    (B)[ 6]*(C)[ 6] + (B)[ 7]*(C)[ 7] +\
+    (B)[12]*(C)[12] + (B)[13]*(C)[13];\
+  (A)[ 1] =\
+    -(B)[ 1]*(C)[ 0] + (B)[ 0]*(C)[ 1] +\
+    -(B)[ 7]*(C)[ 6] + (B)[ 6]*(C)[ 7] +\
+    -(B)[13]*(C)[12] + (B)[12]*(C)[13];\
+/* A01 = B00*C01 + B01*C11 + B02*C21 */\
+  (A)[ 2] =\
+    (B)[ 0]*(C)[ 2] + (B)[ 1]*(C)[ 3] +\
+    (B)[ 6]*(C)[ 8] + (B)[ 7]*(C)[ 9] +\
+    (B)[12]*(C)[14] + (B)[13]*(C)[15];\
+  (A)[ 3] =\
+    -(B)[ 1]*(C)[ 2] + (B)[ 0]*(C)[ 3] +\
+    -(B)[ 7]*(C)[ 8] + (B)[ 6]*(C)[ 9] +\
+    -(B)[13]*(C)[14] + (B)[12]*(C)[15];\
+/* A02 = B00*C02 + B01*C12 + B02*C22 */\
+  (A)[ 4] =\
+    (B)[ 0]*(C)[ 4] + (B)[ 1]*(C)[ 5] +\
+    (B)[ 6]*(C)[10] + (B)[ 7]*(C)[11] +\
+    (B)[12]*(C)[16] + (B)[13]*(C)[17];\
+  (A)[ 5] =\
+    -(B)[ 1]*(C)[ 4] + (B)[ 0]*(C)[ 5] +\
+    -(B)[ 7]*(C)[10] + (B)[ 6]*(C)[11] +\
+    -(B)[13]*(C)[16] + (B)[12]*(C)[17];\
+/* A10 = B10*C00 + B11*C10 + B12*C20 */\
+  (A)[ 6] =\
+    (B)[ 2]*(C)[ 0] + (B)[ 3]*(C)[ 1] +\
+    (B)[ 8]*(C)[ 6] + (B)[ 9]*(C)[ 7] +\
+    (B)[14]*(C)[12] + (B)[15]*(C)[13];\
+  (A)[ 7] =\
+    -(B)[ 3]*(C)[ 0] + (B)[ 2]*(C)[ 1] +\
+    -(B)[ 9]*(C)[ 6] + (B)[ 8]*(C)[ 7] +\
+    -(B)[15]*(C)[12] + (B)[14]*(C)[13];\
+/* A11 = B10*C01 + B11*C11 + B12*C21 */\
+  (A)[ 8] =\
+    (B)[ 2]*(C)[ 2] + (B)[ 3]*(C)[ 3] +\
+    (B)[ 8]*(C)[ 8] + (B)[ 9]*(C)[ 9] +\
+    (B)[14]*(C)[14] + (B)[15]*(C)[15];\
+  (A)[ 9] =\
+    -(B)[ 3]*(C)[ 2] + (B)[ 2]*(C)[ 3] +\
+    -(B)[ 9]*(C)[ 8] + (B)[ 8]*(C)[ 9] +\
+    -(B)[15]*(C)[14] + (B)[14]*(C)[15];\
+/* A12 = B10*C02 + B11*C12 + B12*C22 */\
+  (A)[10] =\
+    (B)[ 2]*(C)[ 4] + (B)[ 3]*(C)[ 5] +\
+    (B)[ 8]*(C)[10] + (B)[ 9]*(C)[11] +\
+    (B)[14]*(C)[16] + (B)[15]*(C)[17];\
+  (A)[11] =\
+    -(B)[ 3]*(C)[ 4] + (B)[ 2]*(C)[ 5] +\
+    -(B)[ 9]*(C)[10] + (B)[ 8]*(C)[11] +\
+    -(B)[15]*(C)[16] + (B)[14]*(C)[17];\
+/* A20 = B20*C00 + B21*C10 + B22*C20 */\
+  (A)[12] =\
+    (B)[ 4]*(C)[ 0] + (B)[ 5]*(C)[ 1] +\
+    (B)[10]*(C)[ 6] + (B)[11]*(C)[ 7] +\
+    (B)[16]*(C)[12] + (B)[17]*(C)[13];\
+  (A)[13] =\
+    -(B)[ 5]*(C)[ 0] + (B)[ 4]*(C)[ 1] +\
+    -(B)[11]*(C)[ 6] + (B)[10]*(C)[ 7] +\
+    -(B)[17]*(C)[12] + (B)[16]*(C)[13];\
+/* A21 = B20*C01 + B21*C11 + B22*C21 */\
+  (A)[14] =\
+    (B)[ 4]*(C)[ 2] + (B)[ 5]*(C)[ 3] +\
+    (B)[10]*(C)[ 8] + (B)[11]*(C)[ 9] +\
+    (B)[16]*(C)[14] + (B)[17]*(C)[15];\
+  (A)[15] =\
+    -(B)[ 5]*(C)[ 2] + (B)[ 4]*(C)[ 3] +\
+    -(B)[11]*(C)[ 8] + (B)[10]*(C)[ 9] +\
+    -(B)[17]*(C)[14] + (B)[16]*(C)[15];\
+/* A22 = B20*C02 + B21*C12 + B22*C22 */\
+  (A)[16] =\
+    (B)[ 4]*(C)[ 4] + (B)[ 5]*(C)[ 5] +\
+    (B)[10]*(C)[10] + (B)[11]*(C)[11] +\
+    (B)[16]*(C)[16] + (B)[17]*(C)[17];\
+  (A)[17] =\
+    -(B)[ 5]*(C)[ 4] + (B)[ 4]*(C)[ 5] +\
+    -(B)[11]*(C)[10] + (B)[10]*(C)[11] +\
+    -(B)[17]*(C)[16] + (B)[16]*(C)[17];}
+
+
+  /*******************************/
+
+
+  /*******************************
+   * A = 1/2 x ( B - B^+)
+   *******************************/
+
+#define _cm_eq_antiherm_cm(A,B) {\
+    (A)[ 0] = 0.; \
+    (A)[ 1] = (B)[1]; \
+    (A)[ 2] = 0.5*( (B)[2]  - (B)[6]  ); \
+    (A)[ 3] = 0.5*( (B)[3] + (B)[7] ); \
+    (A)[ 4] = 0.5*( (B)[4]  - (B)[12]  ); \
+    (A)[ 5] = 0.5*( (B)[5] + (B)[13] ); \
+    (A)[ 6] = -(A)[2]; \
+    (A)[ 7] =  (A)[3]; \
+    (A)[ 8] = 0.; \
+    (A)[ 9] = (B)[9]; \
+    (A)[10] = 0.5*( (B)[10]  - (B)[14]  ); \
+    (A)[11] = 0.5*( (B)[11] + (B)[15] ); \
+    (A)[12] = -(A)[4]; \
+    (A)[13] =  (A)[5]; \
+    (A)[14] = -(A)[10]; \
+    (A)[15] =  (A)[11]; \
+    (A)[16] = 0.; \
+    (A)[17] = (B)[17]; \
+}
+
+  /*******************************/
+
+
+  /*******************************
+   * A = 1/2 x ( B - B^+) - 1/3 Im( tr ( B ) )
+   *******************************/
+
+#define _cm_eq_antiherm_trless_cm(A,B) {\
+  double const _trBi = 0.33333333333333333333333333 * ( (B)[1] + (B)[9] + (B)[17] ); \
+    (A)[ 0] = 0.; \
+    (A)[ 1] = (B)[1] - _trBi; \
+    (A)[ 2] = 0.5*( (B)[2]  - (B)[6]  ); \
+    (A)[ 3] = 0.5*( (B)[3] + (B)[7] ); \
+    (A)[ 4] = 0.5*( (B)[4]  - (B)[12]  ); \
+    (A)[ 5] = 0.5*( (B)[5] + (B)[13] ); \
+    (A)[ 6] = -(A)[2]; \
+    (A)[ 7] =  (A)[3]; \
+    (A)[ 8] = 0.; \
+    (A)[ 9] = (B)[9] - _trBi; \
+    (A)[10] = 0.5*( (B)[10]  - (B)[14]  ); \
+    (A)[11] = 0.5*( (B)[11] + (B)[15] ); \
+    (A)[12] = -(A)[4]; \
+    (A)[13] =  (A)[5]; \
+    (A)[14] = -(A)[10]; \
+    (A)[15] =  (A)[11]; \
+    (A)[16] = 0.; \
+    (A)[17] = (B)[17] - _trBi; \
+}
+
+
+/*******************************/
+/* methods for fermion vectors */
+/*******************************/
+
+
+
+/* s = 0. */
+
+#define _fv_eq_zero(s) {\
+  memset((s), 0, 24*sizeof(double));\
+/*
+  (s)[ 0] = 0.0;\
+  (s)[ 1] = 0.0;\
+  (s)[ 2] = 0.0;\
+  (s)[ 3] = 0.0;\
+  (s)[ 4] = 0.0;\
+  (s)[ 5] = 0.0;\
+  (s)[ 6] = 0.0;\
+  (s)[ 7] = 0.0;\
+  (s)[ 8] = 0.0;\
+  (s)[ 9] = 0.0;\
+  (s)[10] = 0.0;\
+  (s)[11] = 0.0;\
+  (s)[12] = 0.0;\
+  (s)[13] = 0.0;\
+  (s)[14] = 0.0;\
+  (s)[15] = 0.0;\
+  (s)[16] = 0.0;\
+  (s)[17] = 0.0;\
+  (s)[18] = 0.0;\
+  (s)[19] = 0.0;\
+  (s)[20] = 0.0;\
+  (s)[21] = 0.0;\
+  (s)[22] = 0.0;\
+  (s)[23] = 0.0;\
+*/ \
+}
+
+/********************/
+
+
+
+/* s = -s. */
+
+#define _fv_mi(s) {\
+  (s)[ 0] = -(s)[ 0];\
+  (s)[ 1] = -(s)[ 1];\
+  (s)[ 2] = -(s)[ 2];\
+  (s)[ 3] = -(s)[ 3];\
+  (s)[ 4] = -(s)[ 4];\
+  (s)[ 5] = -(s)[ 5];\
+  (s)[ 6] = -(s)[ 6];\
+  (s)[ 7] = -(s)[ 7];\
+  (s)[ 8] = -(s)[ 8];\
+  (s)[ 9] = -(s)[ 9];\
+  (s)[10] = -(s)[10];\
+  (s)[11] = -(s)[11];\
+  (s)[12] = -(s)[12];\
+  (s)[13] = -(s)[13];\
+  (s)[14] = -(s)[14];\
+  (s)[15] = -(s)[15];\
+  (s)[16] = -(s)[16];\
+  (s)[17] = -(s)[17];\
+  (s)[18] = -(s)[18];\
+  (s)[19] = -(s)[19];\
+  (s)[20] = -(s)[20];\
+  (s)[21] = -(s)[21];\
+  (s)[22] = -(s)[22];\
+  (s)[23] = -(s)[23];}
+
+/********************/
+
+/* s = t. */
+
+#define _fv_eq_fv(s,t) {\
+  memcpy((s), (t), 24*sizeof(double)); \
+/*
+  (s)[ 0] = (t)[ 0];\
+  (s)[ 1] = (t)[ 1];\
+  (s)[ 2] = (t)[ 2];\
+  (s)[ 3] = (t)[ 3];\
+  (s)[ 4] = (t)[ 4];\
+  (s)[ 5] = (t)[ 5];\
+  (s)[ 6] = (t)[ 6];\
+  (s)[ 7] = (t)[ 7];\
+  (s)[ 8] = (t)[ 8];\
+  (s)[ 9] = (t)[ 9];\
+  (s)[10] = (t)[10];\
+  (s)[11] = (t)[11];\
+  (s)[12] = (t)[12];\
+  (s)[13] = (t)[13];\
+  (s)[14] = (t)[14];\
+  (s)[15] = (t)[15];\
+  (s)[16] = (t)[16];\
+  (s)[17] = (t)[17];\
+  (s)[18] = (t)[18];\
+  (s)[19] = (t)[19];\
+  (s)[20] = (t)[20];\
+  (s)[21] = (t)[21];\
+  (s)[22] = (t)[22];\
+  (s)[23] = (t)[23];\
+*/ \
+}
+
+/********************/
+
+
+
+/* Prints s. */
+
+#define _fv_fprintf(s,file) {\
+  fprintf((file), "%+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I\n",\
+	  (s)[ 0], (s)[ 1], (s)[ 2], (s)[ 3], (s)[ 4], (s)[ 5]);\
+  fprintf((file), "%+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I\n",\
+	  (s)[ 6], (s)[ 7], (s)[ 8], (s)[ 9], (s)[10], (s)[11]);\
+  fprintf((file), "%+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I\n",\
+	  (s)[12], (s)[13], (s)[14], (s)[15], (s)[16], (s)[17]);\
+  fprintf((file), "%+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I   %+9.6lf %+9.6lf I\n",\
+	  (s)[18], (s)[19], (s)[20], (s)[21], (s)[22], (s)[23]);}
+
+/********************/
+
+/* c = s^dagger * t. */
+
+#define _co_eq_fv_dag_ti_fv(c,s,t) {\
+  (c)->re = \
+    (s)[ 0]*(t)[ 0] + (s)[ 1]*(t)[ 1] +\
+    (s)[ 2]*(t)[ 2] + (s)[ 3]*(t)[ 3] +\
+    (s)[ 4]*(t)[ 4] + (s)[ 5]*(t)[ 5] +\
+    (s)[ 6]*(t)[ 6] + (s)[ 7]*(t)[ 7] +\
+    (s)[ 8]*(t)[ 8] + (s)[ 9]*(t)[ 9] +\
+    (s)[10]*(t)[10] + (s)[11]*(t)[11] +\
+    (s)[12]*(t)[12] + (s)[13]*(t)[13] +\
+    (s)[14]*(t)[14] + (s)[15]*(t)[15] +\
+    (s)[16]*(t)[16] + (s)[17]*(t)[17] +\
+    (s)[18]*(t)[18] + (s)[19]*(t)[19] +\
+    (s)[20]*(t)[20] + (s)[21]*(t)[21] +\
+    (s)[22]*(t)[22] + (s)[23]*(t)[23];\
+  (c)->im =\
+    (s)[ 0]*(t)[ 1] - (s)[ 1]*(t)[ 0] +\
+    (s)[ 2]*(t)[ 3] - (s)[ 3]*(t)[ 2] +\
+    (s)[ 4]*(t)[ 5] - (s)[ 5]*(t)[ 4] +\
+    (s)[ 6]*(t)[ 7] - (s)[ 7]*(t)[ 6] +\
+    (s)[ 8]*(t)[ 9] - (s)[ 9]*(t)[ 8] +\
+    (s)[10]*(t)[11] - (s)[11]*(t)[10] +\
+    (s)[12]*(t)[13] - (s)[13]*(t)[12] +\
+    (s)[14]*(t)[15] - (s)[15]*(t)[14] +\
+    (s)[16]*(t)[17] - (s)[17]*(t)[16] +\
+    (s)[18]*(t)[19] - (s)[19]*(t)[18] +\
+    (s)[20]*(t)[21] - (s)[21]*(t)[20] +\
+    (s)[22]*(t)[23] - (s)[23]*(t)[22];}
+
+  /********************/
+
+/* c += s^dagger t */
+#define _co_pl_eq_fv_dag_ti_fv(c,s,t) {\
+  (c)->re += \
+    (s)[ 0]*(t)[ 0] + (s)[ 1]*(t)[ 1] +\
+    (s)[ 2]*(t)[ 2] + (s)[ 3]*(t)[ 3] +\
+    (s)[ 4]*(t)[ 4] + (s)[ 5]*(t)[ 5] +\
+    (s)[ 6]*(t)[ 6] + (s)[ 7]*(t)[ 7] +\
+    (s)[ 8]*(t)[ 8] + (s)[ 9]*(t)[ 9] +\
+    (s)[10]*(t)[10] + (s)[11]*(t)[11] +\
+    (s)[12]*(t)[12] + (s)[13]*(t)[13] +\
+    (s)[14]*(t)[14] + (s)[15]*(t)[15] +\
+    (s)[16]*(t)[16] + (s)[17]*(t)[17] +\
+    (s)[18]*(t)[18] + (s)[19]*(t)[19] +\
+    (s)[20]*(t)[20] + (s)[21]*(t)[21] +\
+    (s)[22]*(t)[22] + (s)[23]*(t)[23];\
+  (c)->im +=\
+    (s)[ 0]*(t)[ 1] - (s)[ 1]*(t)[ 0] +\
+    (s)[ 2]*(t)[ 3] - (s)[ 3]*(t)[ 2] +\
+    (s)[ 4]*(t)[ 5] - (s)[ 5]*(t)[ 4] +\
+    (s)[ 6]*(t)[ 7] - (s)[ 7]*(t)[ 6] +\
+    (s)[ 8]*(t)[ 9] - (s)[ 9]*(t)[ 8] +\
+    (s)[10]*(t)[11] - (s)[11]*(t)[10] +\
+    (s)[12]*(t)[13] - (s)[13]*(t)[12] +\
+    (s)[14]*(t)[15] - (s)[15]*(t)[14] +\
+    (s)[16]*(t)[17] - (s)[17]*(t)[16] +\
+    (s)[18]*(t)[19] - (s)[19]*(t)[18] +\
+    (s)[20]*(t)[21] - (s)[21]*(t)[20] +\
+    (s)[22]*(t)[23] - (s)[23]*(t)[22];}
+
+  /********************/
+
+/* c -= s^dagger t */
+#define _co_mi_eq_fv_dag_ti_fv(c,s,t) {\
+    (c)->re -= \
+      (s)[ 0]*(t)[ 0] + (s)[ 1]*(t)[ 1] +\
+      (s)[ 2]*(t)[ 2] + (s)[ 3]*(t)[ 3] +\
+      (s)[ 4]*(t)[ 4] + (s)[ 5]*(t)[ 5] +\
+      (s)[ 6]*(t)[ 6] + (s)[ 7]*(t)[ 7] +\
+      (s)[ 8]*(t)[ 8] + (s)[ 9]*(t)[ 9] +\
+      (s)[10]*(t)[10] + (s)[11]*(t)[11] +\
+      (s)[12]*(t)[12] + (s)[13]*(t)[13] +\
+      (s)[14]*(t)[14] + (s)[15]*(t)[15] +\
+      (s)[16]*(t)[16] + (s)[17]*(t)[17] +\
+      (s)[18]*(t)[18] + (s)[19]*(t)[19] +\
+      (s)[20]*(t)[20] + (s)[21]*(t)[21] +\
+      (s)[22]*(t)[22] + (s)[23]*(t)[23];\
+    (c)->im -=\
+      (s)[ 0]*(t)[ 1] - (s)[ 1]*(t)[ 0] +\
+      (s)[ 2]*(t)[ 3] - (s)[ 3]*(t)[ 2] +\
+      (s)[ 4]*(t)[ 5] - (s)[ 5]*(t)[ 4] +\
+      (s)[ 6]*(t)[ 7] - (s)[ 7]*(t)[ 6] +\
+      (s)[ 8]*(t)[ 9] - (s)[ 9]*(t)[ 8] +\
+      (s)[10]*(t)[11] - (s)[11]*(t)[10] +\
+      (s)[12]*(t)[13] - (s)[13]*(t)[12] +\
+      (s)[14]*(t)[15] - (s)[15]*(t)[14] +\
+      (s)[16]*(t)[17] - (s)[17]*(t)[16] +\
+      (s)[18]*(t)[19] - (s)[19]*(t)[18] +\
+      (s)[20]*(t)[21] - (s)[21]*(t)[20] +\
+      (s)[22]*(t)[23] - (s)[23]*(t)[22];}
+
+  /********************/
+
+
+
+/* s * t. */
+
+#define _co_eq_fv_ti_fv_sum(c,s,t) {\
+  (c)->re = \
+    (s)[ 0]*(t)[ 0] - (s)[ 1]*(t)[ 1] +\
+    (s)[ 2]*(t)[ 2] - (s)[ 3]*(t)[ 3] +\
+    (s)[ 4]*(t)[ 4] - (s)[ 5]*(t)[ 5] +\
+    (s)[ 6]*(t)[ 6] - (s)[ 7]*(t)[ 7] +\
+    (s)[ 8]*(t)[ 8] - (s)[ 9]*(t)[ 9] +\
+    (s)[10]*(t)[10] - (s)[11]*(t)[11] +\
+    (s)[12]*(t)[12] - (s)[13]*(t)[13] +\
+    (s)[14]*(t)[14] - (s)[15]*(t)[15] +\
+    (s)[16]*(t)[16] - (s)[17]*(t)[17] +\
+    (s)[18]*(t)[18] - (s)[19]*(t)[19] +\
+    (s)[20]*(t)[20] - (s)[21]*(t)[21] +\
+    (s)[22]*(t)[22] - (s)[23]*(t)[23];\
+  (c)->im =\
+    (s)[ 0]*(t)[ 1] + (s)[ 1]*(t)[ 0] +\
+    (s)[ 2]*(t)[ 3] + (s)[ 3]*(t)[ 2] +\
+    (s)[ 4]*(t)[ 5] + (s)[ 5]*(t)[ 4] +\
+    (s)[ 6]*(t)[ 7] + (s)[ 7]*(t)[ 6] +\
+    (s)[ 8]*(t)[ 9] + (s)[ 9]*(t)[ 8] +\
+    (s)[10]*(t)[11] + (s)[11]*(t)[10] +\
+    (s)[12]*(t)[13] + (s)[13]*(t)[12] +\
+    (s)[14]*(t)[15] + (s)[15]*(t)[14] +\
+    (s)[16]*(t)[17] + (s)[17]*(t)[16] +\
+    (s)[18]*(t)[19] + (s)[19]*(t)[18] +\
+    (s)[20]*(t)[21] + (s)[21]*(t)[20] +\
+    (s)[22]*(t)[23] + (s)[23]*(t)[22];}
+
+
+/********************/
+
+/* c = Re( s^dagger * t ) */
+
+#define _re_eq_fv_dag_ti_fv(c,s,t) {\
+  (c) = \
+    (s)[ 0]*(t)[ 0] + (s)[ 1]*(t)[ 1] +\
+    (s)[ 2]*(t)[ 2] + (s)[ 3]*(t)[ 3] +\
+    (s)[ 4]*(t)[ 4] + (s)[ 5]*(t)[ 5] +\
+    (s)[ 6]*(t)[ 6] + (s)[ 7]*(t)[ 7] +\
+    (s)[ 8]*(t)[ 8] + (s)[ 9]*(t)[ 9] +\
+    (s)[10]*(t)[10] + (s)[11]*(t)[11] +\
+    (s)[12]*(t)[12] + (s)[13]*(t)[13] +\
+    (s)[14]*(t)[14] + (s)[15]*(t)[15] +\
+    (s)[16]*(t)[16] + (s)[17]*(t)[17] +\
+    (s)[18]*(t)[18] + (s)[19]*(t)[19] +\
+    (s)[20]*(t)[20] + (s)[21]*(t)[21] +\
+    (s)[22]*(t)[22] + (s)[23]*(t)[23];}
+
+/********************/
+
+/* c += Re( s^dagger * t ) */
+
+#define _re_pl_eq_fv_dag_ti_fv(c,s,t) {\
+  (c) += \
+    (s)[ 0]*(t)[ 0] + (s)[ 1]*(t)[ 1] +\
+    (s)[ 2]*(t)[ 2] + (s)[ 3]*(t)[ 3] +\
+    (s)[ 4]*(t)[ 4] + (s)[ 5]*(t)[ 5] +\
+    (s)[ 6]*(t)[ 6] + (s)[ 7]*(t)[ 7] +\
+    (s)[ 8]*(t)[ 8] + (s)[ 9]*(t)[ 9] +\
+    (s)[10]*(t)[10] + (s)[11]*(t)[11] +\
+    (s)[12]*(t)[12] + (s)[13]*(t)[13] +\
+    (s)[14]*(t)[14] + (s)[15]*(t)[15] +\
+    (s)[16]*(t)[16] + (s)[17]*(t)[17] +\
+    (s)[18]*(t)[18] + (s)[19]*(t)[19] +\
+    (s)[20]*(t)[20] + (s)[21]*(t)[21] +\
+    (s)[22]*(t)[22] + (s)[23]*(t)[23];}
+
+  /********************/
+
+#define _cm_eq_fv_trans_ti_fv(c,s,t) {\
+  /* 0 0 */\
+  (c)[ 0] = \
+    (s)[ 0]*(t)[ 0] - (s)[ 1]*(t)[ 1] +\
+    (s)[ 6]*(t)[ 6] - (s)[ 7]*(t)[ 7] +\
+    (s)[12]*(t)[12] - (s)[13]*(t)[13] +\
+    (s)[18]*(t)[18] - (s)[19]*(t)[19]; \
+  (c)[ 1] = \
+    (s)[ 0]*(t)[ 1] + (s)[ 1]*(t)[ 0] +\
+    (s)[ 6]*(t)[ 7] + (s)[ 7]*(t)[ 6] +\
+    (s)[12]*(t)[13] + (s)[13]*(t)[12] +\
+    (s)[18]*(t)[19] + (s)[19]*(t)[18]; \
+  /* 0 1 */\
+  (c)[ 2] = \
+    (s)[ 0]*(t)[ 2] - (s)[ 1]*(t)[ 3] +\
+    (s)[ 6]*(t)[ 8] - (s)[ 7]*(t)[ 9] +\
+    (s)[12]*(t)[14] - (s)[13]*(t)[15] +\
+    (s)[18]*(t)[20] - (s)[19]*(t)[21]; \
+  (c)[ 3] = \
+    (s)[ 0]*(t)[ 3] + (s)[ 1]*(t)[ 2] +\
+    (s)[ 6]*(t)[ 9] + (s)[ 7]*(t)[ 8] +\
+    (s)[12]*(t)[15] + (s)[13]*(t)[14] +\
+    (s)[18]*(t)[21] + (s)[19]*(t)[20]; \
+  /* 0 2 */\
+  (c)[ 4] = \
+    (s)[ 0]*(t)[ 4] - (s)[ 1]*(t)[ 5] +\
+    (s)[ 6]*(t)[10] - (s)[ 7]*(t)[11] +\
+    (s)[12]*(t)[16] - (s)[13]*(t)[17] +\
+    (s)[18]*(t)[22] - (s)[19]*(t)[23]; \
+  (c)[ 5] = \
+    (s)[ 0]*(t)[ 5] + (s)[ 1]*(t)[ 4] +\
+    (s)[ 6]*(t)[11] + (s)[ 7]*(t)[10] +\
+    (s)[12]*(t)[17] + (s)[13]*(t)[16] +\
+    (s)[18]*(t)[23] + (s)[19]*(t)[22]; \
+  /* 1 0 */\
+  (c)[ 6] = \
+    (s)[ 2]*(t)[ 0] - (s)[ 3]*(t)[ 1] +\
+    (s)[ 8]*(t)[ 6] - (s)[ 9]*(t)[ 7] +\
+    (s)[14]*(t)[12] - (s)[15]*(t)[13] +\
+    (s)[20]*(t)[18] - (s)[21]*(t)[19]; \
+  (c)[ 7] = \
+    (s)[ 2]*(t)[ 1] + (s)[ 3]*(t)[ 0] +\
+    (s)[ 8]*(t)[ 7] + (s)[ 9]*(t)[ 6] +\
+    (s)[14]*(t)[13] + (s)[15]*(t)[12] +\
+    (s)[20]*(t)[19] + (s)[21]*(t)[18]; \
+  /* 1 1 */\
+  (c)[ 8] =\
+    (s)[ 2]*(t)[ 2] - (s)[ 3]*(t)[ 3] +\
+    (s)[ 8]*(t)[ 8] - (s)[ 9]*(t)[ 9] +\
+    (s)[14]*(t)[14] - (s)[15]*(t)[15] +\
+    (s)[20]*(t)[20] - (s)[21]*(t)[21]; \
+  (c)[ 9] =\
+    (s)[ 2]*(t)[ 3] + (s)[ 3]*(t)[ 2] +\
+    (s)[ 8]*(t)[ 9] + (s)[ 9]*(t)[ 8] +\
+    (s)[14]*(t)[15] + (s)[15]*(t)[14] +\
+    (s)[20]*(t)[21] + (s)[21]*(t)[20]; \
+  /* 1 2 */\
+  (c)[10] =\
+    (s)[ 2]*(t)[ 4] - (s)[ 3]*(t)[ 5] +\
+    (s)[ 8]*(t)[10] - (s)[ 9]*(t)[11] +\
+    (s)[14]*(t)[16] - (s)[15]*(t)[17] +\
+    (s)[20]*(t)[22] - (s)[21]*(t)[23]; \
+  (c)[11] =\
+    (s)[ 2]*(t)[ 5] + (s)[ 3]*(t)[ 4] +\
+    (s)[ 8]*(t)[11] + (s)[ 9]*(t)[10] +\
+    (s)[14]*(t)[17] + (s)[15]*(t)[16] +\
+    (s)[20]*(t)[23] + (s)[21]*(t)[22]; \
+  /* 2 0 */\
+  (c)[12] = \
+    (s)[ 4]*(t)[ 0] - (s)[ 5]*(t)[ 1] +\
+    (s)[10]*(t)[ 6] - (s)[11]*(t)[ 7] +\
+    (s)[16]*(t)[12] - (s)[17]*(t)[13] +\
+    (s)[22]*(t)[18] - (s)[23]*(t)[19]; \
+  (c)[13] = \
+    (s)[ 4]*(t)[ 1] + (s)[ 5]*(t)[ 0] +\
+    (s)[10]*(t)[ 7] + (s)[11]*(t)[ 6] +\
+    (s)[16]*(t)[13] + (s)[17]*(t)[12] +\
+    (s)[22]*(t)[19] + (s)[23]*(t)[18]; \
+  /* 2 1 */\
+  (c)[14] = \
+    (s)[ 4]*(t)[ 2] - (s)[ 5]*(t)[ 3] +\
+    (s)[10]*(t)[ 8] - (s)[11]*(t)[ 9] +\
+    (s)[16]*(t)[14] - (s)[17]*(t)[15] +\
+    (s)[22]*(t)[20] - (s)[23]*(t)[21]; \
+  (c)[15] = \
+    (s)[ 4]*(t)[ 3] + (s)[ 5]*(t)[ 2] +\
+    (s)[10]*(t)[ 9] + (s)[11]*(t)[ 8] +\
+    (s)[16]*(t)[15] + (s)[17]*(t)[14] +\
+    (s)[22]*(t)[21] + (s)[23]*(t)[20]; \
+  /* 2 2 */ \
+  (c)[16] =\
+    (s)[ 4]*(t)[ 4] - (s)[ 5]*(t)[ 5] +\
+    (s)[10]*(t)[10] - (s)[11]*(t)[11] +\
+    (s)[16]*(t)[16] - (s)[17]*(t)[17] +\
+    (s)[22]*(t)[22] - (s)[23]*(t)[23]; \
+  (c)[17] =\
+    (s)[ 4]*(t)[ 5] + (s)[ 5]*(t)[ 4] +\
+    (s)[10]*(t)[11] + (s)[11]*(t)[10] +\
+    (s)[16]*(t)[17] + (s)[17]*(t)[16] +\
+    (s)[22]*(t)[23] + (s)[23]*(t)[22]; }
+
+  /********************/
+
+
+/* s = t + u. */
+
+#define _fv_eq_fv_pl_fv(s,t,u) {\
+  (s)[ 0] = (t)[ 0] + (u)[ 0];\
+  (s)[ 1] = (t)[ 1] + (u)[ 1];\
+  (s)[ 2] = (t)[ 2] + (u)[ 2];\
+  (s)[ 3] = (t)[ 3] + (u)[ 3];\
+  (s)[ 4] = (t)[ 4] + (u)[ 4];\
+  (s)[ 5] = (t)[ 5] + (u)[ 5];\
+  (s)[ 6] = (t)[ 6] + (u)[ 6];\
+  (s)[ 7] = (t)[ 7] + (u)[ 7];\
+  (s)[ 8] = (t)[ 8] + (u)[ 8];\
+  (s)[ 9] = (t)[ 9] + (u)[ 9];\
+  (s)[10] = (t)[10] + (u)[10];\
+  (s)[11] = (t)[11] + (u)[11];\
+  (s)[12] = (t)[12] + (u)[12];\
+  (s)[13] = (t)[13] + (u)[13];\
+  (s)[14] = (t)[14] + (u)[14];\
+  (s)[15] = (t)[15] + (u)[15];\
+  (s)[16] = (t)[16] + (u)[16];\
+  (s)[17] = (t)[17] + (u)[17];\
+  (s)[18] = (t)[18] + (u)[18];\
+  (s)[19] = (t)[19] + (u)[19];\
+  (s)[20] = (t)[20] + (u)[20];\
+  (s)[21] = (t)[21] + (u)[21];\
+  (s)[22] = (t)[22] + (u)[22];\
+  (s)[23] = (t)[23] + (u)[23];}
+
+/********************/
+
+/* s = t + u * c */
+
+#define _fv_eq_fv_pl_fv_ti_re(s,t,u,c) {\
+    (s)[ 0] = (t)[ 0] + (u)[ 0] * (c);\
+    (s)[ 1] = (t)[ 1] + (u)[ 1] * (c);\
+    (s)[ 2] = (t)[ 2] + (u)[ 2] * (c);\
+    (s)[ 3] = (t)[ 3] + (u)[ 3] * (c);\
+    (s)[ 4] = (t)[ 4] + (u)[ 4] * (c);\
+    (s)[ 5] = (t)[ 5] + (u)[ 5] * (c);\
+    (s)[ 6] = (t)[ 6] + (u)[ 6] * (c);\
+    (s)[ 7] = (t)[ 7] + (u)[ 7] * (c);\
+    (s)[ 8] = (t)[ 8] + (u)[ 8] * (c);\
+    (s)[ 9] = (t)[ 9] + (u)[ 9] * (c);\
+    (s)[10] = (t)[10] + (u)[10] * (c);\
+    (s)[11] = (t)[11] + (u)[11] * (c);\
+    (s)[12] = (t)[12] + (u)[12] * (c);\
+    (s)[13] = (t)[13] + (u)[13] * (c);\
+    (s)[14] = (t)[14] + (u)[14] * (c);\
+    (s)[15] = (t)[15] + (u)[15] * (c);\
+    (s)[16] = (t)[16] + (u)[16] * (c);\
+    (s)[17] = (t)[17] + (u)[17] * (c);\
+    (s)[18] = (t)[18] + (u)[18] * (c);\
+    (s)[19] = (t)[19] + (u)[19] * (c);\
+    (s)[20] = (t)[20] + (u)[20] * (c);\
+    (s)[21] = (t)[21] + (u)[21] * (c);\
+    (s)[22] = (t)[22] + (u)[22] * (c);\
+    (s)[23] = (t)[23] + (u)[23] * (c);}
+
+/********************/
+
+
+
+
+/* s = t - u. */
+
+#define _fv_eq_fv_mi_fv(s,t,u) {\
+  (s)[ 0] = (t)[ 0] - (u)[ 0];\
+  (s)[ 1] = (t)[ 1] - (u)[ 1];\
+  (s)[ 2] = (t)[ 2] - (u)[ 2];\
+  (s)[ 3] = (t)[ 3] - (u)[ 3];\
+  (s)[ 4] = (t)[ 4] - (u)[ 4];\
+  (s)[ 5] = (t)[ 5] - (u)[ 5];\
+  (s)[ 6] = (t)[ 6] - (u)[ 6];\
+  (s)[ 7] = (t)[ 7] - (u)[ 7];\
+  (s)[ 8] = (t)[ 8] - (u)[ 8];\
+  (s)[ 9] = (t)[ 9] - (u)[ 9];\
+  (s)[10] = (t)[10] - (u)[10];\
+  (s)[11] = (t)[11] - (u)[11];\
+  (s)[12] = (t)[12] - (u)[12];\
+  (s)[13] = (t)[13] - (u)[13];\
+  (s)[14] = (t)[14] - (u)[14];\
+  (s)[15] = (t)[15] - (u)[15];\
+  (s)[16] = (t)[16] - (u)[16];\
+  (s)[17] = (t)[17] - (u)[17];\
+  (s)[18] = (t)[18] - (u)[18];\
+  (s)[19] = (t)[19] - (u)[19];\
+  (s)[20] = (t)[20] - (u)[20];\
+  (s)[21] = (t)[21] - (u)[21];\
+  (s)[22] = (t)[22] - (u)[22];\
+  (s)[23] = (t)[23] - (u)[23];}
+
+/********************/
+
+/* s = s + t. */
+
+#define _fv_pl_eq_fv(s,t) {\
+  (s)[ 0] += (t)[ 0];\
+  (s)[ 1] += (t)[ 1];\
+  (s)[ 2] += (t)[ 2];\
+  (s)[ 3] += (t)[ 3];\
+  (s)[ 4] += (t)[ 4];\
+  (s)[ 5] += (t)[ 5];\
+  (s)[ 6] += (t)[ 6];\
+  (s)[ 7] += (t)[ 7];\
+  (s)[ 8] += (t)[ 8];\
+  (s)[ 9] += (t)[ 9];\
+  (s)[10] += (t)[10];\
+  (s)[11] += (t)[11];\
+  (s)[12] += (t)[12];\
+  (s)[13] += (t)[13];\
+  (s)[14] += (t)[14];\
+  (s)[15] += (t)[15];\
+  (s)[16] += (t)[16];\
+  (s)[17] += (t)[17];\
+  (s)[18] += (t)[18];\
+  (s)[19] += (t)[19];\
+  (s)[20] += (t)[20];\
+  (s)[21] += (t)[21];\
+  (s)[22] += (t)[22];\
+  (s)[23] += (t)[23];}
+
+  /********************/
+
+
+
+/* s = s - t. */
+
+#define _fv_mi_eq_fv(s,t) {\
+  (s)[ 0] -= (t)[ 0];\
+  (s)[ 1] -= (t)[ 1];\
+  (s)[ 2] -= (t)[ 2];\
+  (s)[ 3] -= (t)[ 3];\
+  (s)[ 4] -= (t)[ 4];\
+  (s)[ 5] -= (t)[ 5];\
+  (s)[ 6] -= (t)[ 6];\
+  (s)[ 7] -= (t)[ 7];\
+  (s)[ 8] -= (t)[ 8];\
+  (s)[ 9] -= (t)[ 9];\
+  (s)[10] -= (t)[10];\
+  (s)[11] -= (t)[11];\
+  (s)[12] -= (t)[12];\
+  (s)[13] -= (t)[13];\
+  (s)[14] -= (t)[14];\
+  (s)[15] -= (t)[15];\
+  (s)[16] -= (t)[16];\
+  (s)[17] -= (t)[17];\
+  (s)[18] -= (t)[18];\
+  (s)[19] -= (t)[19];\
+  (s)[20] -= (t)[20];\
+  (s)[21] -= (t)[21];\
+  (s)[22] -= (t)[22];\
+  (s)[23] -= (t)[23];}
+
+  /********************/
+
+/* s = s - r * t. */
+
+#define _fv_mi_eq_fv_ti_re(s,t,a) {\
+  (s)[ 0] -= (t)[ 0] * (a);\
+  (s)[ 1] -= (t)[ 1] * (a);\
+  (s)[ 2] -= (t)[ 2] * (a);\
+  (s)[ 3] -= (t)[ 3] * (a);\
+  (s)[ 4] -= (t)[ 4] * (a);\
+  (s)[ 5] -= (t)[ 5] * (a);\
+  (s)[ 6] -= (t)[ 6] * (a);\
+  (s)[ 7] -= (t)[ 7] * (a);\
+  (s)[ 8] -= (t)[ 8] * (a);\
+  (s)[ 9] -= (t)[ 9] * (a);\
+  (s)[10] -= (t)[10] * (a);\
+  (s)[11] -= (t)[11] * (a);\
+  (s)[12] -= (t)[12] * (a);\
+  (s)[13] -= (t)[13] * (a);\
+  (s)[14] -= (t)[14] * (a);\
+  (s)[15] -= (t)[15] * (a);\
+  (s)[16] -= (t)[16] * (a);\
+  (s)[17] -= (t)[17] * (a);\
+  (s)[18] -= (t)[18] * (a);\
+  (s)[19] -= (t)[19] * (a);\
+  (s)[20] -= (t)[20] * (a);\
+  (s)[21] -= (t)[21] * (a);\
+  (s)[22] -= (t)[22] * (a);\
+  (s)[23] -= (t)[23] * (a);}
+
+  /********************/
+
+
+
+/* s = t * d. */
+
+#define _fv_eq_fv_ti_re(s,t,d) {\
+  (s)[ 0] = (t)[ 0] * (d);\
+  (s)[ 1] = (t)[ 1] * (d);\
+  (s)[ 2] = (t)[ 2] * (d);\
+  (s)[ 3] = (t)[ 3] * (d);\
+  (s)[ 4] = (t)[ 4] * (d);\
+  (s)[ 5] = (t)[ 5] * (d);\
+  (s)[ 6] = (t)[ 6] * (d);\
+  (s)[ 7] = (t)[ 7] * (d);\
+  (s)[ 8] = (t)[ 8] * (d);\
+  (s)[ 9] = (t)[ 9] * (d);\
+  (s)[10] = (t)[10] * (d);\
+  (s)[11] = (t)[11] * (d);\
+  (s)[12] = (t)[12] * (d);\
+  (s)[13] = (t)[13] * (d);\
+  (s)[14] = (t)[14] * (d);\
+  (s)[15] = (t)[15] * (d);\
+  (s)[16] = (t)[16] * (d);\
+  (s)[17] = (t)[17] * (d);\
+  (s)[18] = (t)[18] * (d);\
+  (s)[19] = (t)[19] * (d);\
+  (s)[20] = (t)[20] * (d);\
+  (s)[21] = (t)[21] * (d);\
+  (s)[22] = (t)[22] * (d);\
+  (s)[23] = (t)[23] * (d);}
+
+/********************/
+
+/* s = s * d. */
+
+#define _fv_ti_eq_re(s,d) {\
+  (s)[ 0] *= (d);\
+  (s)[ 1] *= (d);\
+  (s)[ 2] *= (d);\
+  (s)[ 3] *= (d);\
+  (s)[ 4] *= (d);\
+  (s)[ 5] *= (d);\
+  (s)[ 6] *= (d);\
+  (s)[ 7] *= (d);\
+  (s)[ 8] *= (d);\
+  (s)[ 9] *= (d);\
+  (s)[10] *= (d);\
+  (s)[11] *= (d);\
+  (s)[12] *= (d);\
+  (s)[13] *= (d);\
+  (s)[14] *= (d);\
+  (s)[15] *= (d);\
+  (s)[16] *= (d);\
+  (s)[17] *= (d);\
+  (s)[18] *= (d);\
+  (s)[19] *= (d);\
+  (s)[20] *= (d);\
+  (s)[21] *= (d);\
+  (s)[22] *= (d);\
+  (s)[23] *= (d);}
+
+/********************/
+
+/* s = t * I*d */
+
+#define _fv_eq_fv_ti_im(s,t,d) {\
+  (s)[ 0] = -(t)[ 1] * (d);\
+  (s)[ 1] =  (t)[ 0] * (d);\
+  (s)[ 2] = -(t)[ 3] * (d);\
+  (s)[ 3] =  (t)[ 2] * (d);\
+  (s)[ 4] = -(t)[ 5] * (d);\
+  (s)[ 5] =  (t)[ 4] * (d);\
+  (s)[ 6] = -(t)[ 7] * (d);\
+  (s)[ 7] =  (t)[ 6] * (d);\
+  (s)[ 8] = -(t)[ 9] * (d);\
+  (s)[ 9] =  (t)[ 8] * (d);\
+  (s)[10] = -(t)[11] * (d);\
+  (s)[11] =  (t)[10] * (d);\
+  (s)[12] = -(t)[13] * (d);\
+  (s)[13] =  (t)[12] * (d);\
+  (s)[14] = -(t)[15] * (d);\
+  (s)[15] =  (t)[14] * (d);\
+  (s)[16] = -(t)[17] * (d);\
+  (s)[17] =  (t)[16] * (d);\
+  (s)[18] = -(t)[19] * (d);\
+  (s)[19] =  (t)[18] * (d);\
+  (s)[20] = -(t)[21] * (d);\
+  (s)[21] =  (t)[20] * (d);\
+  (s)[22] = -(t)[23] * (d);\
+  (s)[23] =  (t)[22] * (d);}
+
+/********************/
+
+/* s = t * c. */
+
+#define _fv_eq_fv_ti_co(s,t,c) {\
+  (s)[ 0] = (t)[ 0] * (c)->re - (t)[ 1] * (c)->im;\
+  (s)[ 1] = (t)[ 1] * (c)->re + (t)[ 0] * (c)->im;\
+  (s)[ 2] = (t)[ 2] * (c)->re - (t)[ 3] * (c)->im;\
+  (s)[ 3] = (t)[ 3] * (c)->re + (t)[ 2] * (c)->im;\
+  (s)[ 4] = (t)[ 4] * (c)->re - (t)[ 5] * (c)->im;\
+  (s)[ 5] = (t)[ 5] * (c)->re + (t)[ 4] * (c)->im;\
+  (s)[ 6] = (t)[ 6] * (c)->re - (t)[ 7] * (c)->im;\
+  (s)[ 7] = (t)[ 7] * (c)->re + (t)[ 6] * (c)->im;\
+  (s)[ 8] = (t)[ 8] * (c)->re - (t)[ 9] * (c)->im;\
+  (s)[ 9] = (t)[ 9] * (c)->re + (t)[ 8] * (c)->im;\
+  (s)[10] = (t)[10] * (c)->re - (t)[11] * (c)->im;\
+  (s)[11] = (t)[11] * (c)->re + (t)[10] * (c)->im;\
+  (s)[12] = (t)[12] * (c)->re - (t)[13] * (c)->im;\
+  (s)[13] = (t)[13] * (c)->re + (t)[12] * (c)->im;\
+  (s)[14] = (t)[14] * (c)->re - (t)[15] * (c)->im;\
+  (s)[15] = (t)[15] * (c)->re + (t)[14] * (c)->im;\
+  (s)[16] = (t)[16] * (c)->re - (t)[17] * (c)->im;\
+  (s)[17] = (t)[17] * (c)->re + (t)[16] * (c)->im;\
+  (s)[18] = (t)[18] * (c)->re - (t)[19] * (c)->im;\
+  (s)[19] = (t)[19] * (c)->re + (t)[18] * (c)->im;\
+  (s)[20] = (t)[20] * (c)->re - (t)[21] * (c)->im;\
+  (s)[21] = (t)[21] * (c)->re + (t)[20] * (c)->im;\
+  (s)[22] = (t)[22] * (c)->re - (t)[23] * (c)->im;\
+  (s)[23] = (t)[23] * (c)->re + (t)[22] * (c)->im;}
+
+  /********************/
+
+#define _fv_eq_fv_ti_co_conj(s,t,c) {\
+  (s)[ 0] = (t)[ 0] * (c)->re + (t)[ 1] * (c)->im;\
+  (s)[ 1] = (t)[ 1] * (c)->re - (t)[ 0] * (c)->im;\
+  (s)[ 2] = (t)[ 2] * (c)->re + (t)[ 3] * (c)->im;\
+  (s)[ 3] = (t)[ 3] * (c)->re - (t)[ 2] * (c)->im;\
+  (s)[ 4] = (t)[ 4] * (c)->re + (t)[ 5] * (c)->im;\
+  (s)[ 5] = (t)[ 5] * (c)->re - (t)[ 4] * (c)->im;\
+  (s)[ 6] = (t)[ 6] * (c)->re + (t)[ 7] * (c)->im;\
+  (s)[ 7] = (t)[ 7] * (c)->re - (t)[ 6] * (c)->im;\
+  (s)[ 8] = (t)[ 8] * (c)->re + (t)[ 9] * (c)->im;\
+  (s)[ 9] = (t)[ 9] * (c)->re - (t)[ 8] * (c)->im;\
+  (s)[10] = (t)[10] * (c)->re + (t)[11] * (c)->im;\
+  (s)[11] = (t)[11] * (c)->re - (t)[10] * (c)->im;\
+  (s)[12] = (t)[12] * (c)->re + (t)[13] * (c)->im;\
+  (s)[13] = (t)[13] * (c)->re - (t)[12] * (c)->im;\
+  (s)[14] = (t)[14] * (c)->re + (t)[15] * (c)->im;\
+  (s)[15] = (t)[15] * (c)->re - (t)[14] * (c)->im;\
+  (s)[16] = (t)[16] * (c)->re + (t)[17] * (c)->im;\
+  (s)[17] = (t)[17] * (c)->re - (t)[16] * (c)->im;\
+  (s)[18] = (t)[18] * (c)->re + (t)[19] * (c)->im;\
+  (s)[19] = (t)[19] * (c)->re - (t)[18] * (c)->im;\
+  (s)[20] = (t)[20] * (c)->re + (t)[21] * (c)->im;\
+  (s)[21] = (t)[21] * (c)->re - (t)[20] * (c)->im;\
+  (s)[22] = (t)[22] * (c)->re + (t)[23] * (c)->im;\
+  (s)[23] = (t)[23] * (c)->re - (t)[22] * (c)->im;}
+
+  /********************/
+
+/* s = A * t. */
+
+#define _fv_eq_cm_ti_fv(s,A,t) {\
+  /* s0 = U00*t0 + U01*t1 + U02*t2 */\
+  (s)[ 0] =\
+    (A)[ 0]*(t)[ 0] - (A)[ 1]*(t)[ 1] +\
+    (A)[ 2]*(t)[ 2] - (A)[ 3]*(t)[ 3] +\
+    (A)[ 4]*(t)[ 4] - (A)[ 5]*(t)[ 5];\
+  (s)[ 1] =\
+    (A)[ 0]*(t)[ 1] + (A)[ 1]*(t)[ 0] +\
+    (A)[ 2]*(t)[ 3] + (A)[ 3]*(t)[ 2] +\
+    (A)[ 4]*(t)[ 5] + (A)[ 5]*(t)[ 4];\
+  /* s1 = U10*t0 + U11*t1 + U12*t2 */\
+  (s)[ 2] =\
+    (A)[ 6]*(t)[ 0] - (A)[ 7]*(t)[ 1] +\
+    (A)[ 8]*(t)[ 2] - (A)[ 9]*(t)[ 3] +\
+    (A)[10]*(t)[ 4] - (A)[11]*(t)[ 5];\
+  (s)[ 3] =\
+    (A)[ 6]*(t)[ 1] + (A)[ 7]*(t)[ 0] +\
+    (A)[ 8]*(t)[ 3] + (A)[ 9]*(t)[ 2] +\
+    (A)[10]*(t)[ 5] + (A)[11]*(t)[ 4];\
+  /* s2 = U20*t0 + U21*t1 + U22*t2 */\
+  (s)[ 4] =\
+    (A)[12]*(t)[ 0] - (A)[13]*(t)[ 1] +\
+    (A)[14]*(t)[ 2] - (A)[15]*(t)[ 3] +\
+    (A)[16]*(t)[ 4] - (A)[17]*(t)[ 5];\
+  (s)[ 5] =\
+    (A)[12]*(t)[ 1] + (A)[13]*(t)[ 0] +\
+    (A)[14]*(t)[ 3] + (A)[15]*(t)[ 2] +\
+    (A)[16]*(t)[ 5] + (A)[17]*(t)[ 4];\
+  /* s3 = U00*t3 + U01*t4 + U02*t5 */\
+  (s)[ 6] =\
+    (A)[ 0]*(t)[ 6] - (A)[ 1]*(t)[ 7] +\
+    (A)[ 2]*(t)[ 8] - (A)[ 3]*(t)[ 9] +\
+    (A)[ 4]*(t)[10] - (A)[ 5]*(t)[11];\
+  (s)[ 7] =\
+    (A)[ 0]*(t)[ 7] + (A)[ 1]*(t)[ 6] +\
+    (A)[ 2]*(t)[ 9] + (A)[ 3]*(t)[ 8] +\
+    (A)[ 4]*(t)[11] + (A)[ 5]*(t)[10];\
+  /* s4 = U10*t3 + U11*t4 + U12*t5 */\
+  (s)[ 8] =\
+    (A)[ 6]*(t)[ 6] - (A)[ 7]*(t)[ 7] +\
+    (A)[ 8]*(t)[ 8] - (A)[ 9]*(t)[ 9] +\
+    (A)[10]*(t)[10] - (A)[11]*(t)[11];\
+  (s)[ 9] =\
+    (A)[ 6]*(t)[ 7] + (A)[ 7]*(t)[ 6] +\
+    (A)[ 8]*(t)[ 9] + (A)[ 9]*(t)[ 8] +\
+    (A)[10]*(t)[11] + (A)[11]*(t)[10];\
+  /* s5 = U20*t3 + U21*t4 + U22*t5 */\
+  (s)[10] =\
+    (A)[12]*(t)[ 6] - (A)[13]*(t)[ 7] +\
+    (A)[14]*(t)[ 8] - (A)[15]*(t)[ 9] +\
+    (A)[16]*(t)[10] - (A)[17]*(t)[11];\
+  (s)[11] =\
+    (A)[12]*(t)[ 7] + (A)[13]*(t)[ 6] +\
+    (A)[14]*(t)[ 9] + (A)[15]*(t)[ 8] +\
+    (A)[16]*(t)[11] + (A)[17]*(t)[10];\
+  /* s6 = U00*t6 + U01*t7 + U02*t8 */\
+  (s)[12] =\
+    (A)[ 0]*(t)[12] - (A)[ 1]*(t)[13] +\
+    (A)[ 2]*(t)[14] - (A)[ 3]*(t)[15] +\
+    (A)[ 4]*(t)[16] - (A)[ 5]*(t)[17];\
+  (s)[13] =\
+    (A)[ 0]*(t)[13] + (A)[ 1]*(t)[12] +\
+    (A)[ 2]*(t)[15] + (A)[ 3]*(t)[14] +\
+    (A)[ 4]*(t)[17] + (A)[ 5]*(t)[16];\
+  /* s7 = U10*t6 + U11*t7 + U12*t8 */\
+  (s)[14] =\
+    (A)[ 6]*(t)[12] - (A)[ 7]*(t)[13] +\
+    (A)[ 8]*(t)[14] - (A)[ 9]*(t)[15] +\
+    (A)[10]*(t)[16] - (A)[11]*(t)[17];\
+  (s)[15] =\
+    (A)[ 6]*(t)[13] + (A)[ 7]*(t)[12] +\
+    (A)[ 8]*(t)[15] + (A)[ 9]*(t)[14] +\
+    (A)[10]*(t)[17] + (A)[11]*(t)[16];\
+  /* s8 = U20*t6 + U21*t7 + U22*t8 */\
+  (s)[16] =\
+    (A)[12]*(t)[12] - (A)[13]*(t)[13] +\
+    (A)[14]*(t)[14] - (A)[15]*(t)[15] +\
+    (A)[16]*(t)[16] - (A)[17]*(t)[17];\
+  (s)[17] =\
+    (A)[12]*(t)[13] + (A)[13]*(t)[12] +\
+    (A)[14]*(t)[15] + (A)[15]*(t)[14] +\
+    (A)[16]*(t)[17] + (A)[17]*(t)[16];\
+  /* s9 = U00*t9 + U01*t10 + U02*t11 */\
+  (s)[18] =\
+    (A)[ 0]*(t)[18] - (A)[ 1]*(t)[19] +\
+    (A)[ 2]*(t)[20] - (A)[ 3]*(t)[21] +\
+    (A)[ 4]*(t)[22] - (A)[ 5]*(t)[23];\
+  (s)[19] =\
+    (A)[ 0]*(t)[19] + (A)[ 1]*(t)[18] +\
+    (A)[ 2]*(t)[21] + (A)[ 3]*(t)[20] +\
+    (A)[ 4]*(t)[23] + (A)[ 5]*(t)[22];\
+  /* s10 = U10*t9 + U11*t10 + U12*t11 */\
+  (s)[20] =\
+    (A)[ 6]*(t)[18] - (A)[ 7]*(t)[19] +\
+    (A)[ 8]*(t)[20] - (A)[ 9]*(t)[21] +\
+    (A)[10]*(t)[22] - (A)[11]*(t)[23];\
+  (s)[21] =\
+    (A)[ 6]*(t)[19] + (A)[ 7]*(t)[18] +\
+    (A)[ 8]*(t)[21] + (A)[ 9]*(t)[20] +\
+    (A)[10]*(t)[23] + (A)[11]*(t)[22];\
+  /* s11 = U20*t9 + U21*t10 + U22*t11 */\
+  (s)[22] =\
+    (A)[12]*(t)[18] - (A)[13]*(t)[19] +\
+    (A)[14]*(t)[20] - (A)[15]*(t)[21] +\
+    (A)[16]*(t)[22] - (A)[17]*(t)[23];\
+  (s)[23] =\
+    (A)[12]*(t)[19] + (A)[13]*(t)[18] +\
+    (A)[14]*(t)[21] + (A)[15]*(t)[20] +\
+    (A)[16]*(t)[23] + (A)[17]*(t)[22];}
+
+/********************/
+
+
+
+/* s = A^\dagger * t. */
+
+#define _fv_eq_cm_dag_ti_fv(s,A,t) {\
+/* s0 = U00*t0 + U01*t1 + U02*t2 */\
+  (s)[ 0] =\
+    (A)[ 0]*(t)[ 0] + (A)[ 1]*(t)[ 1] +\
+    (A)[ 6]*(t)[ 2] + (A)[ 7]*(t)[ 3] +\
+    (A)[12]*(t)[ 4] + (A)[13]*(t)[ 5];\
+  (s)[ 1] =\
+    (A)[ 0]*(t)[ 1] - (A)[ 1]*(t)[ 0] +\
+    (A)[ 6]*(t)[ 3] - (A)[ 7]*(t)[ 2] +\
+    (A)[12]*(t)[ 5] - (A)[13]*(t)[ 4];\
+/* s1 = U10*t0 + U11*t1 + U12*t2 */\
+  (s)[ 2] =\
+    (A)[ 2]*(t)[ 0] + (A)[ 3]*(t)[ 1] +\
+    (A)[ 8]*(t)[ 2] + (A)[ 9]*(t)[ 3] +\
+    (A)[14]*(t)[ 4] + (A)[15]*(t)[ 5];\
+  (s)[ 3] =\
+    (A)[ 2]*(t)[ 1] - (A)[ 3]*(t)[ 0] +\
+    (A)[ 8]*(t)[ 3] - (A)[ 9]*(t)[ 2] +\
+    (A)[14]*(t)[ 5] - (A)[15]*(t)[ 4];\
+/* s2 = U20*t0 + U21*t1 + U22*t2 */\
+  (s)[ 4] =\
+    (A)[ 4]*(t)[ 0] + (A)[ 5]*(t)[ 1] +\
+    (A)[10]*(t)[ 2] + (A)[11]*(t)[ 3] +\
+    (A)[16]*(t)[ 4] + (A)[17]*(t)[ 5];\
+  (s)[ 5] =\
+    (A)[ 4]*(t)[ 1] - (A)[ 5]*(t)[ 0] +\
+    (A)[10]*(t)[ 3] - (A)[11]*(t)[ 2] +\
+    (A)[16]*(t)[ 5] - (A)[17]*(t)[ 4];\
+/* s3 = U00*t3 + U01*t4 + U02*t5 */\
+  (s)[ 6] =\
+    (A)[ 0]*(t)[ 6] + (A)[ 1]*(t)[ 7] +\
+    (A)[ 6]*(t)[ 8] + (A)[ 7]*(t)[ 9] +\
+    (A)[12]*(t)[10] + (A)[13]*(t)[11];\
+  (s)[ 7] =\
+    (A)[ 0]*(t)[ 7] - (A)[ 1]*(t)[ 6] +\
+    (A)[ 6]*(t)[ 9] - (A)[ 7]*(t)[ 8] +\
+    (A)[12]*(t)[11] - (A)[13]*(t)[10];\
+/* s4 = U10*t3 + U11*t4 + U12*t5 */\
+  (s)[ 8] =\
+    (A)[ 2]*(t)[ 6] + (A)[ 3]*(t)[ 7] +\
+    (A)[ 8]*(t)[ 8] + (A)[ 9]*(t)[ 9] +\
+    (A)[14]*(t)[10] + (A)[15]*(t)[11];\
+  (s)[ 9] =\
+    (A)[ 2]*(t)[ 7] - (A)[ 3]*(t)[ 6] +\
+    (A)[ 8]*(t)[ 9] - (A)[ 9]*(t)[ 8] +\
+    (A)[14]*(t)[11] - (A)[15]*(t)[10];\
+/* s5 = U20*t3 + U21*t4 + U22*t5 */\
+  (s)[10] =\
+    (A)[ 4]*(t)[ 6] + (A)[ 5]*(t)[ 7] +\
+    (A)[10]*(t)[ 8] + (A)[11]*(t)[ 9] +\
+    (A)[16]*(t)[10] + (A)[17]*(t)[11];\
+  (s)[11] =\
+    (A)[ 4]*(t)[ 7] - (A)[ 5]*(t)[ 6] +\
+    (A)[10]*(t)[ 9] - (A)[11]*(t)[ 8] +\
+    (A)[16]*(t)[11] - (A)[17]*(t)[10];\
+/* s6 = U00*t6 + U01*t7 + U02*t8 */\
+  (s)[12] =\
+    (A)[ 0]*(t)[12] + (A)[ 1]*(t)[13] +\
+    (A)[ 6]*(t)[14] + (A)[ 7]*(t)[15] +\
+    (A)[12]*(t)[16] + (A)[13]*(t)[17];\
+  (s)[13] =\
+    (A)[ 0]*(t)[13] - (A)[ 1]*(t)[12] +\
+    (A)[ 6]*(t)[15] - (A)[ 7]*(t)[14] +\
+    (A)[12]*(t)[17] - (A)[13]*(t)[16];\
+/* s7 = U10*t6 + U11*t7 + U12*t8 */\
+  (s)[14] =\
+    (A)[ 2]*(t)[12] + (A)[ 3]*(t)[13] +\
+    (A)[ 8]*(t)[14] + (A)[ 9]*(t)[15] +\
+    (A)[14]*(t)[16] + (A)[15]*(t)[17];\
+  (s)[15] =\
+    (A)[ 2]*(t)[13] - (A)[ 3]*(t)[12] +\
+    (A)[ 8]*(t)[15] - (A)[ 9]*(t)[14] +\
+    (A)[14]*(t)[17] - (A)[15]*(t)[16];\
+/* s8 = U20*t6 + U21*t7 + U22*t8 */\
+  (s)[16] =\
+    (A)[ 4]*(t)[12] + (A)[ 5]*(t)[13] +\
+    (A)[10]*(t)[14] + (A)[11]*(t)[15] +\
+    (A)[16]*(t)[16] + (A)[17]*(t)[17];\
+  (s)[17] =\
+    (A)[ 4]*(t)[13] - (A)[ 5]*(t)[12] +\
+    (A)[10]*(t)[15] - (A)[11]*(t)[14] +\
+    (A)[16]*(t)[17] - (A)[17]*(t)[16];\
+/* s9 = U00*t9 + U01*t10 + U02*t11 */\
+  (s)[18] =\
+    (A)[ 0]*(t)[18] + (A)[ 1]*(t)[19] +\
+    (A)[ 6]*(t)[20] + (A)[ 7]*(t)[21] +\
+    (A)[12]*(t)[22] + (A)[13]*(t)[23];\
+  (s)[19] =\
+    (A)[ 0]*(t)[19] - (A)[ 1]*(t)[18] +\
+    (A)[ 6]*(t)[21] - (A)[ 7]*(t)[20] +\
+    (A)[12]*(t)[23] - (A)[13]*(t)[22];\
+/* s10 = U10*t9 + U11*t10 + U12*t11 */\
+  (s)[20] =\
+    (A)[ 2]*(t)[18] + (A)[ 3]*(t)[19] +\
+    (A)[ 8]*(t)[20] + (A)[ 9]*(t)[21] +\
+    (A)[14]*(t)[22] + (A)[15]*(t)[23];\
+  (s)[21] =\
+    (A)[ 2]*(t)[19] - (A)[ 3]*(t)[18] +\
+    (A)[ 8]*(t)[21] - (A)[ 9]*(t)[20] +\
+    (A)[14]*(t)[23] - (A)[15]*(t)[22];\
+/* s11 = U20*t9 + U21*t10 + U22*t11 */\
+  (s)[22] =\
+    (A)[ 4]*(t)[18] + (A)[ 5]*(t)[19] +\
+    (A)[10]*(t)[20] + (A)[11]*(t)[21] +\
+    (A)[16]*(t)[22] + (A)[17]*(t)[23];\
+  (s)[23] =\
+    (A)[ 4]*(t)[19] - (A)[ 5]*(t)[18] +\
+    (A)[10]*(t)[21] - (A)[11]*(t)[20] +\
+    (A)[16]*(t)[23] - (A)[17]*(t)[22];}
+
+
+
+
+/********************/
+
+/* s = gamma * t. */
+
+#define _fv_eq_gamma_ti_fv(s,gamma_index,t) {\
+  (s)[ 0] = (t)[gamma_permutation[(gamma_index)][ 0]] * gamma_sign[(gamma_index)][ 0];\
+  (s)[ 1] = (t)[gamma_permutation[(gamma_index)][ 1]] * gamma_sign[(gamma_index)][ 1];\
+  (s)[ 2] = (t)[gamma_permutation[(gamma_index)][ 2]] * gamma_sign[(gamma_index)][ 2];\
+  (s)[ 3] = (t)[gamma_permutation[(gamma_index)][ 3]] * gamma_sign[(gamma_index)][ 3];\
+  (s)[ 4] = (t)[gamma_permutation[(gamma_index)][ 4]] * gamma_sign[(gamma_index)][ 4];\
+  (s)[ 5] = (t)[gamma_permutation[(gamma_index)][ 5]] * gamma_sign[(gamma_index)][ 5];\
+  (s)[ 6] = (t)[gamma_permutation[(gamma_index)][ 6]] * gamma_sign[(gamma_index)][ 6];\
+  (s)[ 7] = (t)[gamma_permutation[(gamma_index)][ 7]] * gamma_sign[(gamma_index)][ 7];\
+  (s)[ 8] = (t)[gamma_permutation[(gamma_index)][ 8]] * gamma_sign[(gamma_index)][ 8];\
+  (s)[ 9] = (t)[gamma_permutation[(gamma_index)][ 9]] * gamma_sign[(gamma_index)][ 9];\
+  (s)[10] = (t)[gamma_permutation[(gamma_index)][10]] * gamma_sign[(gamma_index)][10];\
+  (s)[11] = (t)[gamma_permutation[(gamma_index)][11]] * gamma_sign[(gamma_index)][11];\
+  (s)[12] = (t)[gamma_permutation[(gamma_index)][12]] * gamma_sign[(gamma_index)][12];\
+  (s)[13] = (t)[gamma_permutation[(gamma_index)][13]] * gamma_sign[(gamma_index)][13];\
+  (s)[14] = (t)[gamma_permutation[(gamma_index)][14]] * gamma_sign[(gamma_index)][14];\
+  (s)[15] = (t)[gamma_permutation[(gamma_index)][15]] * gamma_sign[(gamma_index)][15];\
+  (s)[16] = (t)[gamma_permutation[(gamma_index)][16]] * gamma_sign[(gamma_index)][16];\
+  (s)[17] = (t)[gamma_permutation[(gamma_index)][17]] * gamma_sign[(gamma_index)][17];\
+  (s)[18] = (t)[gamma_permutation[(gamma_index)][18]] * gamma_sign[(gamma_index)][18];\
+  (s)[19] = (t)[gamma_permutation[(gamma_index)][19]] * gamma_sign[(gamma_index)][19];\
+  (s)[20] = (t)[gamma_permutation[(gamma_index)][20]] * gamma_sign[(gamma_index)][20];\
+  (s)[21] = (t)[gamma_permutation[(gamma_index)][21]] * gamma_sign[(gamma_index)][21];\
+  (s)[22] = (t)[gamma_permutation[(gamma_index)][22]] * gamma_sign[(gamma_index)][22];\
+  (s)[23] = (t)[gamma_permutation[(gamma_index)][23]] * gamma_sign[(gamma_index)][23];}
+
+/*************************************************/
+
+#define _fv_PRe_eq_fv(s) {\
+  (s)[12] = 0.;\
+  (s)[13] = 0.;\
+  (s)[14] = 0.;\
+  (s)[15] = 0.;\
+  (s)[16] = 0.;\
+  (s)[17] = 0.;\
+  (s)[18] = 0.;\
+  (s)[19] = 0.;\
+  (s)[20] = 0.;\
+  (s)[21] = 0.;\
+  (s)[22] = 0.;\
+  (s)[23] = 0.;}
+
+/****************************************/
+
+#define _fv_pl_eq_PRe_fv(s, t) {\
+  (s)[ 0] += (t)[ 0];\
+  (s)[ 1] += (t)[ 1];\
+  (s)[ 2] += (t)[ 2];\
+  (s)[ 3] += (t)[ 3];\
+  (s)[ 4] += (t)[ 4];\
+  (s)[ 5] += (t)[ 5];\
+  (s)[ 6] += (t)[ 6];\
+  (s)[ 7] += (t)[ 7];\
+  (s)[ 8] += (t)[ 8];\
+  (s)[ 9] += (t)[ 9];\
+  (s)[10] += (t)[10];\
+  (s)[11] += (t)[11];}
+
+/****************************************/
+
+#define _fv_mi_eq_PRe_fv(s, t) {\
+  (s)[ 0] -= (t)[ 0];\
+  (s)[ 1] -= (t)[ 1];\
+  (s)[ 2] -= (t)[ 2];\
+  (s)[ 3] -= (t)[ 3];\
+  (s)[ 4] -= (t)[ 4];\
+  (s)[ 5] -= (t)[ 5];\
+  (s)[ 6] -= (t)[ 6];\
+  (s)[ 7] -= (t)[ 7];\
+  (s)[ 8] -= (t)[ 8];\
+  (s)[ 9] -= (t)[ 9];\
+  (s)[10] -= (t)[10];\
+  (s)[11] -= (t)[11];}
+
+/****************************************/
+
+#define _fv_pl_eq_PRe_fv_ti_re(s, t, r) {\
+  (s)[ 0] += (r)*(t)[ 0];\
+  (s)[ 1] += (r)*(t)[ 1];\
+  (s)[ 2] += (r)*(t)[ 2];\
+  (s)[ 3] += (r)*(t)[ 3];\
+  (s)[ 4] += (r)*(t)[ 4];\
+  (s)[ 5] += (r)*(t)[ 5];\
+  (s)[ 6] += (r)*(t)[ 6];\
+  (s)[ 7] += (r)*(t)[ 7];\
+  (s)[ 8] += (r)*(t)[ 8];\
+  (s)[ 9] += (r)*(t)[ 9];\
+  (s)[10] += (r)*(t)[10];\
+  (s)[11] += (r)*(t)[11];}
+
+/****************************************/
+
+#define _fv_eq_PRe_fv(s, t) {\
+  (s)[ 0] = (t)[ 0];\
+  (s)[ 1] = (t)[ 1];\
+  (s)[ 2] = (t)[ 2];\
+  (s)[ 3] = (t)[ 3];\
+  (s)[ 4] = (t)[ 4];\
+  (s)[ 5] = (t)[ 5];\
+  (s)[ 6] = (t)[ 6];\
+  (s)[ 7] = (t)[ 7];\
+  (s)[ 8] = (t)[ 8];\
+  (s)[ 9] = (t)[ 9];\
+  (s)[10] = (t)[10];\
+  (s)[11] = (t)[11];\
+  (s)[12] = 0.;\
+  (s)[13] = 0.;\
+  (s)[14] = 0.;\
+  (s)[15] = 0.;\
+  (s)[16] = 0.;\
+  (s)[17] = 0.;\
+  (s)[18] = 0.;\
+  (s)[19] = 0.;\
+  (s)[20] = 0.;\
+  (s)[21] = 0.;\
+  (s)[22] = 0.;\
+  (s)[23] = 0.;}
+
+/****************************************/
+
+#define _fv_PLi_eq_fv(s) {\
+  (s)[ 0] = 0.;\
+  (s)[ 1] = 0.;\
+  (s)[ 2] = 0.;\
+  (s)[ 3] = 0.;\
+  (s)[ 4] = 0.;\
+  (s)[ 5] = 0.;\
+  (s)[ 6] = 0.;\
+  (s)[ 7] = 0.;\
+  (s)[ 8] = 0.;\
+  (s)[ 9] = 0.;\
+  (s)[10] = 0.;\
+  (s)[11] = 0.;}
+
+/****************************************/
+
+#define _fv_pl_eq_PLi_fv(s, t) {\
+  (s)[12] += (t)[12];\
+  (s)[13] += (t)[13];\
+  (s)[14] += (t)[14];\
+  (s)[15] += (t)[15];\
+  (s)[16] += (t)[16];\
+  (s)[17] += (t)[17];\
+  (s)[18] += (t)[18];\
+  (s)[19] += (t)[19];\
+  (s)[20] += (t)[20];\
+  (s)[21] += (t)[21];\
+  (s)[22] += (t)[22];\
+  (s)[23] += (t)[23];}
+
+/****************************************/
+
+#define _fv_mi_eq_PLi_fv(s, t) {\
+  (s)[12] -= (t)[12];\
+  (s)[13] -= (t)[13];\
+  (s)[14] -= (t)[14];\
+  (s)[15] -= (t)[15];\
+  (s)[16] -= (t)[16];\
+  (s)[17] -= (t)[17];\
+  (s)[18] -= (t)[18];\
+  (s)[19] -= (t)[19];\
+  (s)[20] -= (t)[20];\
+  (s)[21] -= (t)[21];\
+  (s)[22] -= (t)[22];\
+  (s)[23] -= (t)[23];}
+
+/****************************************/
+
+#define _fv_pl_eq_PLi_fv_ti_re(s, t, r) {\
+  (s)[12] += (r)*(t)[12];\
+  (s)[13] += (r)*(t)[13];\
+  (s)[14] += (r)*(t)[14];\
+  (s)[15] += (r)*(t)[15];\
+  (s)[16] += (r)*(t)[16];\
+  (s)[17] += (r)*(t)[17];\
+  (s)[18] += (r)*(t)[18];\
+  (s)[19] += (r)*(t)[19];\
+  (s)[20] += (r)*(t)[20];\
+  (s)[21] += (r)*(t)[21];\
+  (s)[22] += (r)*(t)[22];\
+  (s)[23] += (r)*(t)[23];}
+
+/****************************************/
+
+#define _fv_eq_PLi_fv(s, t) {\
+  (s)[ 0] = 0.;\
+  (s)[ 1] = 0.;\
+  (s)[ 2] = 0.;\
+  (s)[ 3] = 0.;\
+  (s)[ 4] = 0.;\
+  (s)[ 5] = 0.;\
+  (s)[ 6] = 0.;\
+  (s)[ 7] = 0.;\
+  (s)[ 8] = 0.;\
+  (s)[ 9] = 0.;\
+  (s)[10] = 0.;\
+  (s)[11] = 0.;\
+  (s)[12] = (t)[12];\
+  (s)[13] = (t)[13];\
+  (s)[14] = (t)[14];\
+  (s)[15] = (t)[15];\
+  (s)[16] = (t)[16];\
+  (s)[17] = (t)[17];\
+  (s)[18] = (t)[18];\
+  (s)[19] = (t)[19];\
+  (s)[20] = (t)[20];\
+  (s)[21] = (t)[21];\
+  (s)[22] = (t)[22];\
+  (s)[23] = (t)[23];}
+
+/****************************************/
+
+/* s = gamma^T * t (transposed of gamma) */
+
+#define _fv_eq_gamma_transposed_ti_fv(_s ,_gamma_index,_t) {\
+  (_s)[ 0] = (_t)[gamma_permutation[(_gamma_index)][ 0]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 1]];\
+  (_s)[ 1] = (_t)[gamma_permutation[(_gamma_index)][ 1]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 0]];\
+  (_s)[ 2] = (_t)[gamma_permutation[(_gamma_index)][ 2]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 3]];\
+  (_s)[ 3] = (_t)[gamma_permutation[(_gamma_index)][ 3]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 2]];\
+  (_s)[ 4] = (_t)[gamma_permutation[(_gamma_index)][ 4]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 5]];\
+  (_s)[ 5] = (_t)[gamma_permutation[(_gamma_index)][ 5]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 4]];\
+  (_s)[ 6] = (_t)[gamma_permutation[(_gamma_index)][ 6]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 7]];\
+  (_s)[ 7] = (_t)[gamma_permutation[(_gamma_index)][ 7]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 6]];\
+  (_s)[ 8] = (_t)[gamma_permutation[(_gamma_index)][ 8]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 9]];\
+  (_s)[ 9] = (_t)[gamma_permutation[(_gamma_index)][ 9]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][ 8]];\
+  (_s)[10] = (_t)[gamma_permutation[(_gamma_index)][10]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][11]];\
+  (_s)[11] = (_t)[gamma_permutation[(_gamma_index)][11]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][10]];\
+  (_s)[12] = (_t)[gamma_permutation[(_gamma_index)][12]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][13]];\
+  (_s)[13] = (_t)[gamma_permutation[(_gamma_index)][13]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][12]];\
+  (_s)[14] = (_t)[gamma_permutation[(_gamma_index)][14]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][15]];\
+  (_s)[15] = (_t)[gamma_permutation[(_gamma_index)][15]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][14]];\
+  (_s)[16] = (_t)[gamma_permutation[(_gamma_index)][16]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][17]];\
+  (_s)[17] = (_t)[gamma_permutation[(_gamma_index)][17]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][16]];\
+  (_s)[18] = (_t)[gamma_permutation[(_gamma_index)][18]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][19]];\
+  (_s)[19] = (_t)[gamma_permutation[(_gamma_index)][19]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][18]];\
+  (_s)[20] = (_t)[gamma_permutation[(_gamma_index)][20]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][21]];\
+  (_s)[21] = (_t)[gamma_permutation[(_gamma_index)][21]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][20]];\
+  (_s)[22] = (_t)[gamma_permutation[(_gamma_index)][22]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][23]];\
+  (_s)[23] = (_t)[gamma_permutation[(_gamma_index)][23]] * gamma_sign[(_gamma_index)][gamma_permutation[(_gamma_index)][22]];\
+}
+
+/********************/
+
+#define _co_eq_tr_gammaU_sm(_w, _mu, _g, _C) {\
+  (_w)->re =\
+       /* first spinor component */\
+         gamma_sign[(_mu)][ 0] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 0]/2)%3)  ] * (_C)[0][gamma_permutation[(_mu)][ 0]]\
+       - gamma_sign[(_mu)][ 1] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 1]/2)%3)+1] * (_C)[0][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 2]/2)%3)  ] * (_C)[0][gamma_permutation[(_mu)][ 2]]\
+       - gamma_sign[(_mu)][ 3] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 3]/2)%3)+1] * (_C)[0][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 4]/2)%3)  ] * (_C)[0][gamma_permutation[(_mu)][ 4]]\
+       - gamma_sign[(_mu)][ 5] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 5]/2)%3)+1] * (_C)[0][gamma_permutation[(_mu)][ 5]]\
+       + gamma_sign[(_mu)][ 0] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 0]/2)%3)  ] * (_C)[1][gamma_permutation[(_mu)][ 0]]\
+       - gamma_sign[(_mu)][ 1] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 1]/2)%3)+1] * (_C)[1][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 2]/2)%3)  ] * (_C)[1][gamma_permutation[(_mu)][ 2]]\
+       - gamma_sign[(_mu)][ 3] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 3]/2)%3)+1] * (_C)[1][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 4]/2)%3)  ] * (_C)[1][gamma_permutation[(_mu)][ 4]]\
+       - gamma_sign[(_mu)][ 5] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 5]/2)%3)+1] * (_C)[1][gamma_permutation[(_mu)][ 5]]\
+       + gamma_sign[(_mu)][ 0] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 0]/2)%3)  ] * (_C)[2][gamma_permutation[(_mu)][ 0]]\
+       - gamma_sign[(_mu)][ 1] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 1]/2)%3)+1] * (_C)[2][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 2]/2)%3)  ] * (_C)[2][gamma_permutation[(_mu)][ 2]]\
+       - gamma_sign[(_mu)][ 3] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 3]/2)%3)+1] * (_C)[2][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 4]/2)%3)  ] * (_C)[2][gamma_permutation[(_mu)][ 4]]\
+       - gamma_sign[(_mu)][ 5] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 5]/2)%3)+1] * (_C)[2][gamma_permutation[(_mu)][ 5]]\
+       /* second spinor component */\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 6]/2)%3)  ] * (_C)[3][gamma_permutation[(_mu)][ 6]]\
+       - gamma_sign[(_mu)][ 7] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 7]/2)%3)+1] * (_C)[3][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 8]/2)%3)  ] * (_C)[3][gamma_permutation[(_mu)][ 8]]\
+       - gamma_sign[(_mu)][ 9] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 9]/2)%3)+1] * (_C)[3][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][10]/2)%3)  ] * (_C)[3][gamma_permutation[(_mu)][10]]\
+       - gamma_sign[(_mu)][11] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][11]/2)%3)+1] * (_C)[3][gamma_permutation[(_mu)][11]]\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 6]/2)%3)  ] * (_C)[4][gamma_permutation[(_mu)][ 6]]\
+       - gamma_sign[(_mu)][ 7] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 7]/2)%3)+1] * (_C)[4][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 8]/2)%3)  ] * (_C)[4][gamma_permutation[(_mu)][ 8]]\
+       - gamma_sign[(_mu)][ 9] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 9]/2)%3)+1] * (_C)[4][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][10]/2)%3)  ] * (_C)[4][gamma_permutation[(_mu)][10]]\
+       - gamma_sign[(_mu)][11] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][11]/2)%3)+1] * (_C)[4][gamma_permutation[(_mu)][11]]\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 6]/2)%3)  ] * (_C)[5][gamma_permutation[(_mu)][ 6]]\
+       - gamma_sign[(_mu)][ 7] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 7]/2)%3)+1] * (_C)[5][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 8]/2)%3)  ] * (_C)[5][gamma_permutation[(_mu)][ 8]]\
+       - gamma_sign[(_mu)][ 9] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 9]/2)%3)+1] * (_C)[5][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][10]/2)%3)  ] * (_C)[5][gamma_permutation[(_mu)][10]]\
+       - gamma_sign[(_mu)][11] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][11]/2)%3)+1] * (_C)[5][gamma_permutation[(_mu)][11]]\
+       /* third spinor component */\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][12]/2)%3)  ] * (_C)[6][gamma_permutation[(_mu)][12]]\
+       - gamma_sign[(_mu)][13] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][13]/2)%3)+1] * (_C)[6][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][14]/2)%3)  ] * (_C)[6][gamma_permutation[(_mu)][14]]\
+       - gamma_sign[(_mu)][15] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][15]/2)%3)+1] * (_C)[6][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][16]/2)%3)  ] * (_C)[6][gamma_permutation[(_mu)][16]]\
+       - gamma_sign[(_mu)][17] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][17]/2)%3)+1] * (_C)[6][gamma_permutation[(_mu)][17]]\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][12]/2)%3)  ] * (_C)[7][gamma_permutation[(_mu)][12]]\
+       - gamma_sign[(_mu)][13] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][13]/2)%3)+1] * (_C)[7][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][14]/2)%3)  ] * (_C)[7][gamma_permutation[(_mu)][14]]\
+       - gamma_sign[(_mu)][15] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][15]/2)%3)+1] * (_C)[7][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][16]/2)%3)  ] * (_C)[7][gamma_permutation[(_mu)][16]]\
+       - gamma_sign[(_mu)][17] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][17]/2)%3)+1] * (_C)[7][gamma_permutation[(_mu)][17]]\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][12]/2)%3)  ] * (_C)[8][gamma_permutation[(_mu)][12]]\
+       - gamma_sign[(_mu)][13] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][13]/2)%3)+1] * (_C)[8][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][14]/2)%3)  ] * (_C)[8][gamma_permutation[(_mu)][14]]\
+       - gamma_sign[(_mu)][15] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][15]/2)%3)+1] * (_C)[8][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][16]/2)%3)  ] * (_C)[8][gamma_permutation[(_mu)][16]]\
+       - gamma_sign[(_mu)][17] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][17]/2)%3)+1] * (_C)[8][gamma_permutation[(_mu)][17]]\
+       /* third spinor component */\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][18]/2)%3)  ] * (_C)[9][gamma_permutation[(_mu)][18]]\
+       - gamma_sign[(_mu)][19] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][19]/2)%3)+1] * (_C)[9][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][20]/2)%3)  ] * (_C)[9][gamma_permutation[(_mu)][20]]\
+       - gamma_sign[(_mu)][21] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][21]/2)%3)+1] * (_C)[9][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][22]/2)%3)  ] * (_C)[9][gamma_permutation[(_mu)][22]]\
+       - gamma_sign[(_mu)][23] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][23]/2)%3)+1] * (_C)[9][gamma_permutation[(_mu)][23]]\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][18]/2)%3)  ] * (_C)[10][gamma_permutation[(_mu)][18]]\
+       - gamma_sign[(_mu)][19] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][19]/2)%3)+1] * (_C)[10][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][20]/2)%3)  ] * (_C)[10][gamma_permutation[(_mu)][20]]\
+       - gamma_sign[(_mu)][21] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][21]/2)%3)+1] * (_C)[10][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][22]/2)%3)  ] * (_C)[10][gamma_permutation[(_mu)][22]]\
+       - gamma_sign[(_mu)][23] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][23]/2)%3)+1] * (_C)[10][gamma_permutation[(_mu)][23]]\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][18]/2)%3)  ] * (_C)[11][gamma_permutation[(_mu)][18]]\
+       - gamma_sign[(_mu)][19] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][19]/2)%3)+1] * (_C)[11][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][20]/2)%3)  ] * (_C)[11][gamma_permutation[(_mu)][20]]\
+       - gamma_sign[(_mu)][21] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][21]/2)%3)+1] * (_C)[11][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][22]/2)%3)  ] * (_C)[11][gamma_permutation[(_mu)][22]]\
+       - gamma_sign[(_mu)][23] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][23]/2)%3)+1] * (_C)[11][gamma_permutation[(_mu)][23]];\
+\
+  (_w)->im = \
+       /* first spinor component */\
+         gamma_sign[(_mu)][ 0] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 1]/2)%3)+1] * (_C)[0][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 0]/2)%3)  ] * (_C)[0][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 3]/2)%3)+1] * (_C)[0][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 2]/2)%3)  ] * (_C)[0][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 5]/2)%3)+1] * (_C)[0][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 4]/2)%3)  ] * (_C)[0][gamma_permutation[(_mu)][ 5]]\
+       + gamma_sign[(_mu)][ 0] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 1]/2)%3)+1] * (_C)[1][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 0]/2)%3)  ] * (_C)[1][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 3]/2)%3)+1] * (_C)[1][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 2]/2)%3)  ] * (_C)[1][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 5]/2)%3)+1] * (_C)[1][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 4]/2)%3)  ] * (_C)[1][gamma_permutation[(_mu)][ 5]]\
+       + gamma_sign[(_mu)][ 0] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 1]/2)%3)+1] * (_C)[2][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 0]/2)%3)  ] * (_C)[2][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 3]/2)%3)+1] * (_C)[2][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 2]/2)%3)  ] * (_C)[2][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 5]/2)%3)+1] * (_C)[2][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 4]/2)%3)  ] * (_C)[2][gamma_permutation[(_mu)][ 5]]\
+       /* second spinor component */\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 7]/2)%3)+1] * (_C)[3][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 6]/2)%3)  ] * (_C)[3][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 9]/2)%3)+1] * (_C)[3][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][ 8]/2)%3)  ] * (_C)[3][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][11]/2)%3)+1] * (_C)[3][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][10]/2)%3)  ] * (_C)[3][gamma_permutation[(_mu)][11]]\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 7]/2)%3)+1] * (_C)[4][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 6]/2)%3)  ] * (_C)[4][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 9]/2)%3)+1] * (_C)[4][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][ 8]/2)%3)  ] * (_C)[4][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][11]/2)%3)+1] * (_C)[4][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][10]/2)%3)  ] * (_C)[4][gamma_permutation[(_mu)][11]]\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 7]/2)%3)+1] * (_C)[5][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 6]/2)%3)  ] * (_C)[5][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 9]/2)%3)+1] * (_C)[5][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][ 8]/2)%3)  ] * (_C)[5][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][11]/2)%3)+1] * (_C)[5][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][10]/2)%3)  ] * (_C)[5][gamma_permutation[(_mu)][11]]\
+       /* third spinor component */\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][13]/2)%3)+1] * (_C)[6][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][12]/2)%3)  ] * (_C)[6][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][15]/2)%3)+1] * (_C)[6][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][14]/2)%3)  ] * (_C)[6][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][17]/2)%3)+1] * (_C)[6][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][16]/2)%3)  ] * (_C)[6][gamma_permutation[(_mu)][17]]\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][13]/2)%3)+1] * (_C)[7][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][12]/2)%3)  ] * (_C)[7][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][15]/2)%3)+1] * (_C)[7][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][14]/2)%3)  ] * (_C)[7][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][17]/2)%3)+1] * (_C)[7][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][16]/2)%3)  ] * (_C)[7][gamma_permutation[(_mu)][17]]\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][13]/2)%3)+1] * (_C)[8][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][12]/2)%3)  ] * (_C)[8][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][15]/2)%3)+1] * (_C)[8][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][14]/2)%3)  ] * (_C)[8][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][17]/2)%3)+1] * (_C)[8][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][16]/2)%3)  ] * (_C)[8][gamma_permutation[(_mu)][17]]\
+       /* fourth spinor component */\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][19]/2)%3)+1] * (_C)[ 9][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][18]/2)%3)  ] * (_C)[ 9][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][21]/2)%3)+1] * (_C)[ 9][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][20]/2)%3)  ] * (_C)[ 9][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][23]/2)%3)+1] * (_C)[ 9][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3* 0+(gamma_permutation[(_mu)][22]/2)%3)  ] * (_C)[ 9][gamma_permutation[(_mu)][23]]\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][19]/2)%3)+1] * (_C)[10][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][18]/2)%3)  ] * (_C)[10][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][21]/2)%3)+1] * (_C)[10][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][20]/2)%3)  ] * (_C)[10][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][23]/2)%3)+1] * (_C)[10][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3* 1+(gamma_permutation[(_mu)][22]/2)%3)  ] * (_C)[10][gamma_permutation[(_mu)][23]]\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][19]/2)%3)+1] * (_C)[11][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][18]/2)%3)  ] * (_C)[11][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][21]/2)%3)+1] * (_C)[11][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][20]/2)%3)  ] * (_C)[11][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][23]/2)%3)+1] * (_C)[11][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3* 2+(gamma_permutation[(_mu)][22]/2)%3)  ] * (_C)[11][gamma_permutation[(_mu)][23]];}
+
+/********************/
+
+#define _co_eq_tr_gammaUdag_sm(_w, _mu, _g, _C) {\
+  (_w)->re =\
+       /* first spinor component */\
+         gamma_sign[(_mu)][ 0] * (_g)[2*(3*((gamma_permutation[(_mu)][ 0]/2)%3)+0)  ] * (_C)[0][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3*((gamma_permutation[(_mu)][ 1]/2)%3)+0)+1] * (_C)[0][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3*((gamma_permutation[(_mu)][ 2]/2)%3)+0)  ] * (_C)[0][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3*((gamma_permutation[(_mu)][ 3]/2)%3)+0)+1] * (_C)[0][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3*((gamma_permutation[(_mu)][ 4]/2)%3)+0)  ] * (_C)[0][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3*((gamma_permutation[(_mu)][ 5]/2)%3)+0)+1] * (_C)[0][gamma_permutation[(_mu)][ 5]]\
+       + gamma_sign[(_mu)][ 0] * (_g)[2*(3*((gamma_permutation[(_mu)][ 0]/2)%3)+1)  ] * (_C)[1][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3*((gamma_permutation[(_mu)][ 1]/2)%3)+1)+1] * (_C)[1][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3*((gamma_permutation[(_mu)][ 2]/2)%3)+1)  ] * (_C)[1][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3*((gamma_permutation[(_mu)][ 3]/2)%3)+1)+1] * (_C)[1][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3*((gamma_permutation[(_mu)][ 4]/2)%3)+1)  ] * (_C)[1][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3*((gamma_permutation[(_mu)][ 5]/2)%3)+1)+1] * (_C)[1][gamma_permutation[(_mu)][ 5]]\
+       + gamma_sign[(_mu)][ 0] * (_g)[2*(3*((gamma_permutation[(_mu)][ 0]/2)%3)+2)  ] * (_C)[2][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3*((gamma_permutation[(_mu)][ 1]/2)%3)+2)+1] * (_C)[2][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 2] * (_g)[2*(3*((gamma_permutation[(_mu)][ 2]/2)%3)+2)  ] * (_C)[2][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3*((gamma_permutation[(_mu)][ 3]/2)%3)+2)+1] * (_C)[2][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 4] * (_g)[2*(3*((gamma_permutation[(_mu)][ 4]/2)%3)+2)  ] * (_C)[2][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3*((gamma_permutation[(_mu)][ 5]/2)%3)+2)+1] * (_C)[2][gamma_permutation[(_mu)][ 5]]\
+       /* second spinor component */\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3*((gamma_permutation[(_mu)][ 6]/2)%3)+0)  ] * (_C)[3][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3*((gamma_permutation[(_mu)][ 7]/2)%3)+0)+1] * (_C)[3][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3*((gamma_permutation[(_mu)][ 8]/2)%3)+0)  ] * (_C)[3][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3*((gamma_permutation[(_mu)][ 9]/2)%3)+0)+1] * (_C)[3][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3*((gamma_permutation[(_mu)][10]/2)%3)+0)  ] * (_C)[3][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3*((gamma_permutation[(_mu)][11]/2)%3)+0)+1] * (_C)[3][gamma_permutation[(_mu)][11]]\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3*((gamma_permutation[(_mu)][ 6]/2)%3)+1)  ] * (_C)[4][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3*((gamma_permutation[(_mu)][ 7]/2)%3)+1)+1] * (_C)[4][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3*((gamma_permutation[(_mu)][ 8]/2)%3)+1)  ] * (_C)[4][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3*((gamma_permutation[(_mu)][ 9]/2)%3)+1)+1] * (_C)[4][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3*((gamma_permutation[(_mu)][10]/2)%3)+1)  ] * (_C)[4][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3*((gamma_permutation[(_mu)][11]/2)%3)+1)+1] * (_C)[4][gamma_permutation[(_mu)][11]]\
+       + gamma_sign[(_mu)][ 6] * (_g)[2*(3*((gamma_permutation[(_mu)][ 6]/2)%3)+2)  ] * (_C)[5][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3*((gamma_permutation[(_mu)][ 7]/2)%3)+2)+1] * (_C)[5][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 8] * (_g)[2*(3*((gamma_permutation[(_mu)][ 8]/2)%3)+2)  ] * (_C)[5][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3*((gamma_permutation[(_mu)][ 9]/2)%3)+2)+1] * (_C)[5][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][10] * (_g)[2*(3*((gamma_permutation[(_mu)][10]/2)%3)+2)  ] * (_C)[5][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3*((gamma_permutation[(_mu)][11]/2)%3)+2)+1] * (_C)[5][gamma_permutation[(_mu)][11]]\
+       /* third spinor component */\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3*((gamma_permutation[(_mu)][12]/2)%3)+0)  ] * (_C)[6][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3*((gamma_permutation[(_mu)][13]/2)%3)+0)+1] * (_C)[6][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3*((gamma_permutation[(_mu)][14]/2)%3)+0)  ] * (_C)[6][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3*((gamma_permutation[(_mu)][15]/2)%3)+0)+1] * (_C)[6][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3*((gamma_permutation[(_mu)][16]/2)%3)+0)  ] * (_C)[6][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3*((gamma_permutation[(_mu)][17]/2)%3)+0)+1] * (_C)[6][gamma_permutation[(_mu)][17]]\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3*((gamma_permutation[(_mu)][12]/2)%3)+1)  ] * (_C)[7][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3*((gamma_permutation[(_mu)][13]/2)%3)+1)+1] * (_C)[7][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3*((gamma_permutation[(_mu)][14]/2)%3)+1)  ] * (_C)[7][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3*((gamma_permutation[(_mu)][15]/2)%3)+1)+1] * (_C)[7][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3*((gamma_permutation[(_mu)][16]/2)%3)+1)  ] * (_C)[7][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3*((gamma_permutation[(_mu)][17]/2)%3)+1)+1] * (_C)[7][gamma_permutation[(_mu)][17]]\
+       + gamma_sign[(_mu)][12] * (_g)[2*(3*((gamma_permutation[(_mu)][12]/2)%3)+2)  ] * (_C)[8][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3*((gamma_permutation[(_mu)][13]/2)%3)+2)+1] * (_C)[8][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][14] * (_g)[2*(3*((gamma_permutation[(_mu)][14]/2)%3)+2)  ] * (_C)[8][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3*((gamma_permutation[(_mu)][15]/2)%3)+2)+1] * (_C)[8][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][16] * (_g)[2*(3*((gamma_permutation[(_mu)][16]/2)%3)+2)  ] * (_C)[8][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3*((gamma_permutation[(_mu)][17]/2)%3)+2)+1] * (_C)[8][gamma_permutation[(_mu)][17]]\
+       /* fourth spinor component */\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3*((gamma_permutation[(_mu)][18]/2)%3)+0)  ] * (_C)[9][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3*((gamma_permutation[(_mu)][19]/2)%3)+0)+1] * (_C)[9][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3*((gamma_permutation[(_mu)][20]/2)%3)+0)  ] * (_C)[9][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3*((gamma_permutation[(_mu)][21]/2)%3)+0)+1] * (_C)[9][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3*((gamma_permutation[(_mu)][22]/2)%3)+0)  ] * (_C)[9][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3*((gamma_permutation[(_mu)][23]/2)%3)+0)+1] * (_C)[9][gamma_permutation[(_mu)][23]]\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3*((gamma_permutation[(_mu)][18]/2)%3)+1)  ] * (_C)[10][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3*((gamma_permutation[(_mu)][19]/2)%3)+1)+1] * (_C)[10][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3*((gamma_permutation[(_mu)][20]/2)%3)+1)  ] * (_C)[10][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3*((gamma_permutation[(_mu)][21]/2)%3)+1)+1] * (_C)[10][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3*((gamma_permutation[(_mu)][22]/2)%3)+1)  ] * (_C)[10][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3*((gamma_permutation[(_mu)][23]/2)%3)+1)+1] * (_C)[10][gamma_permutation[(_mu)][23]]\
+       + gamma_sign[(_mu)][18] * (_g)[2*(3*((gamma_permutation[(_mu)][18]/2)%3)+2)  ] * (_C)[11][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3*((gamma_permutation[(_mu)][19]/2)%3)+2)+1] * (_C)[11][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][20] * (_g)[2*(3*((gamma_permutation[(_mu)][20]/2)%3)+2)  ] * (_C)[11][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3*((gamma_permutation[(_mu)][21]/2)%3)+2)+1] * (_C)[11][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][22] * (_g)[2*(3*((gamma_permutation[(_mu)][22]/2)%3)+2)  ] * (_C)[11][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3*((gamma_permutation[(_mu)][23]/2)%3)+2)+1] * (_C)[11][gamma_permutation[(_mu)][23]];\
+\
+  (_w)->im = \
+       /* first spinor component */\
+       - gamma_sign[(_mu)][ 0] * (_g)[2*(3*((gamma_permutation[(_mu)][ 1]/2)%3)+0)+1] * (_C)[0][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3*((gamma_permutation[(_mu)][ 0]/2)%3)+0)  ] * (_C)[0][gamma_permutation[(_mu)][ 1]]\
+       - gamma_sign[(_mu)][ 2] * (_g)[2*(3*((gamma_permutation[(_mu)][ 3]/2)%3)+0)+1] * (_C)[0][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3*((gamma_permutation[(_mu)][ 2]/2)%3)+0)  ] * (_C)[0][gamma_permutation[(_mu)][ 3]]\
+       - gamma_sign[(_mu)][ 4] * (_g)[2*(3*((gamma_permutation[(_mu)][ 5]/2)%3)+0)+1] * (_C)[0][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3*((gamma_permutation[(_mu)][ 4]/2)%3)+0)  ] * (_C)[0][gamma_permutation[(_mu)][ 5]]\
+       - gamma_sign[(_mu)][ 0] * (_g)[2*(3*((gamma_permutation[(_mu)][ 1]/2)%3)+1)+1] * (_C)[1][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3*((gamma_permutation[(_mu)][ 0]/2)%3)+1)  ] * (_C)[1][gamma_permutation[(_mu)][ 1]]\
+       - gamma_sign[(_mu)][ 2] * (_g)[2*(3*((gamma_permutation[(_mu)][ 3]/2)%3)+1)+1] * (_C)[1][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3*((gamma_permutation[(_mu)][ 2]/2)%3)+1)  ] * (_C)[1][gamma_permutation[(_mu)][ 3]]\
+       - gamma_sign[(_mu)][ 4] * (_g)[2*(3*((gamma_permutation[(_mu)][ 5]/2)%3)+1)+1] * (_C)[1][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3*((gamma_permutation[(_mu)][ 4]/2)%3)+1)  ] * (_C)[1][gamma_permutation[(_mu)][ 5]]\
+       - gamma_sign[(_mu)][ 0] * (_g)[2*(3*((gamma_permutation[(_mu)][ 1]/2)%3)+2)+1] * (_C)[2][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 1] * (_g)[2*(3*((gamma_permutation[(_mu)][ 0]/2)%3)+2)  ] * (_C)[2][gamma_permutation[(_mu)][ 1]]\
+       - gamma_sign[(_mu)][ 2] * (_g)[2*(3*((gamma_permutation[(_mu)][ 3]/2)%3)+2)+1] * (_C)[2][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 3] * (_g)[2*(3*((gamma_permutation[(_mu)][ 2]/2)%3)+2)  ] * (_C)[2][gamma_permutation[(_mu)][ 3]]\
+       - gamma_sign[(_mu)][ 4] * (_g)[2*(3*((gamma_permutation[(_mu)][ 5]/2)%3)+2)+1] * (_C)[2][gamma_permutation[(_mu)][ 4]]\
+       + gamma_sign[(_mu)][ 5] * (_g)[2*(3*((gamma_permutation[(_mu)][ 4]/2)%3)+2)  ] * (_C)[2][gamma_permutation[(_mu)][ 5]]\
+       /* second spinor component */\
+       - gamma_sign[(_mu)][ 6] * (_g)[2*(3*((gamma_permutation[(_mu)][ 7]/2)%3)+0)+1] * (_C)[3][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3*((gamma_permutation[(_mu)][ 6]/2)%3)+0)  ] * (_C)[3][gamma_permutation[(_mu)][ 7]]\
+       - gamma_sign[(_mu)][ 8] * (_g)[2*(3*((gamma_permutation[(_mu)][ 9]/2)%3)+0)+1] * (_C)[3][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3*((gamma_permutation[(_mu)][ 8]/2)%3)+0)  ] * (_C)[3][gamma_permutation[(_mu)][ 9]]\
+       - gamma_sign[(_mu)][10] * (_g)[2*(3*((gamma_permutation[(_mu)][11]/2)%3)+0)+1] * (_C)[3][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3*((gamma_permutation[(_mu)][10]/2)%3)+0)  ] * (_C)[3][gamma_permutation[(_mu)][11]]\
+       - gamma_sign[(_mu)][ 6] * (_g)[2*(3*((gamma_permutation[(_mu)][ 7]/2)%3)+1)+1] * (_C)[4][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3*((gamma_permutation[(_mu)][ 6]/2)%3)+1)  ] * (_C)[4][gamma_permutation[(_mu)][ 7]]\
+       - gamma_sign[(_mu)][ 8] * (_g)[2*(3*((gamma_permutation[(_mu)][ 9]/2)%3)+1)+1] * (_C)[4][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3*((gamma_permutation[(_mu)][ 8]/2)%3)+1)  ] * (_C)[4][gamma_permutation[(_mu)][ 9]]\
+       - gamma_sign[(_mu)][10] * (_g)[2*(3*((gamma_permutation[(_mu)][11]/2)%3)+1)+1] * (_C)[4][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3*((gamma_permutation[(_mu)][10]/2)%3)+1)  ] * (_C)[4][gamma_permutation[(_mu)][11]]\
+       - gamma_sign[(_mu)][ 6] * (_g)[2*(3*((gamma_permutation[(_mu)][ 7]/2)%3)+2)+1] * (_C)[5][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 7] * (_g)[2*(3*((gamma_permutation[(_mu)][ 6]/2)%3)+2)  ] * (_C)[5][gamma_permutation[(_mu)][ 7]]\
+       - gamma_sign[(_mu)][ 8] * (_g)[2*(3*((gamma_permutation[(_mu)][ 9]/2)%3)+2)+1] * (_C)[5][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][ 9] * (_g)[2*(3*((gamma_permutation[(_mu)][ 8]/2)%3)+2)  ] * (_C)[5][gamma_permutation[(_mu)][ 9]]\
+       - gamma_sign[(_mu)][10] * (_g)[2*(3*((gamma_permutation[(_mu)][11]/2)%3)+2)+1] * (_C)[5][gamma_permutation[(_mu)][10]]\
+       + gamma_sign[(_mu)][11] * (_g)[2*(3*((gamma_permutation[(_mu)][10]/2)%3)+2)  ] * (_C)[5][gamma_permutation[(_mu)][11]]\
+       /* third spinor component */\
+       - gamma_sign[(_mu)][12] * (_g)[2*(3*((gamma_permutation[(_mu)][13]/2)%3)+0)+1] * (_C)[6][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3*((gamma_permutation[(_mu)][12]/2)%3)+0)  ] * (_C)[6][gamma_permutation[(_mu)][13]]\
+       - gamma_sign[(_mu)][14] * (_g)[2*(3*((gamma_permutation[(_mu)][15]/2)%3)+0)+1] * (_C)[6][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3*((gamma_permutation[(_mu)][14]/2)%3)+0)  ] * (_C)[6][gamma_permutation[(_mu)][15]]\
+       - gamma_sign[(_mu)][16] * (_g)[2*(3*((gamma_permutation[(_mu)][17]/2)%3)+0)+1] * (_C)[6][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3*((gamma_permutation[(_mu)][16]/2)%3)+0)  ] * (_C)[6][gamma_permutation[(_mu)][17]]\
+       - gamma_sign[(_mu)][12] * (_g)[2*(3*((gamma_permutation[(_mu)][13]/2)%3)+1)+1] * (_C)[7][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3*((gamma_permutation[(_mu)][12]/2)%3)+1)  ] * (_C)[7][gamma_permutation[(_mu)][13]]\
+       - gamma_sign[(_mu)][14] * (_g)[2*(3*((gamma_permutation[(_mu)][15]/2)%3)+1)+1] * (_C)[7][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3*((gamma_permutation[(_mu)][14]/2)%3)+1)  ] * (_C)[7][gamma_permutation[(_mu)][15]]\
+       - gamma_sign[(_mu)][16] * (_g)[2*(3*((gamma_permutation[(_mu)][17]/2)%3)+1)+1] * (_C)[7][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3*((gamma_permutation[(_mu)][16]/2)%3)+1)  ] * (_C)[7][gamma_permutation[(_mu)][17]]\
+       - gamma_sign[(_mu)][12] * (_g)[2*(3*((gamma_permutation[(_mu)][13]/2)%3)+2)+1] * (_C)[8][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][13] * (_g)[2*(3*((gamma_permutation[(_mu)][12]/2)%3)+2)  ] * (_C)[8][gamma_permutation[(_mu)][13]]\
+       - gamma_sign[(_mu)][14] * (_g)[2*(3*((gamma_permutation[(_mu)][15]/2)%3)+2)+1] * (_C)[8][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][15] * (_g)[2*(3*((gamma_permutation[(_mu)][14]/2)%3)+2)  ] * (_C)[8][gamma_permutation[(_mu)][15]]\
+       - gamma_sign[(_mu)][16] * (_g)[2*(3*((gamma_permutation[(_mu)][17]/2)%3)+2)+1] * (_C)[8][gamma_permutation[(_mu)][16]]\
+       + gamma_sign[(_mu)][17] * (_g)[2*(3*((gamma_permutation[(_mu)][16]/2)%3)+2)  ] * (_C)[8][gamma_permutation[(_mu)][17]]\
+       /* fourth spinor component */\
+       - gamma_sign[(_mu)][18] * (_g)[2*(3*((gamma_permutation[(_mu)][19]/2)%3)+0)+1] * (_C)[ 9][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3*((gamma_permutation[(_mu)][18]/2)%3)+0)  ] * (_C)[ 9][gamma_permutation[(_mu)][19]]\
+       - gamma_sign[(_mu)][20] * (_g)[2*(3*((gamma_permutation[(_mu)][21]/2)%3)+0)+1] * (_C)[ 9][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3*((gamma_permutation[(_mu)][20]/2)%3)+0)  ] * (_C)[ 9][gamma_permutation[(_mu)][21]]\
+       - gamma_sign[(_mu)][22] * (_g)[2*(3*((gamma_permutation[(_mu)][23]/2)%3)+0)+1] * (_C)[ 9][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3*((gamma_permutation[(_mu)][22]/2)%3)+0)  ] * (_C)[ 9][gamma_permutation[(_mu)][23]]\
+       - gamma_sign[(_mu)][18] * (_g)[2*(3*((gamma_permutation[(_mu)][19]/2)%3)+1)+1] * (_C)[10][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3*((gamma_permutation[(_mu)][18]/2)%3)+1)  ] * (_C)[10][gamma_permutation[(_mu)][19]]\
+       - gamma_sign[(_mu)][20] * (_g)[2*(3*((gamma_permutation[(_mu)][21]/2)%3)+1)+1] * (_C)[10][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3*((gamma_permutation[(_mu)][20]/2)%3)+1)  ] * (_C)[10][gamma_permutation[(_mu)][21]]\
+       - gamma_sign[(_mu)][22] * (_g)[2*(3*((gamma_permutation[(_mu)][23]/2)%3)+1)+1] * (_C)[10][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3*((gamma_permutation[(_mu)][22]/2)%3)+1)  ] * (_C)[10][gamma_permutation[(_mu)][23]]\
+       - gamma_sign[(_mu)][18] * (_g)[2*(3*((gamma_permutation[(_mu)][19]/2)%3)+2)+1] * (_C)[11][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][19] * (_g)[2*(3*((gamma_permutation[(_mu)][18]/2)%3)+2)  ] * (_C)[11][gamma_permutation[(_mu)][19]]\
+       - gamma_sign[(_mu)][20] * (_g)[2*(3*((gamma_permutation[(_mu)][21]/2)%3)+2)+1] * (_C)[11][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][21] * (_g)[2*(3*((gamma_permutation[(_mu)][20]/2)%3)+2)  ] * (_C)[11][gamma_permutation[(_mu)][21]]\
+       - gamma_sign[(_mu)][22] * (_g)[2*(3*((gamma_permutation[(_mu)][23]/2)%3)+2)+1] * (_C)[11][gamma_permutation[(_mu)][22]]\
+       + gamma_sign[(_mu)][23] * (_g)[2*(3*((gamma_permutation[(_mu)][22]/2)%3)+2)  ] * (_C)[11][gamma_permutation[(_mu)][23]];}
+
+/********************/
+
+#define _co_eq_tr_gamma_sm(_w, _mu, _C) {\
+  (_w)->re =\
+       /* first spinor component */\
+         gamma_sign[(_mu)][ 0] * (_C)[ 0][gamma_permutation[(_mu)][ 0]]\
+       + gamma_sign[(_mu)][ 2] * (_C)[ 1][gamma_permutation[(_mu)][ 2]]\
+       + gamma_sign[(_mu)][ 4] * (_C)[ 2][gamma_permutation[(_mu)][ 4]]\
+       /* second spinor component */\
+       + gamma_sign[(_mu)][ 6] * (_C)[ 3][gamma_permutation[(_mu)][ 6]]\
+       + gamma_sign[(_mu)][ 8] * (_C)[ 4][gamma_permutation[(_mu)][ 8]]\
+       + gamma_sign[(_mu)][10] * (_C)[ 5][gamma_permutation[(_mu)][10]]\
+       /* third spinor component */\
+       + gamma_sign[(_mu)][12] * (_C)[ 6][gamma_permutation[(_mu)][12]]\
+       + gamma_sign[(_mu)][14] * (_C)[ 7][gamma_permutation[(_mu)][14]]\
+       + gamma_sign[(_mu)][16] * (_C)[ 8][gamma_permutation[(_mu)][16]]\
+       /* fourth spinor component */\
+       + gamma_sign[(_mu)][18] * (_C)[ 9][gamma_permutation[(_mu)][18]]\
+       + gamma_sign[(_mu)][20] * (_C)[10][gamma_permutation[(_mu)][20]]\
+       + gamma_sign[(_mu)][22] * (_C)[11][gamma_permutation[(_mu)][22]];\
+\
+  (_w)->im = \
+       /* first spinor component */\
+         gamma_sign[(_mu)][ 1] * (_C)[ 0][gamma_permutation[(_mu)][ 1]]\
+       + gamma_sign[(_mu)][ 3] * (_C)[ 1][gamma_permutation[(_mu)][ 3]]\
+       + gamma_sign[(_mu)][ 5] * (_C)[ 2][gamma_permutation[(_mu)][ 5]]\
+       /* second spinor component */\
+       + gamma_sign[(_mu)][ 7] * (_C)[ 3][gamma_permutation[(_mu)][ 7]]\
+       + gamma_sign[(_mu)][ 9] * (_C)[ 4][gamma_permutation[(_mu)][ 9]]\
+       + gamma_sign[(_mu)][11] * (_C)[ 5][gamma_permutation[(_mu)][11]]\
+       /* third spinor component */\
+       + gamma_sign[(_mu)][13] * (_C)[ 6][gamma_permutation[(_mu)][13]]\
+       + gamma_sign[(_mu)][15] * (_C)[ 7][gamma_permutation[(_mu)][15]]\
+       + gamma_sign[(_mu)][17] * (_C)[ 8][gamma_permutation[(_mu)][17]]\
+       /* fourth spinor component */\
+       + gamma_sign[(_mu)][19] * (_C)[ 9][gamma_permutation[(_mu)][19]]\
+       + gamma_sign[(_mu)][21] * (_C)[10][gamma_permutation[(_mu)][21]]\
+       + gamma_sign[(_mu)][23] * (_C)[11][gamma_permutation[(_mu)][23]];}
+
+/********************/
+
+#define _fv_eq_hpem_ti_fv(_s, _t, _gindex, _sigma, _mut, _fact) {\
+  (_s)[ 0] = (_t)[ 0] + ( (_t)[gamma_permutation[(_gindex)][ 0]] * gamma_sign[(_gindex)][ 0]            \
+           + (_t)[gamma_permutation[6+(_gindex)][ 1]] * gamma_sign[6+(_gindex)][ 1] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][ 1]] * gamma_sign[5][ 1] * (_mut);                               \
+\
+  (_s)[ 1] = (_t)[ 1] + ( (_t)[gamma_permutation[(_gindex)][ 1]] * gamma_sign[(_gindex)][ 1]            \
+           - (_t)[gamma_permutation[6+(_gindex)][ 0]] * gamma_sign[6+(_gindex)][ 0] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][ 0]] * gamma_sign[5][ 0] * (_mut);                               \
+\
+  (_s)[ 2] = (_t)[ 2] + ( (_t)[gamma_permutation[(_gindex)][ 2]] * gamma_sign[(_gindex)][ 2]            \
+           + (_t)[gamma_permutation[6+(_gindex)][ 3]] * gamma_sign[6+(_gindex)][ 3] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][ 3]] * gamma_sign[5][ 3] * (_mut);                               \
+\
+  (_s)[ 3] = (_t)[ 3] + ( (_t)[gamma_permutation[(_gindex)][ 3]] * gamma_sign[(_gindex)][ 3]            \
+           - (_t)[gamma_permutation[6+(_gindex)][ 2]] * gamma_sign[6+(_gindex)][ 2] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][ 2]] * gamma_sign[5][ 2] * (_mut);                               \
+\
+  (_s)[ 4] = (_t)[ 4] + ( (_t)[gamma_permutation[(_gindex)][ 4]] * gamma_sign[(_gindex)][ 4]            \
+           + (_t)[gamma_permutation[6+(_gindex)][ 5]] * gamma_sign[6+(_gindex)][ 5] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][ 5]] * gamma_sign[5][ 5] * (_mut);                               \
+\
+  (_s)[ 5] = (_t)[ 5] + ( (_t)[gamma_permutation[(_gindex)][ 5]] * gamma_sign[(_gindex)][ 5]            \
+           - (_t)[gamma_permutation[6+(_gindex)][ 4]] * gamma_sign[6+(_gindex)][ 4] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][ 4]] * gamma_sign[5][ 4] * (_mut);                               \
+\
+  (_s)[ 6] = (_t)[ 6] + ( (_t)[gamma_permutation[(_gindex)][ 6]] * gamma_sign[(_gindex)][ 6]            \
+           + (_t)[gamma_permutation[6+(_gindex)][ 7]] * gamma_sign[6+(_gindex)][ 7] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][ 7]] * gamma_sign[5][ 7] * (_mut);                               \
+\
+  (_s)[ 7] = (_t)[ 7] + ( (_t)[gamma_permutation[(_gindex)][ 7]] * gamma_sign[(_gindex)][ 7]            \
+           - (_t)[gamma_permutation[6+(_gindex)][ 6]] * gamma_sign[6+(_gindex)][ 6] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][ 6]] * gamma_sign[5][ 6] * (_mut);                               \
+\
+  (_s)[ 8] = (_t)[ 8] + ( (_t)[gamma_permutation[(_gindex)][ 8]] * gamma_sign[(_gindex)][ 8]            \
+           + (_t)[gamma_permutation[6+(_gindex)][ 9]] * gamma_sign[6+(_gindex)][ 9] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][ 9]] * gamma_sign[5][ 9] * (_mut);                               \
+\
+  (_s)[ 9] = (_t)[ 9] + ( (_t)[gamma_permutation[(_gindex)][ 9]] * gamma_sign[(_gindex)][ 9]            \
+           - (_t)[gamma_permutation[6+(_gindex)][ 8]] * gamma_sign[6+(_gindex)][ 8] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][ 8]] * gamma_sign[5][ 8] * (_mut);                               \
+\
+  (_s)[10] = (_t)[10] + ( (_t)[gamma_permutation[(_gindex)][10]] * gamma_sign[(_gindex)][10]            \
+           + (_t)[gamma_permutation[6+(_gindex)][11]] * gamma_sign[6+(_gindex)][11] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][11]] * gamma_sign[5][11] * (_mut);                               \
+\
+  (_s)[11] = (_t)[11] + ( (_t)[gamma_permutation[(_gindex)][11]] * gamma_sign[(_gindex)][11]            \
+           - (_t)[gamma_permutation[6+(_gindex)][10]] * gamma_sign[6+(_gindex)][10] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][10]] * gamma_sign[5][10] * (_mut);                               \
+\
+  (_s)[12] = (_t)[12] + ( (_t)[gamma_permutation[(_gindex)][12]] * gamma_sign[(_gindex)][12]            \
+           + (_t)[gamma_permutation[6+(_gindex)][13]] * gamma_sign[6+(_gindex)][13] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][13]] * gamma_sign[5][13] * (_mut);                               \
+\
+  (_s)[13] = (_t)[13] + ( (_t)[gamma_permutation[(_gindex)][13]] * gamma_sign[(_gindex)][13]            \
+           - (_t)[gamma_permutation[6+(_gindex)][12]] * gamma_sign[6+(_gindex)][12] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][12]] * gamma_sign[5][12] * (_mut);                               \
+\
+  (_s)[14] = (_t)[14] + ( (_t)[gamma_permutation[(_gindex)][14]] * gamma_sign[(_gindex)][14]            \
+           + (_t)[gamma_permutation[6+(_gindex)][15]] * gamma_sign[6+(_gindex)][15] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][15]] * gamma_sign[5][15] * (_mut);                               \
+\
+  (_s)[15] = (_t)[15] + ( (_t)[gamma_permutation[(_gindex)][15]] * gamma_sign[(_gindex)][15]            \
+           - (_t)[gamma_permutation[6+(_gindex)][14]] * gamma_sign[6+(_gindex)][14] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][14]] * gamma_sign[5][14] * (_mut);                               \
+\
+  (_s)[16] = (_t)[16] + ( (_t)[gamma_permutation[(_gindex)][16]] * gamma_sign[(_gindex)][16]            \
+           + (_t)[gamma_permutation[6+(_gindex)][17]] * gamma_sign[6+(_gindex)][17] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][17]] * gamma_sign[5][17] * (_mut);                               \
+\
+  (_s)[17] = (_t)[17] + ( (_t)[gamma_permutation[(_gindex)][17]] * gamma_sign[(_gindex)][17]            \
+           - (_t)[gamma_permutation[6+(_gindex)][16]] * gamma_sign[6+(_gindex)][16] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][16]] * gamma_sign[5][16] * (_mut);                               \
+\
+  (_s)[18] = (_t)[18] + ( (_t)[gamma_permutation[(_gindex)][18]] * gamma_sign[(_gindex)][18]            \
+           + (_t)[gamma_permutation[6+(_gindex)][19]] * gamma_sign[6+(_gindex)][19] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][19]] * gamma_sign[5][19] * (_mut);                               \
+\
+  (_s)[19] = (_t)[19] + ( (_t)[gamma_permutation[(_gindex)][19]] * gamma_sign[(_gindex)][19]            \
+           - (_t)[gamma_permutation[6+(_gindex)][18]] * gamma_sign[6+(_gindex)][18] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][18]] * gamma_sign[5][18] * (_mut);                               \
+\
+  (_s)[20] = (_t)[20] + ( (_t)[gamma_permutation[(_gindex)][20]] * gamma_sign[(_gindex)][20]            \
+           + (_t)[gamma_permutation[6+(_gindex)][21]] * gamma_sign[6+(_gindex)][21] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][21]] * gamma_sign[5][21] * (_mut);                               \
+\
+  (_s)[21] = (_t)[21] + ( (_t)[gamma_permutation[(_gindex)][21]] * gamma_sign[(_gindex)][21]            \
+           - (_t)[gamma_permutation[6+(_gindex)][20]] * gamma_sign[6+(_gindex)][20] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][20]] * gamma_sign[5][20] * (_mut);                               \
+\
+  (_s)[22] = (_t)[22] + ( (_t)[gamma_permutation[(_gindex)][22]] * gamma_sign[(_gindex)][22]            \
+           + (_t)[gamma_permutation[6+(_gindex)][23]] * gamma_sign[6+(_gindex)][23] *(_mut)) * (_sigma) \
+           + (_t)[gamma_permutation[5][23]] * gamma_sign[5][23] * (_mut);                               \
+\
+  (_s)[23] = (_t)[23] + ( (_t)[gamma_permutation[(_gindex)][23]] * gamma_sign[(_gindex)][23]            \
+           - (_t)[gamma_permutation[6+(_gindex)][22]] * gamma_sign[6+(_gindex)][22] *(_mut)) * (_sigma) \
+           - (_t)[gamma_permutation[5][22]] * gamma_sign[5][22] * (_mut);                               \
+\
+  (_s)[ 0] *= (_fact); (_s)[ 1] *= (_fact); (_s)[ 2] *= (_fact); (_s)[ 3] *= (_fact); \
+  (_s)[ 4] *= (_fact); (_s)[ 5] *= (_fact); (_s)[ 6] *= (_fact); (_s)[ 7] *= (_fact); \
+  (_s)[ 8] *= (_fact); (_s)[ 9] *= (_fact); (_s)[10] *= (_fact); (_s)[11] *= (_fact); \
+  (_s)[12] *= (_fact); (_s)[13] *= (_fact); (_s)[14] *= (_fact); (_s)[15] *= (_fact); \
+  (_s)[16] *= (_fact); (_s)[17] *= (_fact); (_s)[18] *= (_fact); (_s)[19] *= (_fact); \
+  (_s)[20] *= (_fact); (_s)[21] *= (_fact); (_s)[22] *= (_fact); (_s)[23] *= (_fact); }
+
+
+
+/*
+// s = t * c
+#define _fv_eq_fv_ti_co(s,t,c) {\
+  (s)[ 0] = (t)[ 0] * (c->re) - (t)[ 1] * (c->im);\
+  (s)[ 1] = (t)[ 0] * (c->im) + (t)[ 1] * (c->re);\
+  (s)[ 2] = (t)[ 2] * (c->re) - (t)[ 3] * (c->im);\
+  (s)[ 3] = (t)[ 2] * (c->im) + (t)[ 3] * (c->re);\
+  (s)[ 4] = (t)[ 4] * (c->re) - (t)[ 5] * (c->im);\
+  (s)[ 5] = (t)[ 4] * (c->im) + (t)[ 5] * (c->re);\
+  (s)[ 6] = (t)[ 6] * (c->re) - (t)[ 7] * (c->im);\
+  (s)[ 7] = (t)[ 6] * (c->im) + (t)[ 7] * (c->re);\
+  (s)[ 8] = (t)[ 8] * (c->re) - (t)[ 9] * (c->im);\
+  (s)[ 9] = (t)[ 8] * (c->im) + (t)[ 9] * (c->re);\
+  (s)[10] = (t)[10] * (c->re) - (t)[11] * (c->im);\
+  (s)[11] = (t)[10] * (c->im) + (t)[11] * (c->re);\
+  (s)[12] = (t)[12] * (c->re) - (t)[13] * (c->im);\
+  (s)[13] = (t)[12] * (c->im) + (t)[13] * (c->re);\
+  (s)[14] = (t)[14] * (c->re) - (t)[15] * (c->im);\
+  (s)[15] = (t)[14] * (c->im) + (t)[15] * (c->re);\
+  (s)[16] = (t)[16] * (c->re) - (t)[17] * (c->im);\
+  (s)[17] = (t)[16] * (c->im) + (t)[17] * (c->re);\
+  (s)[18] = (t)[18] * (c->re) - (t)[19] * (c->im);\
+  (s)[19] = (t)[18] * (c->im) + (t)[19] * (c->re);\
+  (s)[20] = (t)[20] * (c->re) - (t)[21] * (c->im);\
+  (s)[21] = (t)[20] * (c->im) + (t)[21] * (c->re);\
+  (s)[22] = (t)[22] * (c->re) - (t)[23] * (c->im);\
+  (s)[23] = (t)[22] * (c->im) + (t)[23] * (c->re);\
+}
+
+// s = t * c^*
+#define _fv_eq_fv_ti_co_conj(s,t,c) {\
+  (s)[ 0] = (t)[ 0] * (c->re) + (t)[ 1] * (c->im);\
+  (s)[ 1] =-(t)[ 0] * (c->im) + (t)[ 1] * (c->re);\
+  (s)[ 2] = (t)[ 2] * (c->re) + (t)[ 3] * (c->im);\
+  (s)[ 3] =-(t)[ 2] * (c->im) + (t)[ 3] * (c->re);\
+  (s)[ 4] = (t)[ 4] * (c->re) + (t)[ 5] * (c->im);\
+  (s)[ 5] =-(t)[ 4] * (c->im) + (t)[ 5] * (c->re);\
+  (s)[ 6] = (t)[ 6] * (c->re) + (t)[ 7] * (c->im);\
+  (s)[ 7] =-(t)[ 6] * (c->im) + (t)[ 7] * (c->re);\
+  (s)[ 8] = (t)[ 8] * (c->re) + (t)[ 9] * (c->im);\
+  (s)[ 9] =-(t)[ 8] * (c->im) + (t)[ 9] * (c->re);\
+  (s)[10] = (t)[10] * (c->re) + (t)[11] * (c->im);\
+  (s)[11] =-(t)[10] * (c->im) + (t)[11] * (c->re);\
+  (s)[12] = (t)[12] * (c->re) + (t)[13] * (c->im);\
+  (s)[13] =-(t)[12] * (c->im) + (t)[13] * (c->re);\
+  (s)[14] = (t)[14] * (c->re) + (t)[15] * (c->im);\
+  (s)[15] =-(t)[14] * (c->im) + (t)[15] * (c->re);\
+  (s)[16] = (t)[16] * (c->re) + (t)[17] * (c->im);\
+  (s)[17] =-(t)[16] * (c->im) + (t)[17] * (c->re);\
+  (s)[18] = (t)[18] * (c->re) + (t)[19] * (c->im);\
+  (s)[19] =-(t)[18] * (c->im) + (t)[19] * (c->re);\
+  (s)[20] = (t)[20] * (c->re) + (t)[21] * (c->im);\
+  (s)[21] =-(t)[20] * (c->im) + (t)[21] * (c->re);\
+  (s)[22] = (t)[22] * (c->re) + (t)[23] * (c->im);\
+  (s)[23] =-(t)[22] * (c->im) + (t)[23] * (c->re);\
+}
+*/
+
+/* r += (a + ib*gamma_5) s */
+#define _fv_pl_eq_a_pl_ib_g5_ti_fv(_r,_s, _a, _b) { \
+  /* spin component 0 and 1 */ \
+  (_r)[ 0] +=  (_s)[ 0] * (_a) - (_s)[ 1] * (_b); \
+  (_r)[ 1] +=  (_s)[ 0] * (_b) + (_s)[ 1] * (_a); \
+  (_r)[ 2] +=  (_s)[ 2] * (_a) - (_s)[ 3] * (_b); \
+  (_r)[ 3] +=  (_s)[ 2] * (_b) + (_s)[ 3] * (_a); \
+  (_r)[ 4] +=  (_s)[ 4] * (_a) - (_s)[ 5] * (_b); \
+  (_r)[ 5] +=  (_s)[ 4] * (_b) + (_s)[ 5] * (_a); \
+  (_r)[ 6] +=  (_s)[ 6] * (_a) - (_s)[ 7] * (_b); \
+  (_r)[ 7] +=  (_s)[ 6] * (_b) + (_s)[ 7] * (_a); \
+  (_r)[ 8] +=  (_s)[ 8] * (_a) - (_s)[ 9] * (_b); \
+  (_r)[ 9] +=  (_s)[ 8] * (_b) + (_s)[ 9] * (_a); \
+  (_r)[10] +=  (_s)[10] * (_a) - (_s)[11] * (_b); \
+  (_r)[11] +=  (_s)[10] * (_b) + (_s)[11] * (_a); \
+  /* spin component 2 and 3, b -> -b */ \
+  (_r)[12] +=  (_s)[12] * (_a) + (_s)[13] * (_b); \
+  (_r)[13] += -(_s)[12] * (_b) + (_s)[13] * (_a); \
+  (_r)[14] +=  (_s)[14] * (_a) + (_s)[15] * (_b); \
+  (_r)[15] += -(_s)[14] * (_b) + (_s)[15] * (_a); \
+  (_r)[16] +=  (_s)[16] * (_a) + (_s)[17] * (_b); \
+  (_r)[17] += -(_s)[16] * (_b) + (_s)[17] * (_a); \
+  (_r)[18] +=  (_s)[18] * (_a) + (_s)[19] * (_b); \
+  (_r)[19] += -(_s)[18] * (_b) + (_s)[19] * (_a); \
+  (_r)[20] +=  (_s)[20] * (_a) + (_s)[21] * (_b); \
+  (_r)[21] += -(_s)[20] * (_b) + (_s)[21] * (_a); \
+  (_r)[22] +=  (_s)[22] * (_a) + (_s)[23] * (_b); \
+  (_r)[23] += -(_s)[22] * (_b) + (_s)[23] * (_a); \
+}
+
+/* r = (a + ib*gamma_5) s */
+#define _fv_eq_a_pl_ib_g5_ti_fv(_r,_s, _a, _b) { \
+  /* spin component 0 and 1 */ \
+  (_r)[ 0] =  (_s)[ 0] * (_a) - (_s)[ 1] * (_b); \
+  (_r)[ 1] =  (_s)[ 0] * (_b) + (_s)[ 1] * (_a); \
+  (_r)[ 2] =  (_s)[ 2] * (_a) - (_s)[ 3] * (_b); \
+  (_r)[ 3] =  (_s)[ 2] * (_b) + (_s)[ 3] * (_a); \
+  (_r)[ 4] =  (_s)[ 4] * (_a) - (_s)[ 5] * (_b); \
+  (_r)[ 5] =  (_s)[ 4] * (_b) + (_s)[ 5] * (_a); \
+  (_r)[ 6] =  (_s)[ 6] * (_a) - (_s)[ 7] * (_b); \
+  (_r)[ 7] =  (_s)[ 6] * (_b) + (_s)[ 7] * (_a); \
+  (_r)[ 8] =  (_s)[ 8] * (_a) - (_s)[ 9] * (_b); \
+  (_r)[ 9] =  (_s)[ 8] * (_b) + (_s)[ 9] * (_a); \
+  (_r)[10] =  (_s)[10] * (_a) - (_s)[11] * (_b); \
+  (_r)[11] =  (_s)[10] * (_b) + (_s)[11] * (_a); \
+  /* spin component 2 and 3, b -> -b */ \
+  (_r)[12] =  (_s)[12] * (_a) + (_s)[13] * (_b); \
+  (_r)[13] = -(_s)[12] * (_b) + (_s)[13] * (_a); \
+  (_r)[14] =  (_s)[14] * (_a) + (_s)[15] * (_b); \
+  (_r)[15] = -(_s)[14] * (_b) + (_s)[15] * (_a); \
+  (_r)[16] =  (_s)[16] * (_a) + (_s)[17] * (_b); \
+  (_r)[17] = -(_s)[16] * (_b) + (_s)[17] * (_a); \
+  (_r)[18] =  (_s)[18] * (_a) + (_s)[19] * (_b); \
+  (_r)[19] = -(_s)[18] * (_b) + (_s)[19] * (_a); \
+  (_r)[20] =  (_s)[20] * (_a) + (_s)[21] * (_b); \
+  (_r)[21] = -(_s)[20] * (_b) + (_s)[21] * (_a); \
+  (_r)[22] =  (_s)[22] * (_a) + (_s)[23] * (_b); \
+  (_r)[23] = -(_s)[22] * (_b) + (_s)[23] * (_a); \
+}
+
+/* r = ( gamma_5 a + i b) s */
+#define _fv_pl_eq_a_g5_pl_ib_ti_fv(_r,_s, _a, _b) { \
+  /* spin component 0 and 1 */ \
+  (_r)[ 0] +=  (_s)[ 0] * (_a) - (_s)[ 1] * (_b); \
+  (_r)[ 1] +=  (_s)[ 0] * (_b) + (_s)[ 1] * (_a); \
+  (_r)[ 2] +=  (_s)[ 2] * (_a) - (_s)[ 3] * (_b); \
+  (_r)[ 3] +=  (_s)[ 2] * (_b) + (_s)[ 3] * (_a); \
+  (_r)[ 4] +=  (_s)[ 4] * (_a) - (_s)[ 5] * (_b); \
+  (_r)[ 5] +=  (_s)[ 4] * (_b) + (_s)[ 5] * (_a); \
+  (_r)[ 6] +=  (_s)[ 6] * (_a) - (_s)[ 7] * (_b); \
+  (_r)[ 7] +=  (_s)[ 6] * (_b) + (_s)[ 7] * (_a); \
+  (_r)[ 8] +=  (_s)[ 8] * (_a) - (_s)[ 9] * (_b); \
+  (_r)[ 9] +=  (_s)[ 8] * (_b) + (_s)[ 9] * (_a); \
+  (_r)[10] +=  (_s)[10] * (_a) - (_s)[11] * (_b); \
+  (_r)[11] +=  (_s)[10] * (_b) + (_s)[11] * (_a); \
+  /* spin component 2 and 3, a -> -a */ \
+  (_r)[12] += -(_s)[12] * (_a) - (_s)[13] * (_b); \
+  (_r)[13] +=  (_s)[12] * (_b) - (_s)[13] * (_a); \
+  (_r)[14] += -(_s)[14] * (_a) - (_s)[15] * (_b); \
+  (_r)[15] +=  (_s)[14] * (_b) - (_s)[15] * (_a); \
+  (_r)[16] += -(_s)[16] * (_a) - (_s)[17] * (_b); \
+  (_r)[17] +=  (_s)[16] * (_b) - (_s)[17] * (_a); \
+  (_r)[18] += -(_s)[18] * (_a) - (_s)[19] * (_b); \
+  (_r)[19] +=  (_s)[18] * (_b) - (_s)[19] * (_a); \
+  (_r)[20] += -(_s)[20] * (_a) - (_s)[21] * (_b); \
+  (_r)[21] +=  (_s)[20] * (_b) - (_s)[21] * (_a); \
+  (_r)[22] += -(_s)[22] * (_a) - (_s)[23] * (_b); \
+  (_r)[23] +=  (_s)[22] * (_b) - (_s)[23] * (_a); \
+}
+
+/* r = gamma_5 r 
+ * - assumes diagonal form of gamma_5
+ *   gamma_5 = diag(1, 1, -1, -1)
+ */
+
+#define _fv_ti_eq_g5(_r) { \
+  /* invert sign of spin components 2 and 3 */ \
+  (_r)[12] = -(_r)[12]; \
+  (_r)[13] = -(_r)[13]; \
+  (_r)[14] = -(_r)[14]; \
+  (_r)[15] = -(_r)[15]; \
+  (_r)[16] = -(_r)[16]; \
+  (_r)[17] = -(_r)[17]; \
+  (_r)[18] = -(_r)[18]; \
+  (_r)[19] = -(_r)[19]; \
+  (_r)[20] = -(_r)[20]; \
+  (_r)[21] = -(_r)[21]; \
+  (_r)[22] = -(_r)[22]; \
+  (_r)[23] = -(_r)[23]; \
+}
+
+}  /* end of namespace cvc */
+#endif
