@@ -8,15 +8,15 @@
 
 
 #define _GSI(x) 24*x
-#define T_global 2
-#define LX_global 2
-#define LY_global 2
-#define LZ_global 2
+#define T_global 12
+#define LX_global 12
+#define LY_global 12
+#define LZ_global 12
 
-const int T = 2;
-const int LX = 2;
-const int LY = 2;
-const int LZ = 2;
+const int T = 12;
+const int LX = 12;
+const int LY = 12;
+const int LZ = 12;
 
 inline int get_Lmax()
 {
@@ -29,7 +29,7 @@ inline int get_Lmax()
 }
 
 using namespace cvc;
-
+/* computation of Pi[mu][nu] */
 inline void compute_p1_0(double *** fwd_y, double * Pi, int iflavor, double ** spinor_work, unsigned VOLUME) 
 {
   double *** pimn = (double ***)malloc(sizeof(double **) *4);
@@ -85,7 +85,6 @@ inline void compute_p1_0(double *** fwd_y, double * Pi, int iflavor, double ** s
   }
 
 }
-
 
 /* performance improvement version 1: rearrange data structure of pi */
 inline void compute_p1_1(double *** fwd_y, double * Pi, int iflavor, unsigned VOLUME) 
@@ -150,6 +149,8 @@ inline void compute_p1_1(double *** fwd_y, double * Pi, int iflavor, unsigned VO
 
 }
 
+
+/* Integration of Pi[mu][nu] over z */
 void integrate_p1_0(double * pimn, double *P1, int iflavor, int const * gsw, unsigned VOLUME) 
 {
   const int Lmax = get_Lmax();
@@ -214,6 +215,8 @@ void integrate_p1_0(double * pimn, double *P1, int iflavor, int const * gsw, uns
 
 }
 
+/* rerarrange the summation order to z, rho, sigma, nu
+   note that input pi[x][mu][nu] is different P1[rho][sigma][nu][z] is unchanged */
 void integrate_p1_1(double *Pi, double *P1, int iflavor,  int const * gsw, unsigned VOLUME) 
 {
   const int Lmax = get_Lmax();
@@ -235,9 +238,9 @@ void integrate_p1_1(double *Pi, double *P1, int iflavor,  int const * gsw, unsig
       (iz % LZ - gsw[3] + LZ_global) % LZ_global};
 
     for (int rho=0; rho<4; rho++)
-    for (int mu=0; mu<4; mu++)
+    for (int sigma=0; sigma<4; sigma++)
     for (int nu=0; nu<4; nu++) {
-        local_P1[rho*16*Lmax + mu*Lmax*4 + nu*Lmax + z[rho]] += Pi[iz*16 + mu*4 + nu];
+        local_P1[rho*16*Lmax + sigma*Lmax*4 + nu*Lmax + z[rho]] += Pi[iz*16 + sigma*4 + nu];
     }
     
   }
@@ -314,6 +317,7 @@ void check_Pi(size_t vol) {
 }
 void check_integral(size_t vol, int w0, int w1, int w2, int w3) {
   double *pi = (double *)calloc(16 * vol, sizeof(double));
+  double *pi_rearrange = (double *)calloc(16 * vol, sizeof(double));
   double *P1 = (double *)calloc(4 * 4 * 4 * get_Lmax(), sizeof(double));
   for (int i=0; i<16*vol; i++){
     pi[i] = rand() * 2. / RAND_MAX - 1; // a random number between -1 and 1
@@ -321,7 +325,14 @@ void check_integral(size_t vol, int w0, int w1, int w2, int w3) {
   const int gsw[4] = {w0,w1,w2,w3};
   integrate_p1_0(pi, P1, 0, gsw, vol);
   double *P1_check = (double *)calloc(4 * 4 * 4 * get_Lmax(), sizeof(double));
-  integrate_p1_1(pi, P1_check, 0, gsw, vol);
+  /* Rearrange pi for new format i.e. pi[mu][nu][x] to pi[x][mu][nu] */
+  for (int mu=0; mu<4; mu++)
+  for (int nu=0; nu<4; nu++)
+  for (int x=0; x<vol; x++){
+    pi_rearrange[x*16 + mu*4 + nu] = pi[mu*4*vol + nu*vol + x];
+  }
+
+  integrate_p1_1(pi_rearrange, P1_check, 0, gsw, vol);
   int flag = 0;
   const int n_P1 = 4 * 4 * 4 * get_Lmax();
   for (int i=0; i<n_P1; i++){
@@ -335,6 +346,7 @@ void check_integral(size_t vol, int w0, int w1, int w2, int w3) {
   if (flag) printf("Integral correctness FAILED.\n");
   else printf("Integral correctness PASSED.\n");
   free(pi);
+  free(pi_rearrange);
   free(P1);
   free(P1_check);
 }
