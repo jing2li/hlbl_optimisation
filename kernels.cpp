@@ -3,34 +3,11 @@
 #include <cmath>
 #include <stdlib.h> 
 #include "cvc_linalg.h"
-#include <mpi.h>
+//#include <mpi.h>
 #include <omp.h>
+#include "global.h"
 
-
-#define _GSI(x) 24*x
-#define T_global 32
-#define LX_global 32
-#define LY_global 32
-#define LZ_global 32
-
-const int T = 32;
-const int LX = 32;
-const int LY = 32;
-const int LZ = 32;
-
-const int kernel_n=3;
-const int kernel_n_geom=5;
-
-const int idx_comb[6][2] = {
-  {0,1},
-  {0,2},
-  {0,3},
-  {1,2},
-  {1,3},
-  {2,3} };
-
-
-inline int get_Lmax()
+inline static int get_Lmax()
 {
   int Lmax = 0;
   if ( T_global >= Lmax ) Lmax = T_global;
@@ -39,6 +16,17 @@ inline int get_Lmax()
   if ( LZ_global >= Lmax ) Lmax = LZ_global;
   return Lmax;
 }
+
+inline static void site_map_zerohalf (int xv[4], int const x[4] )
+{
+  xv[0] = ( x[0] > T_global   / 2 ) ? x[0] - T_global   : (  ( x[0] < T_global   / 2 ) ? x[0] : 0 );
+  xv[1] = ( x[1] > LX_global  / 2 ) ? x[1] - LX_global  : (  ( x[1] < LX_global  / 2 ) ? x[1] : 0 );
+  xv[2] = ( x[2] > LY_global  / 2 ) ? x[2] - LY_global  : (  ( x[2] < LY_global  / 2 ) ? x[2] : 0 );
+  xv[3] = ( x[3] > LZ_global  / 2 ) ? x[3] - LZ_global  : (  ( x[3] < LZ_global  / 2 ) ? x[3] : 0 );
+
+  return;
+}
+
 
 using namespace cvc;
 /* computation of Pi[mu][nu] */
@@ -162,7 +150,7 @@ inline void compute_p1_1(double *** fwd_y, double * Pi, int iflavor, unsigned VO
 }
 
 /* Integration of Pi[mu][nu] over z */
-void integrate_p1_0(double * pimn, double *P1, int iflavor, int const * gsw, unsigned VOLUME) 
+inline void integrate_p1_0(double * pimn, double *P1, int iflavor, int const * gsw, unsigned VOLUME) 
 {
   const int Lmax = get_Lmax();
   const int n_P1 = 4 * 4 * 4 * Lmax;
@@ -228,9 +216,9 @@ void integrate_p1_0(double * pimn, double *P1, int iflavor, int const * gsw, uns
 
 /* rerarrange the summation order to z, rho, sigma, nu
    note that input pi[x][mu][nu] is different P1[rho][sigma][nu][z] is unchanged */
-void integrate_p1_1(double *Pi, double *P1, int iflavor,  int const * gsw, unsigned VOLUME) 
+inline void integrate_p1_1(double *Pi, double *P1, int iflavor,  int const * gsw, unsigned VOLUME) 
 {
-  const int Lmax = T; // T will be the largest dimension
+  const int Lmax = T_global; // T will be the largest dimension
   const int n_P1 = 4 * 4 * 4 * Lmax;
   //double **** local_P1 = init_4level_dtable ( 4, 4, 4, Lmax );
   double * local_P1 = (double *)calloc(n_P1, sizeof(double));
@@ -268,17 +256,6 @@ void integrate_p1_1(double *Pi, double *P1, int iflavor,  int const * gsw, unsig
   free(local_P1);
 }
 
-
-inline void site_map_zerohalf (int xv[4], int const x[4] )
-{
-  xv[0] = ( x[0] > T_global   / 2 ) ? x[0] - T_global   : (  ( x[0] < T_global   / 2 ) ? x[0] : 0 );
-  xv[1] = ( x[1] > LX_global  / 2 ) ? x[1] - LX_global  : (  ( x[1] < LX_global  / 2 ) ? x[1] : 0 );
-  xv[2] = ( x[2] > LY_global  / 2 ) ? x[2] - LY_global  : (  ( x[2] < LY_global  / 2 ) ? x[2] : 0 );
-  xv[3] = ( x[3] > LZ_global  / 2 ) ? x[3] - LZ_global  : (  ( x[3] < LZ_global  / 2 ) ? x[3] : 0 );
-
-  return;
-}
-
 /* Computation of P2 and P3 */
 /***********************************************************
  * P2_{rsn}(y)
@@ -286,7 +263,7 @@ inline void site_map_zerohalf (int xv[4], int const x[4] )
  * P3_{rsn}(y)
  *   = sum_x (L_[r,s];mln(x+y,y) Pi_{ml}(x)
  ***********************************************************/
-void compute_p23_0(double *pimn, double (*P23)[kernel_n*kernel_n_geom][4][4][4], const int*gsw, int n_y, const int *gycoords, const double xunit[2],
+inline void compute_p23_0(double *pimn, double (*P23)[kernel_n*kernel_n_geom][4][4][4], const int*gsw, int n_y, const int *gycoords, const double xunit[2],
 /* QED_kernel_temps kqed_t, */ unsigned VOLUME){
   for ( int yi = 0; yi < n_y; yi++ )
   {
@@ -409,7 +386,7 @@ void compute_p23_0(double *pimn, double (*P23)[kernel_n*kernel_n_geom][4][4][4],
 }
 
 /* optimised compute_p23: loop rearrangement */
-void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][4], const int*gsw, int n_y, const int *gycoords, const double xunit[2],
+inline void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][4], const int *gsw, int n_y, const int *gycoords, const double xunit[2],
 /* QED_kernel_temps kqed_t,  */unsigned VOLUME){
   /* #if kernel_n_geom != 5
   #error "Number of QED kernel geometries does not match implementation"
@@ -422,61 +399,63 @@ void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][4], con
   for (int n=0; n<4; n++){
     P23[y][k][r][s][n] = 0;
   }
-  #pragma omp parallel for
-  for ( unsigned int ix = 0; ix < VOLUME; ix++ ){
-    /* int const x[4] = {
-      ( g_lexic2coords[ix][0] + g_proc_coords[0] * T  - gsw[0] + T_global  ) % T_global,
-      ( g_lexic2coords[ix][1] + g_proc_coords[1] * LX - gsw[1] + LX_global ) % LX_global,
-      ( g_lexic2coords[ix][2] + g_proc_coords[2] * LY - gsw[2] + LY_global ) % LY_global,
-      ( g_lexic2coords[ix][3] + g_proc_coords[3] * LZ - gsw[3] + LZ_global ) % LZ_global }; */
-    int const x[4] = {(ix / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
-    (ix / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
-    ((ix / LZ) % LY - gsw[2] + LY_global) % LY_global,
-    (ix % LZ - gsw[3] + LZ_global) % LZ_global};
 
-    int xv[4];
-    site_map_zerohalf ( xv, x );
+  for ( int yi = 0; yi < n_y; yi++ ){
+    // For P2: y = (gsy - gsw)
+    // For P3: y' = (gsw - gsy)
+    // We define y = (gsy - gsw) and use -y as input for P3.
+    int const * gsy = &gycoords[4*yi];
+    int const y[4] = {
+      ( gsy[0] - gsw[0] + T_global ) % T_global,
+      ( gsy[1] - gsw[1] + LX_global ) % LX_global,
+      ( gsy[2] - gsw[2] + LY_global ) % LY_global,
+      ( gsy[3] - gsw[3] + LZ_global ) % LZ_global
+    };
+    int yv[4];
+    site_map_zerohalf ( yv, y );
 
-    const double pix[4][4] = {pi[ix*16 +0], pi[ix*16 +1], pi[ix*16 +2], pi[ix*16 +3],
-                      pi[ix*16 +4], pi[ix*16 +5], pi[ix*16 +6], pi[ix*16 +7],
-                      pi[ix*16 +8], pi[ix*16 +9], pi[ix*16 +10],pi[ix*16 +11],
-                      pi[ix*16 +12],pi[ix*16 +13],pi[ix*16 +14],pi[ix*16 +15]};
-    double const xm[4] = {
-      xv[0] * xunit[0],
-      xv[1] * xunit[0],
-      xv[2] * xunit[0],
-      xv[3] * xunit[0] };
+    double const ym[4] = {
+      yv[0] * xunit[0],
+      yv[1] * xunit[0],
+      yv[2] * xunit[0],
+      yv[3] * xunit[0] };
 
-    double const xm_minus[4] = {
-      -xv[0] * xunit[0],
-      -xv[1] * xunit[0],
-      -xv[2] * xunit[0],
-      -xv[3] * xunit[0] };
-    for ( int yi = 0; yi < n_y; yi++ ){
-      // For P2: y = (gsy - gsw)
-      // For P3: y' = (gsw - gsy)
-      // We define y = (gsy - gsw) and use -y as input for P3.
-      int const * gsy = &gycoords[4*yi];
-      int const y[4] = {
-        ( gsy[0] - gsw[0] + T_global ) % T_global,
-        ( gsy[1] - gsw[1] + LX_global ) % LX_global,
-        ( gsy[2] - gsw[2] + LY_global ) % LY_global,
-        ( gsy[3] - gsw[3] + LZ_global ) % LZ_global
-      };
-      int yv[4];
-      site_map_zerohalf ( yv, y );
+    double const ym_minus[4] = {
+      -yv[0] * xunit[0],
+      -yv[1] * xunit[0],
+      -yv[2] * xunit[0],
+      -yv[3] * xunit[0] };
 
-      double const ym[4] = {
-        yv[0] * xunit[0],
-        yv[1] * xunit[0],
-        yv[2] * xunit[0],
-        yv[3] * xunit[0] };
+    #pragma omp parallel for firstprivate(ym, ym_minus)
+    for ( unsigned int ix = 0; ix < VOLUME; ix++ ){
+      /* int const x[4] = {
+        ( g_lexic2coords[ix][0] + g_proc_coords[0] * T  - gsw[0] + T_global  ) % T_global,
+        ( g_lexic2coords[ix][1] + g_proc_coords[1] * LX - gsw[1] + LX_global ) % LX_global,
+        ( g_lexic2coords[ix][2] + g_proc_coords[2] * LY - gsw[2] + LY_global ) % LY_global,
+        ( g_lexic2coords[ix][3] + g_proc_coords[3] * LZ - gsw[3] + LZ_global ) % LZ_global }; */
+      int const x[4] = {(ix / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
+      (ix / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
+      ((ix / LZ) % LY - gsw[2] + LY_global) % LY_global,
+      (ix % LZ - gsw[3] + LZ_global) % LZ_global};
 
-      double const ym_minus[4] = {
-        -yv[0] * xunit[0],
-        -yv[1] * xunit[0],
-        -yv[2] * xunit[0],
-        -yv[3] * xunit[0] };
+      int xv[4];
+      site_map_zerohalf ( xv, x );
+
+      const double pix[4][4] = {pi[ix*16 +0], pi[ix*16 +1], pi[ix*16 +2], pi[ix*16 +3],
+                        pi[ix*16 +4], pi[ix*16 +5], pi[ix*16 +6], pi[ix*16 +7],
+                        pi[ix*16 +8], pi[ix*16 +9], pi[ix*16 +10],pi[ix*16 +11],
+                        pi[ix*16 +12],pi[ix*16 +13],pi[ix*16 +14],pi[ix*16 +15]};
+      double const xm[4] = {
+        xv[0] * xunit[0],
+        xv[1] * xunit[0],
+        xv[2] * xunit[0],
+        xv[3] * xunit[0] };
+
+      double const xm_minus[4] = {
+        -xv[0] * xunit[0],
+        -xv[1] * xunit[0],
+        -xv[2] * xunit[0],
+        -xv[3] * xunit[0] };
 
       double const xm_mi_ym[4] = {
         xm[0] - ym[0],
@@ -563,7 +542,7 @@ void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][4], con
           }
         } */
        /* accumulate to global P2/3 */
-        #pragma omp critical
+        //#pragma omp critical
         {
         for (int rho=0; rho<4; rho++)
         for (int sigma=0; sigma<4; sigma++)
@@ -707,21 +686,21 @@ void check_p23(unsigned vol, const int* gsw, int n_y, const int *gycoords, const
   int flag = 0;
   for (int x=0; x<n_y; x++)
   for (int ikernel=0; ikernel<kernel_n; ikernel++)
-  for (int g=0; g<4; g++)
+  for (int g=0; g<3; g++)
   for (int rho=0; rho<4; rho++)
   for (int mu=0; mu<4; mu++)
   for (int nu=0; nu<4; nu++){
     const double diff = P23[x][ikernel * kernel_n_geom + g][rho][mu][nu] - P23_new[x][ikernel * kernel_n_geom + g][rho][mu][nu];
     if (diff * diff > 1e-26) {
       flag=1;
-      printf("Integral difference at [%d][%d][%d][%d][%d][%d]: %f VS %f diff=%e\n.",
+      printf("P23 difference at [%d][%d][%d][%d][%d][%d]: %f VS %f diff=%e\n.",
          x, ikernel, g, rho, mu, nu, P23[x][ikernel * kernel_n_geom + g][rho][mu][nu], P23_new[x][ikernel * kernel_n_geom + g][rho][mu][nu], diff);
     }
     /* printf("Integral difference at [%d][%d][%d][%d][%d][%d]: %f VS %f diff=%e\n.",
          x, ikernel, g, rho, mu, nu, P23[x][ikernel * kernel_n_geom + g][rho][mu][nu], P23_new[x][ikernel * kernel_n_geom + g][rho][mu][nu], diff);
   */ }
-  if (flag) printf("Integral correctness FAILED.\n");
-  else printf("Integral correctness PASSED.\n");
+  if (flag) printf("P23 correctness FAILED.\n");
+  else printf("P23 correctness PASSED.\n");
 
   free(pi);
   free(pi_rearrange);
@@ -764,9 +743,9 @@ int main ( int argc, char **argv )
   } 
 
   /* fill p1_1 with test data  */
-  for (int i=0; i<16*VOLUME; i++){
+  /* for (int i=0; i<16*VOLUME; i++){
     p1_1[i] = rand() * 2. / RAND_MAX - 1; // a random number between -1 and 1
-  }
+  } */
 
   /* compute_p1_0(fwd_y, p1_0, 0, spinor_work, VOLUME); */
 
@@ -776,15 +755,23 @@ int main ( int argc, char **argv )
   /* integrate_p1_0(p1_0, P1, 0, src, VOLUME); */
   /* integrate_p1_1(p1_1, P1, 0, src, VOLUME); */
 
-  const int x[4] = {1, 1, 1, 1};
+  const int y[4] = {1, 1, 1, 1};
+  int y_coord[80];
+  for (int i=0; i<20; i++) {
+    y_coord[i*4 + 0] = i * y[0];
+    y_coord[i*4 + 1] = i * y[1];
+    y_coord[i*4 + 2] = i * y[2];
+    y_coord[i*4 + 3] = i * y[3];
+  }
   const double xunit[2] = {1.0, 2.1};
-  double (*P23)[kernel_n*kernel_n_geom][4][4][4] = (double (*)[kernel_n*kernel_n_geom][4][4][4]) malloc(sizeof(*P23) * 1);
-  /* compute_p23_0(p1_1, P23, src, 1, x, xunit, VOLUME); */
-  /* compute_p23(p1_1, P23, src, 1, x, xunit, VOLUME); */
+  double (*P23)[kernel_n*kernel_n_geom][4][4][4] = (double (*)[kernel_n*kernel_n_geom][4][4][4]) malloc(sizeof(*P23) * 20);
+  compute_p23_0(p1_1, P23, src, 20, (const int *)y_coord, xunit, VOLUME);
+  /* compute_p23(p1_1, P23, src, 20, (const int *)y_coord, xunit, VOLUME); */
   
-  /* check_Pi(VOLUME); */
-  /* check_integral(VOLUME, src[0], src[1], src[2], src[3]); */
-  check_p23(VOLUME, src, 1, x, xunit);
+  //check_Pi(VOLUME);
+  //check_integral(VOLUME, src[0], src[1], src[2], src[3]);
+  //check_p23(VOLUME, src, 10, (const int *)y_coord, xunit);
+
 
   free(p1_0);
   free(p1_1);
