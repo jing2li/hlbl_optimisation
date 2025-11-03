@@ -64,7 +64,7 @@ inline static void site_map_zerohalf (int xv[4], int const x[4] )
 
 
 using namespace cvc;
-using namespace std;
+//using namespace std;
 
 int main() {
     

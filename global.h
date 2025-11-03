@@ -10,10 +10,15 @@
 #define LY_global 32
 #define LZ_global 32
 
-const int T = 32;
-const int LX = 32;
-const int LY = 32;
-const int LZ = 32;
+#define NPROCT 1
+#define NPROCX 1
+#define NPROCY 1
+#define NPROCZ 2 
+
+const int T = T_global/NPROCT;
+const int LX = LX_global/NPROCX;
+const int LY = LX_global/NPROCY;
+const int LZ = LX_global/NPROCZ;
 
 const int kernel_n=3;
 const int kernel_n_geom=5;

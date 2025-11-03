@@ -3,9 +3,14 @@
 #include <cmath>
 #include <stdlib.h> 
 #include "cvc_linalg.h"
-//#include <mpi.h>
+#include <mpi.h>
 #include <omp.h>
 #include "global.h"
+
+// MPI
+MPI_Comm g_cart_grid;
+int g_cart_id;
+int g_proc_coords[4];
 
 inline static int get_Lmax()
 {
@@ -27,6 +32,12 @@ inline static void site_map_zerohalf (int xv[4], int const x[4] )
   return;
 }
 
+inline void allreduce(double *ptr, int count){
+  const int status = MPI_Allreduce(MPI_IN_PLACE, ptr, count, MPI_DOUBLE, MPI_SUM, g_cart_grid);
+  if ( status != MPI_SUCCESS ) {
+    if ( g_cart_id == 0 ) printf("MPI all reduce failed.\n");//fprintf ( stderr, "[] Error from MPI_Allreduce %s %d\n", __FILE__, __LINE__ );
+  }
+}
 
 using namespace cvc;
 /* computation of Pi[mu][nu] */
@@ -84,13 +95,21 @@ inline void compute_p1_0(double *** fwd_y, double * Pi, int iflavor, double ** s
     Pi[mu*4*VOLUME + nu*VOLUME + ix] = pimn[mu][nu][ix];
   }
 
+  /* mpi all reduce */
+  allreduce(Pi, 4*4*VOLUME);
+
+  for (int i=0; i<4; i++) {
+    for (int j=0; j<4; j++){
+      free(pimn[i][j]);
+    }
+    free(pimn[i]);
+  }
+  free(pimn);
 }
 
-/* performance improvement version 1: rearrange data structure of pi */
-inline void compute_p1_1(double *** fwd_y, double * Pi, int iflavor, unsigned VOLUME) 
+/* performance improvement version 1: rearrange data structure of pi[x][mu][nu] */
+inline void compute_p1_1(double *** fwd_y, double * pi, int iflavor, unsigned VOLUME) 
 {
-  double * pi = (double *)calloc((size_t)VOLUME *  4 * 4, sizeof(double)); /* pi[x][mu][nu] */
-
   /* loop over position volume */
   #pragma omp parallel for
   for (int ix = 0; ix < VOLUME; ix++) {
@@ -140,13 +159,7 @@ inline void compute_p1_1(double *** fwd_y, double * Pi, int iflavor, unsigned VO
     }
   }
 
-  /* copy to p1 */
-  for (int ix=0; ix<VOLUME; ix++)
-  for (int mu=0; mu<4; mu++)
-  for (int nu=0; nu<4; nu++) {
-    Pi[mu*4*VOLUME + nu*VOLUME + ix] = pi[ix*16 + mu*4 + nu];
-  }
-
+  allreduce(pi, 4*4*VOLUME);
 }
 
 /* Integration of Pi[mu][nu] over z */
@@ -187,10 +200,10 @@ inline void integrate_p1_0(double * pimn, double *P1, int iflavor, int const * g
         */
         
           /* find global z[4] */
-        const int z[4] = {(iz / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
-          (iz / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
-          ((iz / LZ) % LY - gsw[2] + LY_global) % LY_global,
-          (iz % LZ - gsw[3] + LZ_global) % LZ_global};
+        const int z[4] = {(iz / (LX * LY * LZ) + g_proc_coords[0] * T - gsw[0] + T_global) % T_global,
+          (iz / (LY * LZ) % LX + g_proc_coords[1] * LX - gsw[1] + LX_global) % LX_global,
+          ((iz / LZ) % LY + g_proc_coords[2] * LY - gsw[2] + LY_global) % LY_global,
+          (iz % LZ + g_proc_coords[3] * LZ - gsw[3] + LZ_global) % LZ_global};
 
         for ( int rho = 0; rho < 4; rho++ )
         {
@@ -207,11 +220,17 @@ inline void integrate_p1_0(double * pimn, double *P1, int iflavor, int const * g
     P1[rho*16*Lmax + sigma*4*Lmax + nu*Lmax + i] = local_P1[rho][sigma][nu][i];
   }
 
-  /* if ( MPI_Allreduce(local_P1[0][0][0], P1, n_P1, MPI_DOUBLE, MPI_SUM, g_cart_grid)
-      != MPI_SUCCESS ) {
-    if ( g_cart_id == 0 ) fprintf ( stderr, "[] Error from MPI_Allreduce %s %d\n", __FILE__, __LINE__ );
-  } */
+  allreduce(P1, n_P1);
 
+  for (int rho=0; rho<4; rho++){
+    for (int sigma=0; sigma<4; sigma++){
+      for (int nu=0; nu<4; nu++){
+        free(local_P1[rho][sigma][nu]);
+      }
+      free(local_P1[rho][sigma]);
+    }
+    free(local_P1[rho]);
+  }
 }
 
 /* rerarrange the summation order to z, rho, sigma, nu
@@ -221,39 +240,38 @@ inline void integrate_p1_1(double *Pi, double *P1, int iflavor,  int const * gsw
   const int Lmax = T_global; // T will be the largest dimension
   const int n_P1 = 4 * 4 * 4 * Lmax;
   //double **** local_P1 = init_4level_dtable ( 4, 4, 4, Lmax );
-  double * local_P1 = (double *)calloc(n_P1, sizeof(double));
+  /* double * local_P1 = (double *)calloc(n_P1, sizeof(double));
 
   if ( local_P1 == NULL )
   {
     fprintf ( stderr, "Error alloc local_P1\n" );
     exit ( 57 );
-  }
+  } */
 
   for (int iz = 0; iz < VOLUME; iz++ ) {
     // double * thread_P1 = (double *)calloc(n_P1, sizeof(double)); /* thread local copy of local_P1 */
   
     /* find global z[4] */
-    const int z[4] = {(iz / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
-      (iz / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
-      ((iz / LZ) % LY - gsw[2] + LY_global) % LY_global,
-      (iz % LZ - gsw[3] + LZ_global) % LZ_global};
+    const int z[4] = {(iz / (LX * LY * LZ) + g_proc_coords[0] * T - gsw[0] + T_global) % T_global,
+      (iz / (LY * LZ) % LX + g_proc_coords[1] * LX - gsw[1] + LX_global) % LX_global,
+      ((iz / LZ) % LY + g_proc_coords[2] * LY - gsw[2] + LY_global) % LY_global,
+      (iz % LZ + g_proc_coords[3] * LZ - gsw[3] + LZ_global) % LZ_global};
       
       for (int rho=0; rho<4; rho++)
       for (int sigma=0; sigma<4; sigma++)
       for (int nu=0; nu<4; nu++) {
-          local_P1[rho*Lmax*16 + sigma*Lmax*4 + nu*Lmax + z[rho]] += Pi[iz*16 + sigma*4 + nu]; 
+          P1[rho*Lmax*16 + sigma*Lmax*4 + nu*Lmax + z[rho]] += Pi[iz*16 + sigma*4 + nu]; 
       }
   }
 
   /* copy to P1 */
-  for (int rho=0; rho<n_P1; rho++){
+  /* for (int rho=0; rho<n_P1; rho++){
     P1[rho] = local_P1[rho];
-  }
-  /* if ( MPI_Allreduce(local_P1[0][0][0], P1, n_P1, MPI_DOUBLE, MPI_SUM, g_cart_grid)
-      != MPI_SUCCESS ) {
-    if ( g_cart_id == 0 ) fprintf ( stderr, "[] Error from MPI_Allreduce %s %d\n", __FILE__, __LINE__ );
   } */
-  free(local_P1);
+
+  allreduce(P1, n_P1);
+
+  //free(local_P1);
 }
 
 /* Computation of P2 and P3 */
@@ -297,10 +315,10 @@ inline void compute_p23_0(double *pimn, double (*P23)[kernel_n*kernel_n_geom][4]
         ( g_lexic2coords[ix][1] + g_proc_coords[1] * LX - gsw[1] + LX_global ) % LX_global,
         ( g_lexic2coords[ix][2] + g_proc_coords[2] * LY - gsw[2] + LY_global ) % LY_global,
         ( g_lexic2coords[ix][3] + g_proc_coords[3] * LZ - gsw[3] + LZ_global ) % LZ_global }; */
-      int const x[4] = {(ix / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
-      (ix / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
-      ((ix / LZ) % LY - gsw[2] + LY_global) % LY_global,
-      (ix % LZ - gsw[3] + LZ_global) % LZ_global};
+      int const x[4] = {(ix / (LX * LY * LZ) + g_proc_coords[0] * T- gsw[0] + T_global) % T_global,
+      (ix / (LY * LZ) % LX + g_proc_coords[1] * LX - gsw[1] + LX_global) % LX_global,
+      ((ix / LZ) % LY + g_proc_coords[2] * LY - gsw[2] + LY_global) % LY_global,
+      (ix % LZ  + g_proc_coords[3] * LZ - gsw[3] + LZ_global) % LZ_global};
 
       int xv[4];
       site_map_zerohalf ( xv, x );
@@ -383,6 +401,7 @@ inline void compute_p23_0(double *pimn, double (*P23)[kernel_n*kernel_n_geom][4]
       }
     }
   }
+  allreduce(&P23[0][0][0][0][0], n_y*kernel_n*kernel_n_geom*64);
 }
 
 /* optimised compute_p23: loop rearrangement */
@@ -392,6 +411,7 @@ inline void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][
   #error "Number of QED kernel geometries does not match implementation"
   #endif */
   /* clear P23 */
+  #pragma omp parallel for collapse(5)
   for (int y=0; y<n_y; y++)
   for (int k=0; k<kernel_n*kernel_n_geom; k++)
   for (int r=0; r<4; r++)
@@ -400,6 +420,7 @@ inline void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][
     P23[y][k][r][s][n] = 0;
   }
 
+  #pragma omp parallel for
   for ( int yi = 0; yi < n_y; yi++ ){
     // For P2: y = (gsy - gsw)
     // For P3: y' = (gsw - gsy)
@@ -426,17 +447,17 @@ inline void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][
       -yv[2] * xunit[0],
       -yv[3] * xunit[0] };
 
-    #pragma omp parallel for firstprivate(ym, ym_minus)
+    //#pragma omp parallel for firstprivate(ym, ym_minus)
     for ( unsigned int ix = 0; ix < VOLUME; ix++ ){
       /* int const x[4] = {
         ( g_lexic2coords[ix][0] + g_proc_coords[0] * T  - gsw[0] + T_global  ) % T_global,
         ( g_lexic2coords[ix][1] + g_proc_coords[1] * LX - gsw[1] + LX_global ) % LX_global,
         ( g_lexic2coords[ix][2] + g_proc_coords[2] * LY - gsw[2] + LY_global ) % LY_global,
         ( g_lexic2coords[ix][3] + g_proc_coords[3] * LZ - gsw[3] + LZ_global ) % LZ_global }; */
-      int const x[4] = {(ix / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
-      (ix / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
-      ((ix / LZ) % LY - gsw[2] + LY_global) % LY_global,
-      (ix % LZ - gsw[3] + LZ_global) % LZ_global};
+      int const x[4] = {(ix / (LX * LY * LZ)  + g_proc_coords[0] * T - gsw[0] + T_global) % T_global,
+      (ix / (LY * LZ) % LX + g_proc_coords[1] * LX - gsw[1] + LX_global) % LX_global,
+      ((ix / LZ) % LY + g_proc_coords[2] * LY - gsw[2] + LY_global) % LY_global,
+      (ix % LZ + g_proc_coords[3] * LZ - gsw[3] + LZ_global) % LZ_global};
 
       int xv[4];
       site_map_zerohalf ( xv, x );
@@ -566,6 +587,9 @@ inline void compute_p23(double *pi, double (*P23)[kernel_n*kernel_n_geom][4][4][
       P23[yi][ikernel * kernel_n_geom + 4][sigma][rho][nu] += (yv[sigma]-xv[sigma]) * (-P23[yi][ikernel * kernel_n_geom + 3][rho][sigma][nu]);
     }
   } */
+
+  //all reduce
+  allreduce(&P23[0][0][0][0][0], n_y*kernel_n*kernel_n_geom*64);
 }
 
 
@@ -605,8 +629,8 @@ void check_Pi(size_t vol) {
   for (int mu=0; mu<4; mu++)
   for (int nu=0; nu<4; nu++)
   for (int x=0; x<vol; x++){
-    const double p0 = p1_0[mu*4*vol+nu*vol+x];
-    const double p1 = p1_1[mu*4*vol+nu*vol+x];
+    const double p0 = p1_0[mu*4*vol + nu*vol + x];
+    const double p1 = p1_1[x*16 + mu*4 +nu];
     const double diff = p0 - p1;
     if (diff * diff > 1e-26) {
       flag=1;
@@ -709,10 +733,22 @@ void check_p23(unsigned vol, const int* gsw, int n_y, const int *gycoords, const
 }
 int main ( int argc, char **argv )
 {
-  size_t VOLUME = LX_global * LY_global * LZ_global * T_global;
+  // set up MPI cartesian
+  MPI_Init(&argc, &argv);
+  int size; MPI_Comm_size(MPI_COMM_WORLD, &size);
+  int const proc_dim[4] = {NPROCT, NPROCX, NPROCY, NPROCZ};
+  const int period[4] = {0,0,0,0};
+  MPI_Cart_create(MPI_COMM_WORLD, 4, proc_dim, period, true, &g_cart_grid);
+  MPI_Comm_rank(g_cart_grid, &g_cart_id);
+  MPI_Cart_coords(g_cart_grid, g_cart_id, 4, g_proc_coords);
+  /* int g_proc_coords[4] = {my_coords[0] * T, my_coords[1] * LX, 
+                          my_coords[2] * LY, my_coords[3] * LZ}; */
+
+
+  init_gamma();
+  size_t VOLUME = LX * LY * LZ * T; // local volume
   size_t RAND = 0;
   const int Lmax = get_Lmax();
-  init_gamma();
   double *p1_0 = (double *)calloc(16 * VOLUME, sizeof(double));
   double *p1_1 = (double *)calloc(16 * VOLUME, sizeof(double));
   //double ** spinor_work = init_2level_dtable ( 2, _GSI( (size_t)(VOLUME+RAND) ));
@@ -765,12 +801,12 @@ int main ( int argc, char **argv )
   }
   const double xunit[2] = {1.0, 2.1};
   double (*P23)[kernel_n*kernel_n_geom][4][4][4] = (double (*)[kernel_n*kernel_n_geom][4][4][4]) malloc(sizeof(*P23) * 20);
-  compute_p23_0(p1_1, P23, src, 20, (const int *)y_coord, xunit, VOLUME);
+  //compute_p23_0(p1_1, P23, src, 20, (const int *)y_coord, xunit, VOLUME);
   /* compute_p23(p1_1, P23, src, 20, (const int *)y_coord, xunit, VOLUME); */
   
   //check_Pi(VOLUME);
   //check_integral(VOLUME, src[0], src[1], src[2], src[3]);
-  //check_p23(VOLUME, src, 10, (const int *)y_coord, xunit);
+  check_p23(VOLUME, src, 10, (const int *)y_coord, xunit);
 
 
   free(p1_0);
@@ -785,6 +821,8 @@ int main ( int argc, char **argv )
   }
   free(fwd_y);
   free(P1);
+
+  MPI_Finalize();
 
   return 0;
 }
