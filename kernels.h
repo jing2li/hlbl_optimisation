@@ -1,9 +1,9 @@
 #ifndef _KERNELS_H
 #define _KERNELS_H
 
-#include "kernels.cu"
-#include "kernels.cpp"
 
+#include "kernels.cpp"
+//#include "kernels.cu"
 
 /* CPU 2P2 BREAKDOWN */
 inline void compute_p1_0(double *** fwd_y, double * Pi, int iflavor, double ** spinor_work, unsigned VOLUME);
@@ -24,11 +24,11 @@ void check_p23(unsigned vol, const int* gsw, int n_y, const int *gycoords, const
 
 
 /* CUDA 2P2 BREAKDOWN */
-__host__ void compute_2p2_gpu(double * fwd_y, double * P1, double * P23, int iflavor, unsigned VOLUME);
-__global__ void kernel_pi(double* fwd_y, double * Pi, int iflavor, unsigned VOLUME);
-__global__ void kernel_p1(double *Pi, double *P1, int iflavor,  int const * gsw, unsigned VOLUME);
-__global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int kernel_n_geom, const int*gsw, int n_y, const int *gycoords, const double xunit[2],
-/* QED_kernel_temps kqed_t,  */unsigned VOLUME);
+//__host__ void compute_2p2_gpu(double * fwd_y, double * P1, double * P23, int iflavor, unsigned VOLUME);
+//__global__ void kernel_pi(double* fwd_y, double * Pi, int iflavor, unsigned VOLUME);
+//__global__ void kernel_p1(double *Pi, double *P1, int iflavor,  int const * gsw, unsigned VOLUME);
+//__global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int kernel_n_geom, const int*gsw, int n_y, const int *gycoords, const double xunit[2],
+/* QED_kernel_temps kqed_t,  */ //unsigned VOLUME);
 
 /* CUDA CHECKS */
 #endif

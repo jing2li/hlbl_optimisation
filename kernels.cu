@@ -3,40 +3,102 @@
 */
 #include <iostream>
 #include "cvc_complex.h"
-#include <cmath>
+//#include <cmath>
 #include <stdio.h> 
 #include <stdlib.h>
-#include "cvc_linalg.h"
+//#include "cvc_linalg.h"
 #include <vector>
 #include "global.h"
 
 #define FULL_MASK 0xffffffff
 #define WARP_SIZE 32
+__device__ __constant__ int gamma_permutation[16][24] = {
+  {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+  {19, 18, 21, 20, 23, 22, 13, 12, 15, 14, 17, 16, 7, 6, 9, 8, 11, 10, 1, 0, 3, 2, 5, 4},
+  {18, 19, 20, 21, 22, 23, 12, 13, 14, 15, 16, 17, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5},
+  {13, 12, 15, 14, 17, 16, 19, 18, 21, 20, 23, 22, 1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10},
+  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+  {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+  {19, 18, 21, 20, 23, 22, 13, 12, 15, 14, 17, 16, 7, 6, 9, 8, 11, 10, 1, 0, 3, 2, 5, 4},
+  {18, 19, 20, 21, 22, 23, 12, 13, 14, 15, 16, 17, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5},
+  {13, 12, 15, 14, 17, 16, 19, 18, 21, 20, 23, 22, 1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10},
+  {7, 6, 9, 8, 11, 10, 1, 0, 3, 2, 5, 4, 19, 18, 21, 20, 23, 22, 13, 12, 15, 14, 17, 16},
+  {6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 18, 19, 20, 21, 22, 23, 12, 13, 14, 15, 16, 17},
+  {1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14, 17, 16, 19, 18, 21, 20, 23, 22},
+  {1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14, 17, 16, 19, 18, 21, 20, 23, 22},
+  {6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 18, 19, 20, 21, 22, 23, 12, 13, 14, 15, 16, 17},
+  {7, 6, 9, 8, 11, 10, 1, 0, 3, 2, 5, 4, 19, 18, 21, 20, 23, 22, 13, 12, 15, 14, 17, 16}
+};
+__device__ __constant__ int gamma_sign[16][24] = {
+  {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+  {+1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1},
+  {-1, -1, -1, -1, -1, -1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, -1, -1, -1, -1, -1, -1},
+  {+1, -1, +1, -1, +1, -1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, +1, -1, +1, -1, +1, -1},
+  {+1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1},
+  {+1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+  {+1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+  {-1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1},
+  {+1, +1, +1, +1, +1, +1, -1, -1, -1, -1, -1, -1, +1, +1, +1, +1, +1, +1, -1, -1, -1, -1, -1, -1},
+  {-1, +1, -1, +1, -1, +1, +1, -1, +1, -1, +1, -1, -1, +1, -1, +1, -1, +1, +1, -1, +1, -1, +1, -1},
+  {+1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1},
+  {-1, -1, -1, -1, -1, -1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, +1, -1, -1, -1, -1, -1, -1},
+  {+1, -1, +1, -1, +1, -1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, +1, -1, +1, -1, +1, -1},
+  {-1, +1, -1, +1, -1, +1, +1, -1, +1, -1, +1, -1, -1, +1, -1, +1, -1, +1, +1, -1, +1, -1, +1, -1},
+  {-1, -1, -1, -1, -1, -1, +1, +1, +1, +1, +1, +1, -1, -1, -1, -1, -1, -1, +1, +1, +1, +1, +1, +1},
+  {-1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1, -1, +1}
+};
 
-#define _GSI(x) 24*x
-#define T_global 32
-#define LX_global 32
-#define LY_global 32
-#define LZ_global 32
+__device__ __constant__ int idx_comb_d[6][2] ={
+    {0,1},
+    {0,2},
+    {0,3},
+    {1,2},
+    {1,3},
+    {2,3}
+  };
+#define _co_eq_fv_dag_ti_fv(c,s,t) {\
+  (c)->re = \
+    (s)[ 0]*(t)[ 0] + (s)[ 1]*(t)[ 1] +\
+    (s)[ 2]*(t)[ 2] + (s)[ 3]*(t)[ 3] +\
+    (s)[ 4]*(t)[ 4] + (s)[ 5]*(t)[ 5] +\
+    (s)[ 6]*(t)[ 6] + (s)[ 7]*(t)[ 7] +\
+    (s)[ 8]*(t)[ 8] + (s)[ 9]*(t)[ 9] +\
+    (s)[10]*(t)[10] + (s)[11]*(t)[11] +\
+    (s)[12]*(t)[12] + (s)[13]*(t)[13] +\
+    (s)[14]*(t)[14] + (s)[15]*(t)[15] +\
+    (s)[16]*(t)[16] + (s)[17]*(t)[17] +\
+    (s)[18]*(t)[18] + (s)[19]*(t)[19] +\
+    (s)[20]*(t)[20] + (s)[21]*(t)[21] +\
+    (s)[22]*(t)[22] + (s)[23]*(t)[23];\
+  (c)->im =\
+    (s)[ 0]*(t)[ 1] - (s)[ 1]*(t)[ 0] +\
+    (s)[ 2]*(t)[ 3] - (s)[ 3]*(t)[ 2] +\
+    (s)[ 4]*(t)[ 5] - (s)[ 5]*(t)[ 4] +\
+    (s)[ 6]*(t)[ 7] - (s)[ 7]*(t)[ 6] +\
+    (s)[ 8]*(t)[ 9] - (s)[ 9]*(t)[ 8] +\
+    (s)[10]*(t)[11] - (s)[11]*(t)[10] +\
+    (s)[12]*(t)[13] - (s)[13]*(t)[12] +\
+    (s)[14]*(t)[15] - (s)[15]*(t)[14] +\
+    (s)[16]*(t)[17] - (s)[17]*(t)[16] +\
+    (s)[18]*(t)[19] - (s)[19]*(t)[18] +\
+    (s)[20]*(t)[21] - (s)[21]*(t)[20] +\
+    (s)[22]*(t)[23] - (s)[23]*(t)[22];}
 
-const int T = 32;
-const int LX = 32;
-const int LY = 32;
-const int LZ = 32;
 
-const int kernel_n=3;
-const int kernel_n_geom=5;
-
-const int idx_comb[6][2] = {
-  {0,1},
-  {0,2},
-  {0,3},
-  {1,2},
-  {1,3},
-  {2,3} };
+__device__ inline void _fv_eq_gamma_ti_fv(double* out, int gamma_index, const double* in) {
+  for (int i = 0; i < 24; ++i) {
+    out[i] = in[gamma_permutation[gamma_index][i]] * gamma_sign[gamma_index][i];
+  }
+}
+__device__ inline void _fv_ti_eq_g5(double* in_out) {
+  for (int i = 12; i < 24; ++i) {
+    in_out[i] *= -1;
+  }
+}
 
 
-inline static int get_Lmax()
+__device__ inline static int get_Lmax()
 {
   int Lmax = 0;
   if ( T_global >= Lmax ) Lmax = T_global;
@@ -46,13 +108,13 @@ inline static int get_Lmax()
   return Lmax;
 }
 
-inline static int prop_idx(int iflavour, int ia, int x, int ib) {
+__device__ inline static int prop_idx(int iflavour, int ia, int x, int ib) {
     return iflavour * 12 * 24 * LX_global * LY_global * LZ_global * T_global
          + ia * 24 * LX_global * LY_global * LZ_global * T_global
          + x * 24 + ib;
 }
 
-inline static void site_map_zerohalf (int xv[4], int const x[4] )
+__device__ inline static void site_map_zerohalf (int xv[4], int const x[4] )
 {
   xv[0] = ( x[0] > T_global   / 2 ) ? x[0] - T_global   : (  ( x[0] < T_global   / 2 ) ? x[0] : 0 );
   xv[1] = ( x[1] > LX_global  / 2 ) ? x[1] - LX_global  : (  ( x[1] < LX_global  / 2 ) ? x[1] : 0 );
@@ -63,36 +125,17 @@ inline static void site_map_zerohalf (int xv[4], int const x[4] )
 }
 
 
+/* set a length len vector v to zero */
+__device__ void set_zero(double *v, int len) {
+    int tid = threadIdx.x + blockDim.x * blockIdx.x;
+    for (int i=tid; i<len; i+=blockDim.x*gridDim.x){
+        v[tid] = 0;
+    }
+}
+
+
 using namespace cvc;
 //using namespace std;
-
-int main() {
-    
-}
-
-__host__ void compute_2p2_gpu(double * fwd_y, double * P1, double * P23, int iflavor, unsigned VOLUME){
-    /* set up problem on gpu */
-    double* pi_d, * fwd_y_d, * P1_d, * P23_d;
-    cudaMalloc((void **)&pi_d, sizeof(double) * 4 * 4 * 4 * VOLUME);
-    cudaMemcpy(fwd_y_d, fwd_y, sizeof(double)* 2 * 12 * 24 * VOLUME, cudaMemcpyHostToDevice);
-    cudaMalloc((void **)&P1_d, sizeof(double) * 4 * 4 * 4 * T_global);
-    cudaMalloc((void **)&P23_d, sizeof(double) * 4 * 4 * 4 * VOLUME);
-
-    dim3 gridDim(16);
-    dim3 blockDim(32);
-
-    /* compute Pi[x][mu][nu] */
-    kernel_pi<<<gridDim, blockDim>>>(fwd_y_d, pi_d, iflavor, VOLUME);
-    cudaFree(fwd_y_d);
-
-    /* integrate Pi to get P1 */
-    //kernel_p1<<<gridDim, blockDim>>>();
-
-    /* Integrate with qed kernels to get P2 and P3 */
-    //kernel_p23<<<gridDim, blockDim>>>();
-
-    cudaFree(pi_d);
-}
 
 __global__ void kernel_pi(double* fwd_y, double * Pi, int iflavor, unsigned VOLUME){
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -183,7 +226,9 @@ __global__ void kernel_p1(double *Pi, double *P1, int iflavor,  int const * gsw,
     const int Lmax = T_global; // T will be the largest dimension
     const int n_P1 = 4 * 4 * 4 * Lmax;
 
-    __shared__ double local_P1[n_P1] = {0}; 
+    __shared__ double local_P1[n_P1];
+    set_zero(local_P1, n_P1);
+    __syncthreads(); 
     for (int iz = tid; iz < VOLUME; iz += gridDim.x * blockDim.x) {
     /* find global z[4] */
         const int z[4] = {(iz / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
@@ -211,88 +256,80 @@ __global__ void kernel_p1(double *Pi, double *P1, int iflavor,  int const * gsw,
 }
 
 
-/* set a length len vector v to zero */
-__device__ void set_zero(double *v, int len) {
-    int tid = threadIdx.x + blockDim.x * blockIdx.x;
-    for (int i=tid; i<len; i+=blockDim.x*gridDim.x){
-        v[tid] = 0;
-    }
-}
-
-
 /* pi[volume][4][4][4], P23[n_y][kernel_n][kernel_n_geom][4][4][4] */
-__global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int kernel_n_geom, const int*gsw, int n_y, const int *gycoords, const double xunit[2],
+__global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int kernel_n_geom, const int*gsw, const int *gycoords, const double xunit[2],
 /* QED_kernel_temps kqed_t,  */unsigned VOLUME){
     const int n_p23 = n_y * kernel_n * kernel_n_geom * 4 * 4 * 4;
     const int tid = blockDim.x * blockIdx.x + threadIdx.x;
     set_zero(P23, n_p23);
 
-    //parallelise over x 
-    for (int ix = tid; ix<VOLUME; ix += blockDim.x * gridDim.x){
-        /* int const x[4] = {
-        ( g_lexic2coords[ix][0] + g_proc_coords[0] * T  - gsw[0] + T_global  ) % T_global,
-        ( g_lexic2coords[ix][1] + g_proc_coords[1] * LX - gsw[1] + LX_global ) % LX_global,
-        ( g_lexic2coords[ix][2] + g_proc_coords[2] * LY - gsw[2] + LY_global ) % LY_global,
-        ( g_lexic2coords[ix][3] + g_proc_coords[3] * LZ - gsw[3] + LZ_global ) % LZ_global }; */
-        int const x[4] = {(ix / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
-        (ix / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
-        ((ix / LZ) % LY - gsw[2] + LY_global) % LY_global,
-        (ix % LZ - gsw[3] + LZ_global) % LZ_global};
+    for ( int yi = 0; yi < n_y; yi++ ){
+        // For P2: y = (gsy - gsw)
+        // For P3: y' = (gsw - gsy)
+        // We define y = (gsy - gsw) and use -y as input for P3.
+        int const * gsy = &gycoords[4*yi];
+        int const y[4] = {
+            ( gsy[0] - gsw[0] + T_global ) % T_global,
+            ( gsy[1] - gsw[1] + LX_global ) % LX_global,
+            ( gsy[2] - gsw[2] + LY_global ) % LY_global,
+            ( gsy[3] - gsw[3] + LZ_global ) % LZ_global
+        };
+        int yv[4];
+        site_map_zerohalf ( yv, y );
 
-        int xv[4];
-        site_map_zerohalf ( xv, x );
+        double const ym[4] = {
+            yv[0] * xunit[0],
+            yv[1] * xunit[0],
+            yv[2] * xunit[0],
+            yv[3] * xunit[0] };
 
-        const double pix[4][4] = {pi[ix*16 +0], pi[ix*16 +1], pi[ix*16 +2], pi[ix*16 +3],
-                        pi[ix*16 +4], pi[ix*16 +5], pi[ix*16 +6], pi[ix*16 +7],
-                        pi[ix*16 +8], pi[ix*16 +9], pi[ix*16 +10],pi[ix*16 +11],
-                        pi[ix*16 +12],pi[ix*16 +13],pi[ix*16 +14],pi[ix*16 +15]};
-        double const xm[4] = {
-        xv[0] * xunit[0],
-        xv[1] * xunit[0],
-        xv[2] * xunit[0],
-        xv[3] * xunit[0] };
+        double const ym_minus[4] = {
+            -yv[0] * xunit[0],
+            -yv[1] * xunit[0],
+            -yv[2] * xunit[0],
+            -yv[3] * xunit[0] };
 
-        double const xm_minus[4] = {
-        -xv[0] * xunit[0],
-        -xv[1] * xunit[0],
-        -xv[2] * xunit[0],
-        -xv[3] * xunit[0] };
-        for ( int yi = 0; yi < n_y; yi++ ){
-            // For P2: y = (gsy - gsw)
-            // For P3: y' = (gsw - gsy)
-            // We define y = (gsy - gsw) and use -y as input for P3.
-            int const * gsy = &gycoords[4*yi];
-            int const y[4] = {
-                ( gsy[0] - gsw[0] + T_global ) % T_global,
-                ( gsy[1] - gsw[1] + LX_global ) % LX_global,
-                ( gsy[2] - gsw[2] + LY_global ) % LY_global,
-                ( gsy[3] - gsw[3] + LZ_global ) % LZ_global
-            };
-            int yv[4];
-            site_map_zerohalf ( yv, y );
+        //parallelise over x 
+        for (int ix = tid; ix<VOLUME; ix += blockDim.x * gridDim.x){
+            /* int const x[4] = {
+            ( g_lexic2coords[ix][0] + g_proc_coords[0] * T  - gsw[0] + T_global  ) % T_global,
+            ( g_lexic2coords[ix][1] + g_proc_coords[1] * LX - gsw[1] + LX_global ) % LX_global,
+            ( g_lexic2coords[ix][2] + g_proc_coords[2] * LY - gsw[2] + LY_global ) % LY_global,
+            ( g_lexic2coords[ix][3] + g_proc_coords[3] * LZ - gsw[3] + LZ_global ) % LZ_global }; */
+            int const x[4] = {(ix / (LX * LY * LZ) - gsw[0] + T_global) % T_global,
+            (ix / (LY * LZ) % LX - gsw[1] + LX_global) % LX_global,
+            ((ix / LZ) % LY - gsw[2] + LY_global) % LY_global,
+            (ix % LZ - gsw[3] + LZ_global) % LZ_global};
 
-            double const ym[4] = {
-                yv[0] * xunit[0],
-                yv[1] * xunit[0],
-                yv[2] * xunit[0],
-                yv[3] * xunit[0] };
+            int xv[4];
+            site_map_zerohalf ( xv, x );
 
-            double const ym_minus[4] = {
-                -yv[0] * xunit[0],
-                -yv[1] * xunit[0],
-                -yv[2] * xunit[0],
-                -yv[3] * xunit[0] };
+            const double pix[4][4] = {pi[ix*16 +0], pi[ix*16 +1], pi[ix*16 +2], pi[ix*16 +3],
+                            pi[ix*16 +4], pi[ix*16 +5], pi[ix*16 +6], pi[ix*16 +7],
+                            pi[ix*16 +8], pi[ix*16 +9], pi[ix*16 +10],pi[ix*16 +11],
+                            pi[ix*16 +12],pi[ix*16 +13],pi[ix*16 +14],pi[ix*16 +15]};
+            double const xm[4] = {
+            xv[0] * xunit[0],
+            xv[1] * xunit[0],
+            xv[2] * xunit[0],
+            xv[3] * xunit[0] };
 
-            double const xm_mi_ym[4] = {
-                xm[0] - ym[0],
-                xm[1] - ym[1],
-                xm[2] - ym[2],
-                xm[3] - ym[3] };
-            double const ym_mi_xm[4] = {
-                ym[0] - xm[0],
-                ym[1] - xm[1],
-                ym[2] - xm[2],
-                ym[3] - xm[3] };
+            double const xm_minus[4] = {
+            -xv[0] * xunit[0],
+            -xv[1] * xunit[0],
+            -xv[2] * xunit[0],
+            -xv[3] * xunit[0] };
+
+                double const xm_mi_ym[4] = {
+                    xm[0] - ym[0],
+                    xm[1] - ym[1],
+                    xm[2] - ym[2],
+                    xm[3] - ym[3] };
+                double const ym_mi_xm[4] = {
+                    ym[0] - xm[0],
+                    ym[1] - xm[1],
+                    ym[2] - xm[2],
+                    ym[3] - xm[3] };
 
         for ( int ikernel = 0; ikernel < kernel_n; ikernel++ ){
             /* double kerv1[6][4][4][4] KQED_ALIGN ;
@@ -318,8 +355,8 @@ __global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int k
 
             /* P2_0 */
             for (int k=0; k<6; k++){
-                const int rho = idx_comb[k][0];
-                const int sigma = idx_comb[k][1];
+                const int rho = idx_comb_d[k][0];
+                const int sigma = idx_comb_d[k][1];
                 for (int mu=0; mu<4; mu++)
                 for (int nu=0; nu<4; nu++)
                 for (int lambda=0; lambda<4; lambda++){
@@ -328,8 +365,8 @@ __global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int k
             }
             /* P2_1 */
             for (int k=0; k<6; k++){
-                const int rho = idx_comb[k][0];
-                const int sigma = idx_comb[k][1];
+                const int rho = idx_comb_d[k][0];
+                const int sigma = idx_comb_d[k][1];
                 for (int nu=0; nu<4; nu++)
                 for (int mu=0; mu<4; mu++)
                 for (int lambda=0; lambda<4; lambda++){
@@ -339,8 +376,8 @@ __global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int k
             
             /* P3 */
             for (int k=0; k<6; k++){
-                const int rho = idx_comb[k][0];
-                const int sigma = idx_comb[k][1];
+                const int rho = idx_comb_d[k][0];
+                const int sigma = idx_comb_d[k][1];
                 for (int mu=0; mu<4; mu++)
                 for (int lambda=0; lambda<4; lambda++)
                 for (int nu=0; nu<4; nu++){
@@ -349,8 +386,8 @@ __global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int k
             }
             /* P4_0 */
             /* for (int k=0; k<6; k++){
-                const int rho = idx_comb[k][0];
-                const int sigma = idx_comb[k][1];
+                const int rho = idx_comb_d[k][0];
+                const int sigma = idx_comb_d[k][1];
                 for (int nu=0; nu<4; nu++)
                 for (int lambda=0; lambda<4; lambda++)
                 for (int mu=0; mu<4; mu++){
@@ -360,8 +397,8 @@ __global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int k
             /* P4_1 */
             /* for( int k = 0; k < 6; k++ )
             {
-            const int rho   = idx_comb[k][0];
-            const int sigma = idx_comb[k][1];
+            const int rho   = idx_comb_d[k][0];
+            const int sigma = idx_comb_d[k][1];
             for ( int nu = 0; nu < 4; nu++ ){
                 local_p4_1[rho][sigma][nu] = (yv[rho]-xv[rho]) * local_p4_0[rho][sigma][nu];
                 local_p4_1[sigma][rho][nu] = (yv[sigma]-xv[sigma]) * (-local_p4_0[rho][sigma][nu]);
@@ -384,4 +421,44 @@ __global__ void kernel_p23(double *pi, double *P23, int n_y, int kernel_n, int k
         }
     }
   }
+}
+
+
+__host__ void compute_2p2_gpu(double * fwd_y, double * P1, double * P23, int iflavor, unsigned VOLUME){
+    /* set up problem on gpu */
+    double* pi_d, * fwd_y_d, * P1_d, * P23_d;
+    cudaMalloc((void **)&pi_d, sizeof(double) * 4 * 4 * 4 * VOLUME);
+    cudaMemcpy(fwd_y_d, fwd_y, sizeof(double)* 2 * 12 * 24 * VOLUME, cudaMemcpyHostToDevice);
+    cudaMalloc((void **)&P1_d, sizeof(double) * 4 * 4 * 4 * T_global);
+    cudaMalloc((void **)&P23_d, sizeof(double) * 4 * 4 * 4 * VOLUME);
+
+    dim3 gridDim(16);
+    dim3 blockDim(32);
+
+    /* compute Pi[x][mu][nu] */
+    kernel_pi<<<gridDim, blockDim>>>(fwd_y_d, pi_d, iflavor, VOLUME);
+    cudaFree(fwd_y_d);
+
+    /* integrate Pi to get P1 */
+    //kernel_p1<<<gridDim, blockDim>>>();
+
+    /* Integrate with qed kernels to get P2 and P3 */
+    //kernel_p23<<<gridDim, blockDim>>>();
+
+    cudaFree(pi_d);
+}
+
+int main() {
+    // allocate fwd_y on the host
+    int const VOL = T * LX * LY * LZ;
+    double *fwd_y = (double *)malloc(2 * 12 * _GSI(VOL) * sizeof(double));
+    srand(1234);
+    for (int i=0; i<24 * _GSI(VOL); i++) fwd_y[i] = rand()*2./RAND_MAX - 1.;
+
+    //allocate P1, P23 
+    double *P1 = (double *)malloc(sizeof(double) * 4 * 4 * 4 * T_global);
+    double *P23 = (double *)malloc(4*4*4*T_global);
+
+    // call gpu code
+    compute_2p2_gpu(fwd_y, P1, P23, 0, VOL);
 }
