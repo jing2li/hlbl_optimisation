@@ -2,11 +2,15 @@
 #define _CVC_LINALG_H
 
 #include <math.h>
-#include "cvc_complex.h"
-#include "types.h"
 
   int gamma_permutation[16][24];
   int gamma_sign[16][24];
+
+  
+typedef struct {
+  double re, im;
+} complex;
+
 
 void init_gamma()
 {  /* the gamma matrix index */
